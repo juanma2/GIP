@@ -1,0 +1,74 @@
+###################
+MODELO CLIENTES
+cliente
+- NOMBRE
+- CIF
+- Direccion
+- Ciudad - provincia
+- CP 
+- Telefono
+- Email*
+- Web*
+- IAE?¿¿¿?? hay distribuidores que no sirven sin este dato.
+- LISTA_CP_RECIBE
+
+CONTACTO (EN LA EMPRESA)
+- Nombre
+- DNI*
+- Direccion*
+- Ciudad - provincia*
+- CP*
+- Telefono*
+- Email*
+
+PEDIDOS
+- POR_DEFINIR
+
+MEMORIA
+- LISTA_NECESARIA_MIA. ES UN SERIALIZADO DE ID_INTERNO
+
+
+
+###################
+MODELO PROVEEDORES
+PROVEEDOR
+- NOMBRE
+- CIF
+- Direccion
+- Ciudad - provincia
+- CP
+- Telefono
+- Email
+- Web*
+- LISTA_CP_ENVIA
+
+
+CONTACTO (EN LA EMPRESA)
+- Nombre
+- DNI*
+- Direccion*
+- Ciudad - provincia*
+- CP*
+- Telefono*
+- Email*
+
+* EN BLANCO
+
+###################
+MODELO PRODUCTOS
+PRODUCTO
+- NOMBRE
+- DESCRIPCION
+- CANTIDAD MINIMA
+- FORMATO (CAMPO VARIABLE)
+
+- CATEGORIA-A:Lacteos,verduras #DEUDA TECNOLOGICA.
+- CATEGORIA-B:Frescos,envasados
+- PRECIO
+- TARIFA
+- CADUCIDAD_DEL_PRECIO ???
+- PROVEEDOR
+- ID_INTERNO <= PARA_MI
+- ID_PROVEEDOR
+- ESPECIFICACIONES: Texto WYSIWYG
+
