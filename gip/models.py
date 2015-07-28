@@ -30,8 +30,22 @@ class Destinos(models.Model):
 
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=200)
+    cif = models.CharField(max_length=200)# db_index
     descripcion = models.CharField(max_length=200)
-    destinos = models.ManyToManyField(Destinos) # should test if is better create classes like Proveedor destinos and do a 1to1 
+    direccion = models.CharField(max_length=200)
+    ciudad = models.CharField(max_length=200)
+    destinos_reparto = models.ManyToManyField(Destinos) # should test if is better create classes like Proveedor destinos and do a 1to1 
+    telefono = models.CharField(max_length=200)
+    email = models.CharField(max_length=200,blank=True)
+    web = models.CharField(max_length=200,blank=True)
+    contacto_nombre = models.CharField(max_length=200)
+    contacto_dni = models.CharField(max_length=200,blank=True)
+    contacto_direccion = models.CharField(max_length=200,blank=True)
+    contacto_ciudad = models.CharField(max_length=200,blank=True)
+    ##NOP contacto_CP = models.ManyToManyField(Destinos,blank=True)
+    contacto_telefono = models.CharField(max_length=200,blank=True)
+    contacto_email = models.CharField(max_length=200,blank=True)    
+
 #    tipos_tarifas = models.ManyToManyField(Tarifas) # Maybe create Tarifas per provider... or any other solution
     def __str__(self):
         return "%s" % (self.nombre)
@@ -48,8 +62,8 @@ class Tarifas(models.Model):
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
     descripcion = models.CharField(max_length=200)
-    formato = models.CharField(max_length=200)
     cantidad_minima = models.IntegerField(default=0)
+    formato = models.CharField(max_length=200)
     caducidad = models.DateTimeField(default = datetime.datetime.now() + datetime.timedelta(days=1) )#by default +24 hours
     proveedor = models.ForeignKey(Proveedor)
     ###ESTA ES LA SOLUCION #la tarifa es unica, no many, anades un precio, y creas 4 PRODUCTOS
@@ -66,8 +80,7 @@ class Producto(models.Model):
         #return precio * tarifa  
         pass
     def ha_caducado(self):
-        #return self.caducidad <= timezone.now() - datetime.timedelta(days=1)
-        pass
+        return self.caducidad <= timezone.now() - datetime.timedelta(days=1)
 
     def __str__(self):
         return "%s" % (self.nombre)
@@ -96,7 +109,7 @@ class Cliente(models.Model):
     contacto_dni = models.CharField(max_length=200,blank=True)
     contacto_direccion = models.CharField(max_length=200,blank=True)
     contacto_ciudad = models.CharField(max_length=200,blank=True)
-    contacto_CP = models.ManyToManyField(Destinos,blank=True)
+    ##NOP contacto_CP = models.ManyToManyField(Destinos,blank=True)
     contacto_telefono = models.CharField(max_length=200,blank=True)
     contacto_email = models.CharField(max_length=200,blank=True)    
 
