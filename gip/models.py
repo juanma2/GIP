@@ -52,13 +52,16 @@ class Producto(models.Model):
     cantidad_minima = models.IntegerField(default=0)
     caducidad = models.DateTimeField(default = datetime.datetime.now() + datetime.timedelta(days=1) )#by default +24 hours
     proveedor = models.ForeignKey(Proveedor)
-    tipos_tarifas = models.ManyToManyField(Tarifas) #a product can has different rates, so , all of them should be here
+    ###ESTA ES LA SOLUCION #la tarifa es unica, no many, anades un precio, y creas 4 PRODUCTOS
+    ###CADA CLIENTE TIENE UNA TARIFA POR PROVEEDOR
+    ###tipos_tarifas = models.ManyToManyField(Tarifas) 
     precio = models.IntegerField(default=0)
+    tarifa = models.ForeignKey(Tarifas)
     #categoria = models.ForeignKey(Categoria)
     #subcategoria = models.ForeignKey(SubCategoria)
     #etiqueteas = models.ManyToManyField(Etiquetas)
     #precio = valor * tarifa aplicables ... pre-calculated object and check before show it is awesome!
-    def precio(self,cliente_id):
+    def precio_unico(self,cliente_id):
         #tarifa = cliente_id.tarifa.value() 
         #return precio * tarifa  
         pass
@@ -83,7 +86,7 @@ class Cliente(models.Model):
     direccion = models.CharField(max_length=200)
     destino_reparto = models.ManyToManyField(Destinos) # This is many to many, not  only one
     pedidos = models.ManyToManyField(Pedidos,blank=True) # This is many to many, not  only one
-    tarifa = models.ManyToManyField(Tarifas) # a client has many rates to be applied
+    tarifa = models.ManyToManyField(Tarifas) # a client has many rates to be applied, one per provider
     #precomputed favorites
     def __str__(self):
         return "%s" % (self.nombre)
