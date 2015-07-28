@@ -81,12 +81,25 @@ class Pedidos(models.Model):
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=200)
-    NIF = models.CharField(max_length=200)# db_index
+    cif = models.CharField(max_length=200)# db_index
     descripcion = models.CharField(max_length=200)
     direccion = models.CharField(max_length=200)
+    ciudad = models.CharField(max_length=200)
+    telefono = models.CharField(max_length=200)
+    email = models.CharField(max_length=200,blank=True)
+    web = models.CharField(max_length=200,blank=True)
+    iae = models.CharField(max_length=200,blank=True)
     destino_reparto = models.ManyToManyField(Destinos) # This is many to many, not  only one
     pedidos = models.ManyToManyField(Pedidos,blank=True) # This is many to many, not  only one
     tarifa = models.ManyToManyField(Tarifas) # a client has many rates to be applied, one per provider
+    contacto_nombre = models.CharField(max_length=200)
+    contacto_dni = models.CharField(max_length=200,blank=True)
+    contacto_direccion = models.CharField(max_length=200,blank=True)
+    contacto_ciudad = models.CharField(max_length=200,blank=True)
+    contacto_CP = models.ManyToManyField(Destinos,blank=True)
+    contacto_telefono = models.CharField(max_length=200,blank=True)
+    contacto_email = models.CharField(max_length=200,blank=True)    
+
     #precomputed favorites
     def __str__(self):
         return "%s" % (self.nombre)
