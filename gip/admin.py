@@ -7,6 +7,7 @@ from .models import Producto
 from .models import Pedidos
 from .models import Cliente
 from .models import Carrito
+from .models import Categoria
 
 admin.site.register(Tarifas)
 admin.site.register(Destinos)
@@ -15,4 +16,5 @@ admin.site.register(Producto)
 admin.site.register(Pedidos)
 admin.site.register(Cliente)
 admin.site.register(Carrito)
+admin.site.register(Categoria)
 

@@ -3,25 +3,18 @@ import datetime
 from django.db import models
 
 ####
-#class Categoria(models.Model):
-#    codigo = models.IntegerField(default=0)# db_index
-#    nombre = models.CharField(max_length=200)
-#    def __str__(self):
-#        return "%s %s" % (self.nombre, self.codigo)
-#
-#class SubCategoria(models.Model):
-#    codigo = models.IntegerField(default=0)# db_index
-#    nombre = models.CharField(max_length=200)
-#    def __str__(self):
-#        return "%s %s" % (self.nombre, self.codigo)
-#
-#class Etiquetas(models.Model):
-#    codigo = models.IntegerField(default=0)# db_index
-#    nombre = models.CharField(max_length=200)
-#    def __str__(self):
-#        return "%s %s" % (self.nombre, self.codigo)
-#
-####
+#http://stackoverflow.com/questions/9492190/django-categories-sub-categories-and-sub-sub-categories
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=200)
+    short_url = models.SlugField()
+    padre = models.ForeignKey('self', blank = True, null = True, related_name="hijo")
+    def __str__(self):
+        if self.padre:
+          msg = "%s -> %s " %(self.nombre, self.padre)
+        else:
+          msg =  "%s " % (self.nombre)
+        return msg
+
 class Destinos(models.Model):
     codigo = models.IntegerField(default=0)# db_index
     nombre = models.CharField(max_length=200)
@@ -64,21 +57,14 @@ class Producto(models.Model):
     descripcion = models.CharField(max_length=200)
     cantidad_minima = models.IntegerField(default=0)
     formato = models.CharField(max_length=200)
-    caducidad = models.DateTimeField(default = datetime.datetime.now() + datetime.timedelta(days=1) )#by default +24 hours
+    caducidad_precio = models.DateTimeField(default = datetime.datetime.now() + datetime.timedelta(days=1) )#by default +24 hours
     proveedor = models.ForeignKey(Proveedor)
     ###ESTA ES LA SOLUCION #la tarifa es unica, no many, anades un precio, y creas 4 PRODUCTOS
     ###CADA CLIENTE TIENE UNA TARIFA POR PROVEEDOR
-    ###tipos_tarifas = models.ManyToManyField(Tarifas) 
     precio = models.IntegerField(default=0)
     tarifa = models.ForeignKey(Tarifas)
-    #categoria = models.ForeignKey(Categoria)
-    #subcategoria = models.ForeignKey(SubCategoria)
-    #etiqueteas = models.ManyToManyField(Etiquetas)
-    #precio = valor * tarifa aplicables ... pre-calculated object and check before show it is awesome!
-    def precio_unico(self,cliente_id):
-        #tarifa = cliente_id.tarifa.value() 
-        #return precio * tarifa  
-        pass
+    categoria = models.ForeignKey(Categoria)
+    especificaciones = models.CharField(max_length=2000,default="need to add WYSIWYG")
     def ha_caducado(self):
         return self.caducidad <= timezone.now() - datetime.timedelta(days=1)
 
