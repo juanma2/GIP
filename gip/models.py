@@ -2,7 +2,7 @@ import datetime
 
 from django.db import models
 
-####
+
 #http://stackoverflow.com/questions/9492190/django-categories-sub-categories-and-sub-sub-categories
 class Categoria(models.Model):
     nombre = models.CharField(max_length=200)
@@ -51,7 +51,6 @@ class Tarifas(models.Model):
     def __str__(self):
         return "%s - %s" % (self.nombre,self.elproveedor)
 
-
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
     descripcion = models.CharField(max_length=200)
@@ -77,6 +76,10 @@ class Pedidos(models.Model):
     def __str__(self):
         return "%s" % (self.codigo)
 
+class Lista(models.Model):
+    nombre = models.CharField(max_length=200)
+    def __str__(self):
+        return "%s " % (self.nombre)
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=200)
@@ -91,6 +94,7 @@ class Cliente(models.Model):
     destino_reparto = models.ManyToManyField(Destinos) # This is many to many, not  only one
     pedidos = models.ManyToManyField(Pedidos,blank=True) # This is many to many, not  only one
     tarifa = models.ManyToManyField(Tarifas) # a client has many rates to be applied, one per provider
+    listas = models.ManyToManyField(Lista,blank=True) # if is not empty, need to create one, with the user creation TODO 
     contacto_nombre = models.CharField(max_length=200)
     contacto_dni = models.CharField(max_length=200,blank=True)
     contacto_direccion = models.CharField(max_length=200,blank=True)
@@ -98,11 +102,17 @@ class Cliente(models.Model):
     ##NOP contacto_CP = models.ManyToManyField(Destinos,blank=True)
     contacto_telefono = models.CharField(max_length=200,blank=True)
     contacto_email = models.CharField(max_length=200,blank=True)    
-
     #precomputed favorites
     def __str__(self):
         return "%s" % (self.nombre)
 
+class Elemento(models.Model):
+    nombre = models.CharField(max_length=200)
+    cantidad = models.IntegerField(default=0)
+    producto = models.ForeignKey(Producto, blank = True)
+    lista = models.ForeignKey(Lista)
+    def __str__(self):
+        return "%s" % (self.nombre)
 
 class Carrito(models.Model):
     codigo = models.IntegerField(default=0) # db_index
