@@ -16,9 +16,17 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from gip import views
+from gip import views_cliente
+from gip import views_proveedor
+from gip import cliente_urls
+from gip import proveedor_urls
+
 
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name='index'),
+    #url(r'^cliente/', views_cliente.index_cliente, name='index_cliente'),
+    url(r'^cliente/', include(cliente_urls)),
+    url(r'^proveedor/', include(proveedor_urls))
 ]
