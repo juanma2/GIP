@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 #http://stackoverflow.com/questions/9492190/django-categories-sub-categories-and-sub-sub-categories
@@ -22,6 +23,7 @@ class Destinos(models.Model):
         return "%s %s" % (self.nombre, self.codigo)
 
 class Proveedor(models.Model):
+    user = models.OneToOneField(User)
     nombre = models.CharField(max_length=200)
     cif = models.CharField(max_length=200)# db_index
     descripcion = models.CharField(max_length=200)
@@ -65,7 +67,7 @@ class Producto(models.Model):
     categoria = models.ForeignKey(Categoria)
     especificaciones = models.CharField(max_length=2000,default="need to add WYSIWYG")
     def ha_caducado(self):
-        return self.caducidad <= timezone.now() - datetime.timedelta(days=1)
+        return self.caducidad_precio <= timezone.now() - datetime.timedelta(days=1)
 
     def __str__(self):
         return "%s" % (self.nombre)
@@ -82,6 +84,7 @@ class Lista(models.Model):
         return "%s " % (self.nombre)
 
 class Cliente(models.Model):
+    user = models.OneToOneField(User)
     nombre = models.CharField(max_length=200)
     cif = models.CharField(max_length=200)# db_index
     descripcion = models.CharField(max_length=200)
