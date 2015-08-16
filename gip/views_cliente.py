@@ -11,5 +11,5 @@ from gip.utils import is_cliente
 def index_cliente(request):
     my_test_string = 'Vista cliente'
     context = {'my_test_string': my_test_string}
-    return render(request, 'cliente/index.html', context)
+    return render(request, 'cliente/index_cliente.html', context)
 

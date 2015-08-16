@@ -1,0 +1,13 @@
+{% extends "cliente/base_cliente.html" %}
+ 
+{% block content %}
+
+{% load staticfiles %}
+<br>
+CLIENTE <br>
+{{ my_test_string }}
+<br>
+<img src="{% static "gip/images/dog.png" %}" alt="MyImage1">
+
+{% endblock %}
+
