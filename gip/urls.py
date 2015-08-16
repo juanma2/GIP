@@ -20,13 +20,16 @@ from gip import views_cliente
 from gip import views_proveedor
 from gip import cliente_urls
 from gip import proveedor_urls
-
+from django.contrib.auth.views import login, logout
 
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name='index'),
-    #url(r'^cliente/', views_cliente.index_cliente, name='index_cliente'),
     url(r'^cliente/', include(cliente_urls)),
-    url(r'^proveedor/', include(proveedor_urls))
+    url(r'^proveedor/', include(proveedor_urls)),
+    #common urls
+    url(r'^mylogin/$', login),
+    url(r'^mylogout/$', logout),
+#url('^accounts/', include('django.contrib.auth.urls')),
 ]
