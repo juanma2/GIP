@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from gip.models import *
 from gip.utils import is_cliente
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/login/')
 @user_passes_test(is_cliente)
 def index_cliente(request):
     my_test_string = 'Vista cliente'
