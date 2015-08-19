@@ -76,7 +76,7 @@ class Producto(models.Model):
 class Promo(models.Model):
     nombre = models.CharField(max_length=200)
     tarifa = models.ForeignKey(Tarifas)
-    myproducto = models.ForeignKey(Producto, blank = True)
+    producto = models.ForeignKey(Producto, blank = True, null = True)
     #may have counter, or... check remaining or.. something like that
     def __str__(self):
         return "%s" % (self.nombre)
