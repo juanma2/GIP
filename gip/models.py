@@ -72,6 +72,16 @@ class Producto(models.Model):
     def __str__(self):
         return "%s" % (self.nombre)
 
+
+class Promo(models.Model):
+    nombre = models.CharField(max_length=200)
+    tarifa = models.ForeignKey(Tarifas)
+    myproducto = models.ForeignKey(Producto, blank = True)
+    #may have counter, or... check remaining or.. something like that
+    def __str__(self):
+        return "%s" % (self.nombre)
+
+
 class Pedidos(models.Model):
     codigo = models.IntegerField(default=0) # db_index
     producto_serializado = models.CharField(max_length=2000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 

@@ -1,5 +1,5 @@
 ##FROM BASH :  export DJANGO_SETTINGS_MODULE=gip.settings
-##FROM BASH :  cd /home/adminuser/GIP/gip
+##FROM BASH :  cd /home/adminuser/GIP/
 
 import django
 import random
@@ -34,8 +34,10 @@ MAX_TARIFAS = 4
 MAX_PROVEEDORES = 2
 MAX_PRODUCTOS = 7000
 MAX_PRODUCTOS = 1000
+MAX_PRODUCTOS = 100
 MAX_CLIENTES = 2000
 MAX_CLIENTES = 200
+MAX_CLIENTES = 20
 MAX_LISTAS= 5
 MAX_CATEGORIAS = 8
 MAX_ELEMENTOS = 25
@@ -89,17 +91,6 @@ for i in range(1,MAX_LISTAS*MAX_CLIENTES):
   lis = Lista(nombre='lista'+str(i))
   lis.save()
 
-print "Current time " + time.strftime("%X")
-print "Creating Elementos"
-for i in range(1,MAX_LISTAS*MAX_ELEMENTOS*MAX_CLIENTES):
-  #the client_id is uniq, the list is random sample
-  p = random.randint(1,MAX_PRODUCTOS- 1 )
-  l = random.randint(1,MAX_LISTAS*MAX_CLIENTES- 1 )
-  c = random.randint(1,20)
-  ele = Elemento(nombre='elem'+str(i),cantidad= c, producto_id = p, lista_id= l )
-  ele.save()
-
-
 #here comes... 25K products
 #for i in range(1,25000):
 print "Current time " + time.strftime("%X")
@@ -111,6 +102,10 @@ for i in range(1,MAX_PRODUCTOS):
   d.save()
 
 print "Current time " + time.strftime("%X")
+
+
+
+
 
 #and now, the clients, 2K
 #for i in range(1,2001):
@@ -132,3 +127,16 @@ for i in range(1,MAX_CLIENTES):
   cliente.save()
 
 print "Current time " + time.strftime("%X")
+
+
+
+print "Current time " + time.strftime("%X")
+print "Creating Elementos"
+for i in range(1,MAX_LISTAS*MAX_ELEMENTOS*MAX_CLIENTES):
+  #the client_id is uniq, the list is random sample
+  p = random.randint(1,MAX_PRODUCTOS- 1 )
+  l = random.randint(1,MAX_LISTAS*MAX_CLIENTES- 1 )
+  c = random.randint(1,20)
+  ele = Elemento(nombre='elem'+str(i),cantidad= c, producto_id = p, lista_id= l )
+  ele.save()
+

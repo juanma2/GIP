@@ -10,6 +10,7 @@ from .models import Carrito
 from .models import Categoria
 from .models import Lista
 from .models import Elemento
+from .models import Promo
 
 admin.site.register(Tarifas)
 admin.site.register(Destinos)
@@ -21,4 +22,5 @@ admin.site.register(Carrito)
 admin.site.register(Categoria)
 admin.site.register(Lista)
 admin.site.register(Elemento)
+admin.site.register(Promo)
 
