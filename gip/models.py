@@ -78,6 +78,13 @@ class Promo(models.Model):
     tarifa = models.ForeignKey(Tarifas)
     producto = models.ForeignKey(Producto, blank = True, null = True)
     #may have counter, or... check remaining or.. something like that
+    #WARNING, the product in promo can be browsed ? or a "special produtc"? Now, is a normal Produc, forrMVP is enough
+    #disable  field
+    #caducidad field
+    #html_description field
+    #orden Integer
+    #noticia = coll =12 I don't like the idea of mixing news and offers here.
+    #ofertas = coll =4
     def __str__(self):
         return "%s" % (self.nombre)
 
