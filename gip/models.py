@@ -66,6 +66,7 @@ class Producto(models.Model):
     tarifa = models.ForeignKey(Tarifas)
     categoria = models.ForeignKey(Categoria)
     especificaciones = models.CharField(max_length=2000,default="need to add WYSIWYG")
+    #add something like disable.
     def ha_caducado(self):
         return self.caducidad_precio <= timezone.now() - datetime.timedelta(days=1)
 

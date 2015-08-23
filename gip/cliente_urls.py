@@ -21,4 +21,5 @@ from gip import views_proveedor
 ##All this urls are beyond /cliente/ :)
 urlpatterns = [
     url(r'^$', views_cliente.index_cliente, name='index_cliente'),
+    url(r'^productos/$', views_cliente.productos_cliente, name='productos_cliente'),
 ]
