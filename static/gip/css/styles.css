@@ -194,6 +194,7 @@ _:-ms-input-placeholder, :root .demo-graph {
   font-size: 24px;
   font-weight: 400;
 }
+
 .demo-cards ul {
   padding: 0;
 }
@@ -201,11 +202,12 @@ _:-ms-input-placeholder, :root .demo-graph {
   font-size: 1em;
 }
 .demo-updates .mdl-card__title {
-  min-height: 200px;
-  background-image: url('images/dog.png');
+  min-height: 100px;
+  background-image: url('/static/gip/images/dog.png');
   background-position: 90% 100%;
   background-repeat: no-repeat;
 }
+
 .demo-cards .mdl-card__actions a {
   color: #00BCD4;
   text-decoration: none;
@@ -238,4 +240,22 @@ _:-ms-input-placeholder, :root .demo-graph {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+}
+
+
+
+.demo-card-promo.mdl-card {
+
+}
+.demo-card-promo > .mdl-card__title {
+  min-height: 100px;
+  background-image: url('');
+  background: none repeat scroll 0% 0% #B3D4FC;
+  background-position: 90% 100%;
+  background-repeat: no-repeat;
+
+}
+.demo-card-promo > .mdl-card__menu {
+  color: #000000;
+  text-shadow: 2px 2px #888888;
 }

@@ -3,11 +3,43 @@
 {% block content %}
 
 {% load staticfiles %}
+  <div class="demo-cards mdl-card mdl-shadow--2dp mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+  <div class="mdl-grid demo-content">
+
+<!-- TODO: counld be nice replace all this for an endpoint that provides the HTML-->
+{% for promo in promo_list %}
+    <div class="mdl-cell mdl-cell--5-col">
+      <div class="demo-card-promo mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+
+          <h2 class="mdl-card__title-text">
+{{ promo.nombre }}
+          </h2>
+        </div>
+        <div class="mdl-card__supporting-text">
+{{ promo.descripcion }}
+        </div>
+{% if promo.producto_id %}
+        <div class="mdl-card__actions mdl-card--border">
+          <a href="/add_order/{{ promo.producto_id  }}" class="mdl-button mdl-js-button mdl-js-ripple-effect">Añadir al Pedido</a>
+          <a href="/buy_now/{{ promo.producto_id }}" class="mdl-button mdl-js-button mdl-js-ripple-effect">Comprar Ya!</a>
+        </div>
+{% endif %}
+        <!-- IF IMAGE -->
+          <div class="mdl-card__menu">
+              <i class="material-icons">local_offer</i>
+          </div>
+        <!-- ENDIF IMAGE -->
+      </div>
+    </div>
+  <!-- END Element-->
+{% endfor %}
+<!-- end of content block -->
+  </div>
+  </div>
+
 <br>
-CLIENTE <br>
-{{ my_test_string }}
-<br>
-<img src="{% static "gip/images/dog.png" %}" alt="MyImage1">
+<!-- <img src="{% static "gip/images/dog.png" %}" alt="MyImage1">  -->
 
 {% endblock %}
 
