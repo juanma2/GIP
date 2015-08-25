@@ -68,6 +68,7 @@ class Producto(models.Model):
     especificaciones = models.CharField(max_length=2000,default="need to add WYSIWYG")
     #add something like disable.
     def ha_caducado(self):
+        #TODO: check and debug, timezone is not defined!!
         return self.caducidad_precio <= timezone.now() - datetime.timedelta(days=1)
 
     def __str__(self):

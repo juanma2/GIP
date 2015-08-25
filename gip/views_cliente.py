@@ -43,8 +43,9 @@ def productos_cliente(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Productos"
-    #filter using disable
+    #TODO:filter using disable and filtering by tarifa my friend
     all_product_list = Producto.objects.all()
+    #this is the default search
     paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
     page = request.GET.get('page')
     try:
