@@ -43,9 +43,12 @@ def productos_cliente(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Productos"
+    #get all the categories
+    categorias_list = Categoria.objects.all()
+    sub_categorias_list = []
     #TODO:filter using disable and filtering by tarifa my friend
     all_product_list = Producto.objects.all()
-    #this is the default search
+    #this is he default search
     paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
     page = request.GET.get('page')
     try:
@@ -59,7 +62,10 @@ def productos_cliente(request):
     #you need to send a compbo with the current_lists of the user
     context = {'username': username,
                'current_page': current_page,
-               'product_list': product_list}
+               'product_list': product_list,
+               'categorias_list': categorias_list,
+               'sub_categorias_list': sub_categorias_list
+		}
                
     return render(request, 'cliente/productos_cliente.html', context)
 
