@@ -51,6 +51,17 @@ def productos_cliente(request):
     #this is he default search
     paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
     page = request.GET.get('page')
+    search_parameters = request.POST.copy()
+    print search_parameters
+    if search_parameters:
+      #wipe out the csrf:
+      search_parameters.pop('csrfmiddlewaretoken')
+      if 'search' in search_parameters:
+        print "have search"
+      if 'categoria' in search_parameters:
+        print "have cat"
+      if 'subcategoria' in search_parameters:
+        print "have subcaat"
     try:
         product_list = paginator.page(page)
     except PageNotAnInteger:
@@ -64,7 +75,8 @@ def productos_cliente(request):
                'current_page': current_page,
                'product_list': product_list,
                'categorias_list': categorias_list,
-               'sub_categorias_list': sub_categorias_list
+               'sub_categorias_list': sub_categorias_list,
+               'search_parameters': search_parameters
 		}
                
     return render(request, 'cliente/productos_cliente.html', context)
