@@ -1,6 +1,9 @@
 {% extends "cliente/base_cliente.html" %}
 {% load staticfiles %}
- 
+{% block body %}
+  <body onload="fill_search_params()" style="height: 100%">
+{% endblock %}
+
 
 
 {% block filtercategory %}
@@ -13,10 +16,12 @@ function update_categoria(cat_id)
   // TODO: get sub categoria list using an ajax tool :/
   // must send the quer
 }
-function update_subcategoria(cat_id)
+function update_subcategoria(sub_cat_id)
 {
-  current_cat = document.getElementById(cat_id)
-  document.getElementById('categoria').innerHTML = current_cat.innerHTML
+  current_sub_ul = document.getElementById('subcategoria_menu')
+  current_sub_cat = document.getElementById(sub_cat_id)
+  document.getElementById('subcategoria').innerHTML = current_cat.innerHTML
+
 }
 
 function remove_categoria(){
@@ -24,8 +29,77 @@ function remove_categoria(){
 }
 
 function remove_sub_categoria(){
-  current_ul = document.getElementById('subcategoria').innerHTML='Elige una Categoria'
+  current_ul = document.getElementById('subcategoria').innerHTML='Elige una Sub Categoria'
 }
+
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+//Javascript to collect info from form id = search_form
+function submitform()
+{
+  dirty = 0;
+  myform = document.forms["search_form"];
+  myform.page = '{{ product_list.number }}';
+  cat = document.getElementById('categoria').textContent
+  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
+  if (cat.indexOf("Elige una Categoria") < 0 )
+  {
+    addHidden(myform,'categoria', document.getElementById('categoria').textContent)
+    dirty = 1;
+  }
+
+
+  if (document.getElementById('subcategoria'))
+  {
+    subcat = document.getElementById('subcategoria').textContent
+    if (subcat.indexOf("Elige una Sub Categoria") < 0 )
+    {
+      addHidden(myform,'subcategoria', document.getElementById('subcategoria').textContent)
+      dirty = 1;
+    }
+  }
+
+  if (document.getElementById('search').value != "")
+  {
+    if (document.getElementById('search').value.length < 3)
+    {
+      alert('Por favor, introduce al menos 3 caracteres')
+      return;
+    }
+    addHidden(myform,'search', document.getElementById('search').value)
+
+    dirty = 1;
+  }
+  if (dirty == 0 )
+  {
+    alert('Por favor, introduce algun filtro');
+    return;
+  }
+  myform.submit();
+  
+}
+
+function fill_search_params()
+{ 
+      {% for campo, valor in search_parameters.iteritems %}
+        document.getElementById('{{ campo }}').innerHTML = '{{ valor }}';
+        {% if campo == 'search'%}
+
+	  document.getElementById('default_value').innerHTML=""
+          document.getElementById('{{ campo }}').value = '{{ valor }}';
+
+
+        {% endif %}
+      {% endfor %}
+}
+
 </script>
           <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="categoria">
              Elige una Categoria <!-- va a faltar un JS inteligente que actualice esto -->
@@ -37,8 +111,8 @@ function remove_sub_categoria(){
              <li class="mdl-menu__item" onclick="remove_categoria()" id="None">Eliminar Filtro</li>
           </ul>
 {% if sub_categorias_list %}
-          <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="subcategoria_menu">
-             SubCategoria
+          <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="subcategoria">
+             Elige una SubCategoria
           </button>
   {% for subcategoria in sub_categorias_list %}
               <li class="mdl-menu__item" onclick="update_sub_categoria('sub_cat_{{ categoria.id }}')" id="sub_cat_{{ categoria.id }}">{{ categoria.nombre }} </li>
@@ -54,20 +128,20 @@ function remove_sub_categoria(){
           </ul>
 
           <div class="mdl-layout-spacer"></div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-            <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
-              <i class="material-icons">search</i>
-            </label>
-            <div class="mdl-textfield__expandable-holder">
-              <input class="mdl-textfield__input" type="text" id="search" />
-              <label class="mdl-textfield__label" for="search">Introduce tu busqueda...</label>
-            </div>
-          </div>
-        </div>
+<div class="mdl-textfield mdl-js-textfield mdl-textfield">
+<!--   <label class="mdl-button mdl-js-button mdl-button--icon" for="search"> -->
+<!--    <i class="material-icons">search</i>  -->
+<!--   </label>  -->
+  <div class="mdl-textfield">
+    <input class="mdl-textfield__input" type="text" id="search" />
+    <label class="mdl-textfield__label" for="search" id="default_value">Busqueda de Producto</label>
+  </div>
+</div>
    <!-- submit form buttos using javascript -->
-          <a href="" class="mdl-button mdl-js-button mdl-js-ripple-effect">Buscar</a>
-<form action="/cliente/producto/" method="post">
+          <a href="javascript: submitform()" class="mdl-button mdl-js-button mdl-js-ripple-effect">Buscar</a>
+<form id="search_form" action="http://localhost:8080/cliente/productos/" method="post">
    <!-- csrf--> 
+    {% csrf_token %}
    <!-- Keep in mind do a dirty flag for search changes --> 
   <!-- data to collect, categoria, sub_categoria, search field, and page (if the search was updated -->
 </form>
