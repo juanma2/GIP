@@ -137,6 +137,16 @@ function fill_search_params()
     <label class="mdl-textfield__label" for="search" id="default_value">Busqueda de Producto</label>
   </div>
 </div>
+
+<div class="mdl-layout-spacer"></div>
+
+<div class="mdl-textfield mdl-js-textfield mdl-textfield">
+  <div class="mdl-textfield">
+    <input class="mdl-textfield__input" type="text" id="precio_max" />
+    <label class="mdl-textfield__label" for="precio_max" id="precio_max_default">Precio Max y eliminar filtros</label>
+  </div>
+</div>
+
    <!-- submit form buttos using javascript -->
           <a href="javascript: submitform()" class="mdl-button mdl-js-button mdl-js-ripple-effect">Buscar</a>
 <form id="search_form" action="http://localhost:8080/cliente/productos/" method="post">
@@ -196,7 +206,7 @@ function fill_search_params()
         </span>
 
         {% if product_list.has_next %}
-            <a href="?page={{ product_list.next_page_number }}">Sig ></a>
+            <a href="?page={{ product_list.next_page_number }}" onclick="alert('will not till you add the search params in the form the current page to it ')">Sig ></a>
         {% endif %}
     </span>
 </div>

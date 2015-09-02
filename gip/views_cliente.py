@@ -6,6 +6,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from gip.models import *
 from gip.utils import is_cliente
 
+from django.db.models import Q
+
 ELEMENTOS_POR_PAGINA = 8
 
 @login_required(login_url='/mylogin/')
@@ -47,21 +49,34 @@ def productos_cliente(request):
     categorias_list = Categoria.objects.all()
     sub_categorias_list = []
     #TODO:filter using disable and filtering by tarifa my friend
-    all_product_list = Producto.objects.all()
-    #this is he default search
-    paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
-    page = request.GET.get('page')
     search_parameters = request.POST.copy()
     print search_parameters
     if search_parameters:
       #wipe out the csrf:
       search_parameters.pop('csrfmiddlewaretoken')
+      #THE PAGINATION DO NOT WORK
+      full_search = Q()
       if 'search' in search_parameters:
-        print "have search"
+        #Miss split words and do it smart
+        search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search'])# ' %(search_parameters['search'],search_parameters['search'])
+        full_search = full_search & search_string
       if 'categoria' in search_parameters:
-        print "have cat"
+        cat_id = Categoria.objects.get(nombre=search_parameters['categoria']).id
+        search_cat = Q(categoria__id=Categoria.objects.get(nombre=search_parameters['categoria']).id)
+        full_search = full_search & search_cat
       if 'subcategoria' in search_parameters:
-        print "have subcaat"
+        #TODO:is not tested, Will be necessary look for the father first, or check in the models :/
+        subcat_id = Categoria.objects.get(nombre=search_parameters['subcategoria']).id
+        search_subcat = Q(categoria__id=Categoria.objects.get(nombre=search_parameters['categoria']).id)
+        full_search = full_search & search_subcat
+      all_product_list = Producto.objects.filter(full_search)
+      paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
+      page = request.GET.get('page')
+    else:
+      all_product_list = Producto.objects.all()
+      #this is he default search
+      paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
+      page = request.GET.get('page')
     try:
         product_list = paginator.page(page)
     except PageNotAnInteger:
