@@ -72,3 +72,13 @@ PRODUCTO
 - ID_PROVEEDOR
 - ESPECIFICACIONES: Texto WYSIWYG
 
+
+##############PENDING FROM VIEwS:
+cliente/productos/
+Todo:
+- Finish Subcategoria.
+- Pagination over searched items.
+- Add link to "añadir a lista" and "añadir a pedido"
+- Add option "eliminar filtros"
+Improve:
+- Add filter by price (PAINFULL) 
