@@ -22,4 +22,6 @@ from gip import views_proveedor
 urlpatterns = [
     url(r'^$', views_cliente.index_cliente, name='index_cliente'),
     url(r'^productos/$', views_cliente.productos_cliente, name='productos_cliente'),
+    url(r'^listas/$', views_cliente.listas_cliente, name='listas_cliente'),
+    url(r'^listas/add/(?P<lista_id>[0-9]+)$', views_cliente.listas_add_cliente, name='listas_add_cliente'),
 ]
