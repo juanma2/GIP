@@ -74,6 +74,10 @@ PRODUCTO
 
 
 ##############PENDING FROM VIEwS:
+cliente/"index"
+Todo:
+- Add link to "añadir a lista" and "añadir a pedido"
+
 cliente/productos/
 Todo:
 - Finish Subcategoria.
@@ -82,3 +86,5 @@ Todo:
 - Add option "eliminar filtros"
 Improve:
 - Add filter by price (PAINFULL) 
+
+cliente/listas/
