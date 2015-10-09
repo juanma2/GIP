@@ -131,7 +131,7 @@ class Cliente(models.Model):
 class Elemento(models.Model):
     nombre = models.CharField(max_length=200)
     cantidad = models.IntegerField(default=0)
-    producto = models.ForeignKey(Producto, blank = True)
+    producto = models.ForeignKey(Producto, null = True, blank = True )
     lista = models.ForeignKey(Lista)
     def __str__(self):
         return "%s" % (self.nombre)
