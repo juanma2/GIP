@@ -135,6 +135,7 @@ print "Creating Elementos"
 for i in range(1,MAX_LISTAS*MAX_ELEMENTOS*MAX_CLIENTES):
   #the client_id is uniq, the list is random sample
   p = random.randint(1,MAX_PRODUCTOS- 1 )
+  #TODO: p can be empty, 
   l = random.randint(1,MAX_LISTAS*MAX_CLIENTES- 1 )
   c = random.randint(1,20)
   ele = Elemento(nombre='elem'+str(i),cantidad= c, producto_id = p, lista_id= l )
