@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+
 #import only the needed ones
 from gip.models import *
 from gip.utils import is_cliente
@@ -129,11 +132,17 @@ def listas_cliente(request):
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
-def listas_add_cliente(request, lista_id):
-  lis = Lista(nombre='lista'+str(lista_id))
-  lis.save()
+def listas_add_cliente(request,user_id):
   search_parameters = request.POST.copy()
-  print search_parameters
+  my_cli = Cliente.objects.get(id=user_id)
+  lis = Lista(nombre=search_parameters['lista_to_add'])
+  lis.save()
+  my_cli.listas.add(lis.id)
+  print lis.id
+  # Always return an HttpResponseRedirect after successfully dealing
+  # with POST data. This prevents data from being posted twice if a
+  # user hits the Back button.
+  return HttpResponseRedirect(reverse('listas_cliente'))
 
 #    current_user = request.user
 #    username = str(current_user.username)
