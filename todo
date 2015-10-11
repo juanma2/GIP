@@ -84,7 +84,16 @@ Todo:
 - Pagination over searched items.
 - Add link to "añadir a lista" and "añadir a pedido"
 - Add option "eliminar filtros"
+- Add Icon to show view as "detailed" or "list"
+- Add "onclick" to show Product on a different layer
+- Add "añadir producto propio" (should be added to one lista too)
 Improve:
 - Add filter by price (PAINFULL) 
 
 cliente/listas/
+Todo:
+- Add option to modify List name
+- add icom to remove elements from list
+- Check items in table: "numero(orden?), Producto, Stock Optimo(hideable,modificable), Existencias(hideable,modificable), Pedir(modificable), Importe, proveedor eleminar" 
+- Add icoms for "Ver con Stock", and "guardar"
+- Add Ver propuesta de pedido
