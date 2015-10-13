@@ -35,9 +35,11 @@ def index_cliente(request):
            promo_list.append(promo) 
     #get tarifa:
     #Promo.objects.filter(tarifa=1)
-    print promo_list
+    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
+
     context = {'username': username, 
                'current_page': current_page,
+               'user_listas': user_listas,
                'promo_list': promo_list}
     return render(request, 'cliente/index_cliente.html', context)
 
@@ -88,12 +90,14 @@ def productos_cliente(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         product_list = paginator.page(paginator.num_pages)
-    #you need to send a compbo with the current_lists of the user
+    #Get the listas 
+    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
     context = {'username': username,
                'current_page': current_page,
                'product_list': product_list,
                'categorias_list': categorias_list,
                'sub_categorias_list': sub_categorias_list,
+               'user_listas': user_listas,
                'search_parameters': search_parameters
 		}
                
@@ -143,6 +147,19 @@ def listas_add_cliente(request,user_id):
   # with POST data. This prevents data from being posted twice if a
   # user hits the Back button.
   return HttpResponseRedirect(reverse('listas_cliente'))
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def elemento_add_cliente(request, lista_id):
+  pass
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def add_tolist(request):
+  search_parameters = request.POST.copy()
+  print search_parameters
+  return HttpResponseRedirect(reverse('index_cliente'))
+
 
 #    current_user = request.user
 #    username = str(current_user.username)
