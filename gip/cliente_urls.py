@@ -24,6 +24,6 @@ urlpatterns = [
     url(r'^productos/$', views_cliente.productos_cliente, name='productos_cliente'),
     url(r'^listas/$', views_cliente.listas_cliente, name='listas_cliente'),
     url(r'^listas/add/(?P<user_id>[0-9]+)$', views_cliente.listas_add_cliente, name='listas_add_cliente'),
-    url(r'^add_tolist/$', views_cliente.add_tolist, name='add_tolist'),
+    url(r'^add_tolist/(?P<lista_id>[0-9]+)/(?P<producto_id>[0-9]+)$', views_cliente.add_tolist, name='add_tolist'),
     url(r'^elemento/add/(?P<lista_id>[0-9]+)$', views_cliente.elemento_add_cliente, name='elemento_add_cliente'),
 ]

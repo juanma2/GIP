@@ -1,33 +1,35 @@
 {% extends "cliente/base_cliente.html" %}
 {% load staticfiles %}
 {% block body %}
-  <body onload="fill_search_params()" style="height: 100%">
 {% endblock %}
 
 {% block purejavascript %}
 
 $(document).ready(function() {
+var form = $('#send_lista_info');
+
 $('select').on('change', function() {
-  alert( this.value ); // or $(this).val()
-  //this.value is Product_id, Lista_id
-  // now send the ajax request with that values
+   list_id = $(this).val().split(',')[0];
+   product_id = $(this).val().split(',')[1];
+   url = 
+    $.ajax( {
+      type: "POST",
+      url: '/cliente/add_tolist/'+ list_id +'/'+product_id , 
+      dataType: 'json' , 
+      data: form.serialize(),
+      error: function (xhr, status) {
+          alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+      },
+      success: function( response ) {
+        alert(response['msg']);
+        $('select').val('none');
+      }
+      
+    } );
+  });    
+
 });
 
-$("#send_lista_info").submit(function(event){
-            $.ajax({
-                 type:"POST",
-                 url:"/edit_favorites/",
-                 data: {
-                        'video': $('#test').val() // from form
-                        },
-                 success: function(){
-                     $('#message').html("<h2>Contact Form Submitted!</h2>") 
-                 }
-            });
-            return false; //<---- move it here
-       });
-
-});    
 {% endblock %}
 
 
@@ -48,9 +50,9 @@ $("#send_lista_info").submit(function(event){
                 <h6 class="subheader">{{ producto.descripcion }}</h6>
 		<ul class="has-dropdown">
                       <select id="product">  <!--  onchange="submit_producto('{{ producto.producto_id }}');">  -->
-                        <option value="">Añadir a Lista</option>
+                        <option value="none">Añadir a Lista</option>
                 {% for lista in user_listas %}
-                        <option value="{{ producto.id }},{{ lista.id }}">{{ lista.nombre }}</option>
+                        <option value="{{ lista.id }},{{ producto.id }}">{{ lista.nombre }}</option>
                 {% endfor %}
                       </select>
 
@@ -58,7 +60,7 @@ $("#send_lista_info").submit(function(event){
               </div>
             </div>
 {% endfor %}
-<form method='post' id='send_lista_info'>
+<form method='post' id='send_lista_info' action="#">
      <input type="hidden" value="" />
      {% csrf_token %}
 </form>
