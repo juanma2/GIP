@@ -1,0 +1,135 @@
+{% extends "cliente/base_cliente.html" %}
+{% load staticfiles %}
+{% block body %}
+
+{% endblock %}
+
+
+
+{% block filtercategory %}
+<script>
+
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+
+
+function submitform()
+{
+  dirty = 0;
+  myform = document.forms["add_lista_form"];
+  // add your favorite JS validators here
+alert(document.getElementById('nueva_lista').value)
+  addHidden(myform,'lista_to_add', document.getElementById('nueva_lista').value)
+  myform.submit();
+  
+}
+
+function show(id){
+//learn js... 
+current_status = document.getElementById('lista_'+id).style.display;
+
+{% for lista, elementos in full_listas.iteritems %}
+document.getElementById('lista_{{ lista.id }}').style.display='none';
+{% endfor %}
+
+  if (current_status == 'none')
+  {
+    document.getElementById('lista_'+id).style.display='';
+  }else
+  {
+    document.getElementById('lista_'+id).style.display='none';
+  }
+}
+
+</script>
+
+
+
+{% endblock  %}
+
+
+
+{% block content %}
+
+  <div class="demo-cards mdl-card mdl-shadow--2dp mdl-cell mdl-cell--3-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+  <div class="mdl-grid demo-content">
+
+
+<div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--12-col">
+    <!-- TODO: counld be nice replace all this for an endpoint that provides the HTML-->
+    <!-- TODO: do not execute the for twice... but depends a bit on design-->
+    {% for lista, elementos in full_listas.iteritems %}
+     <!-- {{ lista.id }}--> <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onclick="show({{ lista.id }});">
+                            {{ lista.nombre }}
+                            </button>
+    
+    {% endfor %}
+
+
+    <div class="mdl-textfield mdl-js-textfield">
+      <input class="mdl-textfield__input" type="text" id="nueva_lista" />
+      <label class="mdl-textfield__label" for="nueva_lista">Crea lista...</label>
+    </div>
+    <button onclick="javascript: submitform()" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--fab mdl-button--mini-fab ">
+      <i class="material-icons">add</i>
+    </button>
+    <form id="add_lista_form" action="http://localhost:8080/cliente/listas/add/{{ current_user.id }}" method="post">
+       <!-- csrf-->
+        {% csrf_token %}
+    </form>
+
+    </div>
+    </div>
+
+  <div class="mdl-cell mdl-cell--12-col">
+
+
+{% for lista, elementos in full_listas.iteritems %}
+<div id="lista_{{ lista.id }}" style="display:none">
+{{ lista.nombre }}
+<!-- TODO: Maybe is better create a div and hide them... -->
+<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+  <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">elemento</th>
+      <th>nombre </th>
+      <th>Cantidad</th>
+      <th>Precio</th>
+    </tr>
+  </thead>
+
+  <tbody>
+ {% for i in elementos %}
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">
+      <!-- {{ i.id }}--> {{ i.nombre }}
+      </td>
+      <td>{{ i.producto.nombre }}</td>
+      <td>{{ i.cantidad }}</td>
+      <td>{{ i.producto.precio }}</td>
+    </tr>
+
+ {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endfor %}
+</div>
+<!-- end of content block -->
+<br>
+
+  </div>
+  </div>
+
+<br>
+
+{% endblock %}
+
