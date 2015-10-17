@@ -2,25 +2,32 @@
 {% load staticfiles %}
 
 {% block purejavascript %}
-  function addHidden(theForm, key, value) {
-      // Create a hidden input element, and append it to the form:
-      var input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;'name-as-seen-at-the-server';
-      input.value = value;
-      theForm.appendChild(input);
-  }
-  
-  function submit_producto(producto_id) {
-      var selectBox = document.getElementById(producto_id);
-      var lista_id = selectBox.options[selectBox.selectedIndex].value;
-      myform = document.forms["add_producto_lista"];
-      // add your favorite JS validators here
-      addHidden(myform,'producto_id', producto_id)
-      addHidden(myform,'lista_id', lista_id)
-      myform.submit();
 
-  }
+$(document).ready(function() {
+var form = $('#send_lista_info');
+
+$('select').on('change', function() {
+   list_id = $(this).val().split(',')[0];
+   product_id = $(this).val().split(',')[1];
+   url = 
+    $.ajax( {
+      type: "POST",
+      url: '/cliente/add_tolist/'+ list_id +'/'+product_id , 
+      dataType: 'json' , 
+      data: form.serialize(),
+      error: function (xhr, status) {
+          alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+      },
+      success: function( response ) {
+        alert(response['msg']);
+        $('select').val('none');
+      }
+      
+    } );
+  });    
+
+});
+
 {% endblock %}
 
 
@@ -38,9 +45,10 @@
 	{% if promo.producto_id %}
                 <div class="search">
                       <select id="{{ promo.producto_id }}" onchange="submit_producto('{{ promo.producto_id }}');">
-                        <option value="">Añadir a Lista</option>
+                        <option value="none">Añadir a Lista</option>
 	 	{% for lista in user_listas %}
-                        <option value="{{ lista.id }}">{{ lista.nombre }}</option>
+                        <option value="{{ lista.id }},{{ promo.producto_id }}">{{ lista.nombre }}</option>
+
 		{% endfor %}
                       </select>
                 </div>
@@ -48,10 +56,10 @@
               </div>
             </div>
 {% endfor %}
-    <form id="add_producto_lista" action="http://localhost:8080/cliente/add_tolist/" method="post">
-       <!-- csrf-->
-        {% csrf_token %}
-    </form>
+<form method='post' id='send_lista_info' action="#">
+     <input type="hidden" value="" />
+     {% csrf_token %}
+</form>
 
 {% endblock %}
 
