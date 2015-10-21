@@ -57,7 +57,7 @@ ROOT_URLCONF = 'gip.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'plantillas_foundation') , ],
+        'DIRS': [os.path.join(BASE_DIR, 'plantillas_html5') , ],
         #'DIRS': [os.path.join(BASE_DIR, 'plantillas') , ],
         'APP_DIRS': True,
         'OPTIONS': {

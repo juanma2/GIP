@@ -1,0 +1,79 @@
+{% extends "cliente/base_cliente.html" %}
+{% load staticfiles %}
+{% block purejavascript %}
+
+$(document).ready(function() {
+var form = $('#send_lista_info');
+
+$('select').on('change', function() {
+   list_id = $(this).val().split(',')[0];
+   product_id = $(this).val().split(',')[1];
+   url =
+    $.ajax( {
+      type: "POST",
+      url: '/cliente/add_tolist/'+ list_id +'/'+product_id ,
+      dataType: 'json' ,
+      data: form.serialize(),
+      error: function (xhr, status) {
+          alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+      },
+      success: function( response ) {
+        alert(response['msg']);
+        $('select').val('none');
+      }
+
+    } );
+  });
+
+});
+
+{% endblock %}
+
+{% block content %}
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <div class="row">
+{% for promo in promo_list %}
+      <div class="grid_4">
+        <div class="gall_block">
+          <div class="maxheight">
+            <img src="{% static "gip_html5/images/page2_img1.jpg" %}"  alt="">
+            <div class="gall_bot">
+            <div class="text1"><a href="#">{{ promo.nombre }}</a></div>
+                {{ promo.precio }}
+                {{ promo.descripcion }}
+
+        {% if promo.producto_id %}
+                      <select id="{{ promo.producto_id }}" onchange="submit_producto('{{ promo.producto_id }}');">
+                        <option value="none">Añadir a Lista</option>
+                {% for lista in user_listas %}
+                        <option value="{{ lista.id }},{{ promo.producto_id }}">{{ lista.nombre }}</option>
+
+                {% endfor %}
+                      </select>
+        {% endif %}
+
+
+
+            <br>
+            <a href="#" class="btn">more</a></div>
+          </div>
+        </div>
+      </div>
+<!-- if %3  -->
+{% if forloop.counter|divisibleby:3 %}
+<div class="clear sep__1"></div>
+{% endif %}
+{% endfor %}
+    </div>
+  </div>
+</section>
+
+<form method='post' id='send_lista_info' action="#">
+     <input type="hidden" value="" />
+     {% csrf_token %}
+</form>
+
+
+{% endblock %}
+

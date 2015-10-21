@@ -1,0 +1,167 @@
+{% extends "cliente/base_cliente.html" %}
+{% load staticfiles %}
+
+{% block imports %}
+<link rel="stylesheet" href="{% static "gip_html5/css/form.css" %}" >
+<script src="{% static "gip_html5/js/TMForm.js" %}" ></script>
+<script src="{% static "gip_html5/js/modal.js" %}" ></script>
+{% endblock %}
+
+{% block body %}
+{% endblock %}
+
+{% block purejavascript %}
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function submitform()
+{
+  dirty = 0;
+  myform = document.forms["add_lista_form"];
+  // add your favorite JS validators here
+  //TODO: check for duplicated names for instance or only white spaces
+  addHidden(myform,'lista_to_add', document.getElementById('nueva_lista').value)
+  myform.submit();
+  
+}
+function show(id){
+//learn js... 
+current_status = document.getElementById('lista_'+id).style.display;
+
+{% for lista, elementos in full_listas.iteritems %}
+document.getElementById('lista_{{ lista.id }}').style.display='none';
+{% endfor %}
+
+  if (current_status == 'none')
+  {
+    document.getElementById('lista_'+id).style.display='';
+  }else
+  {
+    document.getElementById('lista_'+id).style.display='none';
+  }
+}
+
+{% endblock %}
+
+
+{% block filtercategory %}
+
+{% endblock %}
+{% block content %}
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <!-- Collection of lists -->
+    <div class="row">
+    {% for lista, elementos in full_listas.iteritems %}
+      <a href="#" class="btn" onclick="show({{ lista.id }});"> {{ lista.nombre }}</a>
+
+    {% endfor %}
+    </div>
+    <!-- END Colection of lists -->
+</section>
+
+    <!-- Add a list -->
+<div class="form_block">
+  <div class="container">
+    <div class="row">
+      <div class="grid_11">
+        <h2>Contact Form</h2>
+        <form id="form" >
+        <div class="form_spinner">
+        <img src="images/Preloader_4.gif" alt="">
+        </div>
+        <div class="modal fade response-message">
+        <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Modal title</h4>
+        </div>
+        <div class="modal-body">
+        asfasfasf
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="response-error-message"></div>
+        <label class="name">
+        <input type="text" name="name" placeholder="Name:" value="" data-constraints="@Required @JustLetters" />
+        <span class="empty-message">*This field is required.</span>
+        <span class="error-message">*This is not a valid name.</span>
+        </label>
+        <label class="email">
+        <input type="text" name="email" placeholder="E-mail:" value="" data-constraints="@Required @Email" />
+        <span class="empty-message">*This field is required.</span>
+        <span class="error-message">*This is not a valid email.</span>
+        </label>
+        <label class="phone">
+        <input type="text" name="phone" placeholder="Phone:" value="" data-constraints="@Required @JustNumbers"/>
+        <span class="empty-message">*This field is required.</span>
+        <span class="error-message">*This is not a valid phone.</span>
+        </label>
+        <label class="message">
+        <textarea name="message" placeholder="Message:" data-constraints='@Required @Length(min=20,max=999999)'></textarea>
+        <span class="empty-message">*This field is required.</span>
+        <span class="error-message">*The message is too short.</span>
+        </label>
+        <div class="clear"></div>
+        <div class="btns">
+        <a href="#" data-type="reset" class="btn">clear</a>
+        <a href="#" data-type="submit" class="btn">send</a>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- END Add a list -->
+    <!-- Hidden lists -->
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <div class="row">
+      {% for lista, elementos in full_listas.iteritems %}
+      <div id="lista_{{ lista.id }}" style="display:none">
+      {{ lista.nombre }}
+      <!-- TODO: Maybe is better create a div and hide them... -->
+        <table class="datatable twelve" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+          <thead>
+            <tr>
+              <th class="mdl-data-table__cell--non-numeric">elemento</th>
+              <th>nombre </th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+            </tr>
+          </thead>
+        
+          <tbody>
+         {% for i in elementos %}
+            <tr>
+              <td class="mdl-data-table__cell--non-numeric">
+              <!-- {{ i.id }}--> {{ i.nombre }}
+              </td>
+              <td>{{ i.producto.nombre }}</td>
+              <td><a href="#" id="elem_{{lista.id}}_{{ i.id }}" data-type="text" data-pk="1" data-url="/post">{{ i.cantidad }}<td>
+              <td>{{ i.producto.precio }}</td>
+            </tr>
+        
+         {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+    <!-- END Hidden lists -->
+</section>
+
+
+
+{% endblock %}
+

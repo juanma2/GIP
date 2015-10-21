@@ -1,0 +1,125 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Home</title>
+<meta charset="utf-8">
+<meta name = "format-detection" content = "telephone=no" />
+<link rel="icon" href="{% static "gip_html5/images/favicon.ico" %}" >
+<link rel="shortcut icon" href="{% static "gip_html5/images/favicon.ico" %}"  />
+<link rel="stylesheet" href="{% static "gip_html5/css/stuck.css" %}" >
+<link rel="stylesheet" href="{% static "gip_html5/css/style.css" %}" >
+<link rel="stylesheet" href="{% static "gip_html5/css/touchTouch.css" %}" >
+<script src="{% static "gip_html5/js/jquery.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery-migrate-1.1.1.js" %}" ></script>
+<script src="{% static "gip_html5/js/script.js" %}" ></script> 
+<script src="{% static "gip_html5/js/superfish.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery.equalheights.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery.mobilemenu.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery.easing.1.3.js" %}" ></script>
+<script src="{% static "gip_html5/js/tmStickUp.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery.ui.totop.js" %}" ></script>
+<script src="{% static "gip_html5/js/touchTouch.jquery.js" %}" ></script>
+{% block imports %}
+{% endblock %}
+<script>
+ $(document).ready(function(){
+
+  $().UItoTop({ easingType: 'easeOutQuart' });
+  $('#stuck_container').tmStickUp({});
+  $('.gallery .gall_item').touchTouch();
+
+  }); 
+{% block purejavascript %}
+{% endblock %}
+
+</script>
+<!--[if lt IE 9]>
+ <div style=' clear: both; text-align:center; position: relative;'>
+   <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+     <img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." />
+   </a>
+</div>
+<script src="js/html5shiv.js"></script>
+<link rel="stylesheet" media="screen" href="css/ie.css">
+
+
+<![endif]-->
+</head>
+
+<body class="page1" id="top">
+{% block body %}
+{% endblock %}
+
+<!--==============================
+              header
+=================================-->
+<header>
+<!--==============================
+            Stuck menu
+=================================-->
+  <section id="stuck_container">
+    <div class="container">
+      <div class="row">
+        <div class="grid_12">
+        <h1>
+          <a href="/cliente/">
+                        <img src="{% static "gip_html5/images/logo.png" %}"  alt="Logo alt">
+BRAND NAME -  {{ username  }}
+          </a>
+        </h1>  
+          <div class="navigation">
+            <nav>
+              <ul class="sf-menu">
+               <!-- miss how to add current smartly like;  class="current" -->
+               <li><a href="/cliente/">Inicio</a></li>
+               <li><a href="/cliente/productos/">Productors</a></li>
+               <li><a href="/cliente/listas/">Mis Listas</a></li>
+               <li><a href="/cliente/pedidos/">Mis Pedidos</a></li>
+             </ul>
+            </nav>        
+            <div class="clear"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> 
+</header>        
+
+<!--=====================
+          Content
+======================-->
+<section class="content"><div class="ic">Extra usefull information</div>
+<!-- Filters should be in some place -->
+{% block filtercategory %}
+{% endblock %}
+<!-- END Filters should be in some place -->
+<!-- Productos -->
+{% block content %}
+{% endblock %}
+<!-- END Productos-->
+<!-- PAGINATION -->
+<!-- END PAGINATION -->
+</section>
+<!--==============================
+              footer
+=================================-->
+<footer id="footer">
+  <div class="container">
+    <div class="row">
+      <div class="grid_12">  
+        <div class="socials">
+          <a href="#" class="fa fa-twitter"></a>
+          <a href="#" class="fa fa-facebook"></a>
+          <a href="#" class="fa fa-google-plus"></a>
+          <a href="#" class="fa fa-pinterest"></a>
+        </div>
+        <div class="copyright"><span class="brand">Bliss </span> &copy; <span id="copyright-year"></span> | <a href="#">Privacy Policy</a> <div>Website designed by <a href="http://www.bvcelari.com/" rel="nofollow">Awesome People like bvcelari</a></div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</footer> 
+</body>
+</html>
+
