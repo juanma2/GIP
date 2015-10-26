@@ -145,11 +145,25 @@ def listas_add_cliente(request,user_id):
   lis = Lista(nombre=search_parameters['lista_to_add'])
   lis.save()
   my_cli.listas.add(lis.id)
-  print lis.id
   # Always return an HttpResponseRedirect after successfully dealing
   # with POST data. This prevents data from being posted twice if a
   # user hits the Back button.
   return HttpResponseRedirect(reverse('listas_cliente'))
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def listas_del_cliente(request,user_id):
+  search_parameters = request.POST.copy()
+  my_cli = Cliente.objects.get(id=user_id)
+  lis = Lista(id=search_parameters['lista_to_del'])
+  lis.delete()
+  #my_cli.listas.add(lis.id)
+  # Always return an HttpResponseRedirect after successfully dealing
+  # with POST data. This prevents data from being posted twice if a
+  # user hits the Back button.
+  return HttpResponseRedirect(reverse('listas_cliente'))
+
+
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
