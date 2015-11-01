@@ -4,14 +4,31 @@
 {% block imports %}
 <link rel="stylesheet" href="{% static "gip_html5/css/form.css" %}" >
 <script src="{% static "gip_html5/js/modal.js" %}" ></script>
-<!-- http://code.google.com/p/jquery-inline-editor/ -->
-<script src="{% static "gip_html5/js/jquery.inplacerowedit.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery.jeditable.mini.js" %}" ></script>
+<!-- http://www.appelsiini.net/projects/jeditable -->
 {% endblock %}
+
 
 {% block body %}
 {% endblock %}
 
 {% block purejavascript %}
+ $(document).ready(function(){
+        //add as edit the list_names
+	$('[class^="lista_nombre_"]').editable('/cliente/listas/update/', {
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}"},
+          name : 'lista_to_update',
+           callback : function(value, settings) {
+               document.getElementById('lista_header_'+this.id).text=value;
+           }
+        });
+	$('[class^="elem_"]').editable('/update/lista/');
+        //add all elements
+
+
+  }); 
+
+
 
 dirty = 0;
 function addHidden(theForm, key, value) {
@@ -41,7 +58,6 @@ function submitform()
 
 function delform(id)
 {
-  alert('we are '+id);
   if (dirty == 0){
     myform = document.forms["form_del"];
     addHidden(myform,'lista_to_del', id)
@@ -83,7 +99,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
     <!-- Collection of lists -->
     <div class="row">
     {% for lista, elementos in full_listas.iteritems %}
-      <a href="#" class="btn" onclick="show({{ lista.id }});"> {{ lista.nombre }}</a>
+      <a href="#" id="lista_header_{{lista.id}}" class="btn" onclick="show({{ lista.id }});"> {{ lista.nombre }}</a>
     {% endfor %}
     </div>
     <!-- END Colection of lists -->
@@ -117,17 +133,17 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
         <form id="form_del" action="http://localhost:8080/cliente/listas/del/{{ current_user.id }}" method="post">
 	        {% csrf_token %}
         </form>
-
+        <form id="trickform">
           {% for lista, elementos in full_listas.iteritems %}
           <div id="lista_{{ lista.id }}" style="display:none">
-          <table><tr><td>{{ lista.nombre }}<td><a href="#" onclick="javascript: delform('{{ lista.id }}')" style="font-size:8" class="fa fa-trash-o"></td></tr></table>
+          <table><tr><td><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div><td><a href="#" onclick="javascript: delform('{{ lista.id }}')" style="font-size:8" class="fa fa-trash-o"></td></tr></table>
           <br>
           <!-- TODO: rovide nice center and style for numbers and so on-->
             <table id="table_lista_{{ lista.id }}">
               <thead>
                 <tr>
                   <th>elemento</th>
-                  <th>nombre </th>
+                  <th>nombre</th>
                   <th>Cantidad</th>
                   <th>Precio</th>
                 </tr>
@@ -140,7 +156,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                   <!-- {{ i.id }}--> {{ i.nombre }}
                   </td>
                   <td>{{ i.producto.nombre }}</td>
-                  <td><a href="#" id="elem_{{lista.id}}_{{ i.id }}" data-type="text" data-pk="1" data-url="/post">{{ i.cantidad }}<td>
+                  <td><div class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div><td>
                   <td>{{ i.producto.precio }}</td>
                 </tr>
             
@@ -149,6 +165,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
             </table>
           </div>
           {% endfor %}
+          </form>
       </div>
     </div>
   </div>

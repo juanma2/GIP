@@ -163,6 +163,23 @@ def listas_del_cliente(request,user_id):
   # user hits the Back button.
   return HttpResponseRedirect(reverse('listas_cliente'))
 
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def listas_update_cliente(request):
+  try:
+    search_parameters = request.POST.copy()
+    print search_parameters
+    lis = Lista(id=search_parameters['id'])
+    lis.nombre = search_parameters['lista_to_update']
+    lis.save()
+    # my_cli.listas.add(lis.id)
+    # Always return an HttpResponseRedirect after successfully dealing
+    # with POST data. This prevents data from being posted twice if a
+    # user hits the Back button.
+    return HttpResponse(lis.nombre, content_type="application/json")
+  except:
+    #I think that this will not work as I expected. TODO: Test it.
+    return HttpResponseRedirect(reverse('listas_cliente'))
 
 
 @login_required(login_url='/mylogin/')
