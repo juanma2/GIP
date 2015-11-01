@@ -141,14 +141,20 @@ def listas_cliente(request):
 @user_passes_test(is_cliente)
 def listas_add_cliente(request,user_id):
   search_parameters = request.POST.copy()
+  print search_parameters
   my_cli = Cliente.objects.get(id=user_id)
-  lis = Lista(nombre=search_parameters['lista_to_add'])
+  #TODO: Fix this.do not know why, but hitting "intro" send a different parameter
+  if 'lista_to_add' in search_parameters:
+    lis = Lista(nombre=search_parameters['lista_to_add'])
+  elif 'lista' in search_parameters:
+    lis = Lista(nombre=search_parameters['lista'])
   lis.save()
   my_cli.listas.add(lis.id)
   # Always return an HttpResponseRedirect after successfully dealing
   # with POST data. This prevents data from being posted twice if a
   # user hits the Back button.
   return HttpResponseRedirect(reverse('listas_cliente'))
+
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)

@@ -109,6 +109,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
 <div class="form_block">
   <div class="container">
     <div class="row">
+        <!-- TODO: Fix hitting enter and the incoming shit in this form-->
         <form id="form" action="http://localhost:8080/cliente/listas/add/{{ current_user.id }}" method="post">
         <div class="response-error-message"></div>
         <label class="lista">
@@ -116,7 +117,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
         <span class="empty-message">*Debes añadir un nombre.</span>
         <span class="error-message">*No es un nombre valido.</span>
         </label>
-        <a href="/cliente/listas/" onclick="javascript: submitform()"  class="btn" style="float:left; margin-top: 0px; padding:5px 34px 20px;">Añadir</a>
+        <a href="#" onclick="javascript: submitform()"  class="btn" style="float:left; margin-top: 0px; padding:5px 34px 20px;">Añadir</a>
         </div>
         {% csrf_token %}
 
