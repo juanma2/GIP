@@ -9,7 +9,7 @@ class Categoria(models.Model):
     nombre = models.CharField(max_length=200)
     short_url = models.SlugField()
     padre = models.ForeignKey('self', blank = True, null = True, related_name="hijo")
-    def __str__(self):
+    def __unicode__(self):
         if self.padre:
           msg = "%s -> %s " %(self.nombre, self.padre)
         else:
@@ -19,7 +19,7 @@ class Categoria(models.Model):
 class Destinos(models.Model):
     codigo = models.IntegerField(default=0)# db_index
     nombre = models.CharField(max_length=200)
-    def __str__(self):
+    def __unicode__(self):
         return "%s %s" % (self.nombre, self.codigo)
 
 class Proveedor(models.Model):
@@ -42,7 +42,7 @@ class Proveedor(models.Model):
     contacto_email = models.CharField(max_length=200,blank=True)    
 
 #    tipos_tarifas = models.ManyToManyField(Tarifas) # Maybe create Tarifas per provider... or any other solution
-    def __str__(self):
+    def __unicode__(self):
         return "%s" % (self.nombre)
 
 class Tarifas(models.Model):
@@ -50,11 +50,12 @@ class Tarifas(models.Model):
     descripcion = models.CharField(max_length=200)
     porciento = models.IntegerField(default=0)
     elproveedor = models.ForeignKey(Proveedor)
-    def __str__(self):
+    def __unicode__(self):
         return "%s - %s" % (self.nombre,self.elproveedor)
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
+    product_ref = models.CharField(max_length=200)
     descripcion = models.CharField(max_length=200)
     cantidad_minima = models.IntegerField(default=0)
     formato = models.CharField(max_length=200)
@@ -65,14 +66,15 @@ class Producto(models.Model):
     precio = models.IntegerField(default=0)
     tarifa = models.ForeignKey(Tarifas)
     categoria = models.ForeignKey(Categoria)
+    image_url = models.CharField(max_length=300)
     especificaciones = models.CharField(max_length=2000,default="need to add WYSIWYG")
     #add something like disable.
     def ha_caducado(self):
         #TODO: check and debug, timezone is not defined!!
         return self.caducidad_precio <= timezone.now() - datetime.timedelta(days=1)
 
-    def __str__(self):
-        return "%s" % (self.nombre)
+    def __unicode__(self):
+        return u"%s" % (self.nombre)
 
 
 class Promo(models.Model):
@@ -87,20 +89,20 @@ class Promo(models.Model):
     #orden Integer
     #noticia = coll =12 I don't like the idea of mixing news and offers here.
     #ofertas = coll =4
-    def __str__(self):
-        return "%s" % (self.nombre)
+    def __unicode__(self):
+        return u"%s" % (self.nombre)
 
 
 class Pedidos(models.Model):
     codigo = models.IntegerField(default=0) # db_index
     producto_serializado = models.CharField(max_length=2000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
-    def __str__(self):
-        return "%s" % (self.codigo)
+    def __unicode__(self):
+        return u"%s" % (self.codigo)
 
 class Lista(models.Model):
     nombre = models.CharField(max_length=200)
-    def __str__(self):
-        return "%s " % (self.nombre)
+    def __unicode__(self):
+        return u"%s " % (self.nombre)
 
 class Cliente(models.Model):
     user = models.OneToOneField(User)
@@ -125,16 +127,16 @@ class Cliente(models.Model):
     contacto_telefono = models.CharField(max_length=200,blank=True)
     contacto_email = models.CharField(max_length=200,blank=True)    
     #precomputed favorites
-    def __str__(self):
-        return "%s" % (self.nombre)
+    def __unicode__(self):
+        return u"%s" % (self.nombre)
 
 class Elemento(models.Model):
     nombre = models.CharField(max_length=200)
     cantidad = models.IntegerField(default=0)
     producto = models.ForeignKey(Producto, null = True, blank = True )
     lista = models.ForeignKey(Lista)
-    def __str__(self):
-        return "%s" % (self.nombre)
+    def __unicode__(self):
+        return u"%s" % (self.nombre)
 
 class Carrito(models.Model):
     codigo = models.IntegerField(default=0) # db_index
@@ -142,8 +144,8 @@ class Carrito(models.Model):
     #You must check the caducidad of each prodcut :(
     producto_serializado = models.CharField(max_length=2000) # es el producto en ese momento del tiempo, es unico. 
     #could be interesting apply discounts per ammount
-    def __str__(self):
-        return "%s" % (self.nombre)
+    def __unicode__(self):
+        return u"%s" % (self.nombre)
 
 class PedidosProveedorView(models.Model):
     #this one should have a copy of the order done by the client that should be confirmed, modifed or rejected( with reasons)
