@@ -288,7 +288,8 @@ header {
     display: block;
     position: relative;
     z-index: 800;
-    padding-top: 28px;
+    //padding-top: 28px;
+    padding-top: 0px;
     background-color: #f1f0f1;
 }
 

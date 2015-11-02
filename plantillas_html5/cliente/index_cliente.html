@@ -37,13 +37,15 @@ $('select').on('change', function() {
       <div class="grid_4">
         <div class="gall_block">
           <div class="maxheight">
-            <img src="{% static "gip_html5/images/page2_img1.jpg" %}"  alt="">
+            <img src="{{ promo.producto.image_url }}"  alt="">
             <div class="gall_bot">
             <div class="text1"><a href="#">{{ promo.nombre }}</a></div>
-                {{ promo.precio }}
-                {{ promo.descripcion }}
+                {{ promo.producto.descripcion }}
+            <br>
 
         {% if promo.producto_id %}
+                <h3>Precio: {{ promo.producto.precio }}</h3>
+            <br>
                       <select id="{{ promo.producto_id }}" onchange="submit_producto('{{ promo.producto_id }}');">
                         <option value="none">Añadir a Lista</option>
                 {% for lista in user_listas %}
@@ -55,8 +57,9 @@ $('select').on('change', function() {
 
 
 
-            <br>
-            <a href="#" class="btn">more</a></div>
+            <!-- <br> -->
+            <!-- <a href="#" class="btn">more</a> -->
+            </div>
           </div>
         </div>
       </div>
