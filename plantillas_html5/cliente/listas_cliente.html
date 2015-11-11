@@ -22,7 +22,19 @@
                document.getElementById('lista_header_'+this.id).text=value;
            }
         });
-	$('[class^="elem_"]').editable('/update/lista/');
+	$('[class^="elem_"]').editable('/cliente/elemento/update/',{
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}",
+          },
+          name : 'elem_to_update',
+           callback : function(value, settings) {
+               alert(value('msg'));
+               document.getElementById(this.id)=value['msg']
+               
+           }
+
+
+
+        });
         //add all elements
 
 
@@ -157,7 +169,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                   <!-- {{ i.id }}--> {{ i.nombre }}
                   </td>
                   <td>{{ i.producto.nombre }}</td>
-                  <td><div class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div><td>
+                  <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div><td>
                   <td>{{ i.producto.precio }}</td>
                 </tr>
             

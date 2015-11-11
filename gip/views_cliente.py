@@ -221,3 +221,49 @@ def add_tolist(request,lista_id,producto_id):
   else: 
     return HttpResponseRedirect(reverse('productos_cliente'))
 
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def element_update_list(request):
+  #the session user is;
+  print "want to add an element"
+  #check if exist
+  try:
+    search_parameters = request.POST.copy()
+    #sadly, I can only send the id... that has the format: elem_LISTID_ELEMID
+    print search_parameters
+    lista_id = search_parameters['id'].split('_')[1]
+    elem_id = search_parameters['id'].split('_')[2]
+    print "we are looking for elem  {0}  in list {1}".format(elem_id,lista_id)
+    #we should check that this belongs to the user
+    current_user = request.user
+    ele = Elemento.objects.get(id = elem_id ,lista_id = lista_i.id)
+    # TODO: check if the list belongs to the user
+    # TODO: this, will need to be updated to cantidad_to_update or precio_to_update
+    print ele
+    ele.cantidad = search_parameters['elem_to_update']
+    ele.save()
+    print "we are saves"
+    data = {
+      'msg': search_parameters['elem_to_update'],
+      '0':'OK'
+    }
+    pay_load = json.dumps(data)
+
+
+    # Always return an HttpResponseRedirect after successfully dealing
+    # with POST data. This prevents data from being posted twice if a
+    # user hits the Back button.
+    print "we are done"
+    return HttpResponse(pay_load, content_type="application/json")
+  except:
+    data = {
+      'msg': 'ERR!!!',
+      '1':'ERROR'
+    }
+    pay_load = json.dumps(data)
+    #I think that this will not work as I expected. TODO: Test it.
+    return HttpResponse(pay_load, content_type="application/json")
+    #return HttpResponseRedirect(reverse('listas_cliente'))
+
+
+

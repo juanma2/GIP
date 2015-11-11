@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^listas/update/$', views_cliente.listas_update_cliente, name='listas_update_cliente'),
     url(r'^add_tolist/(?P<lista_id>[0-9]+)/(?P<producto_id>[0-9]+)$', views_cliente.add_tolist, name='add_tolist'),
     url(r'^elemento/add/(?P<lista_id>[0-9]+)$', views_cliente.elemento_add_cliente, name='elemento_add_cliente'),
+    url(r'^elemento/update/$', views_cliente.element_update_list, name='element_update_list'),
 ]

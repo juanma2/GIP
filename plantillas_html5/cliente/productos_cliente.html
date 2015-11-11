@@ -29,6 +29,39 @@ $('select').on('change', function() {
 
 {% endblock %}
 
+{% block filtercategory %}
+
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <div class="row">
+      <div class="grid_4">
+        <form id="bookingForm">
+          <div class="fl1 ">
+          <em>Adults</em>
+          <select name="Adults" class="tmSelect auto" data-class="tmSelect tmSelect2" data-constraints="">
+              <option>1</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+          </select>
+          </div>
+        </form>
+      </div>
+{% for categoria in categorias_list %}
+            'cat_{{ categoria.id }}' {{ categoria.id }} - {{ categoria.nombre }} <br>
+{% endfor %}
+{% if sub_categorias_list %}
+  {% for subcategoria in sub_categorias_list %}
+  {% endfor %}
+{% endif %}
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+
 {% block content %}
 <section class="content gallery pad1"><div class="ic">Add something smart here</div>
   <div class="container">
