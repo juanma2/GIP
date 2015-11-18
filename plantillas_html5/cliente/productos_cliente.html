@@ -2,27 +2,56 @@
 {% load staticfiles %}
 {% block purejavascript %}
 
+//combo_option[combo_option.selectedIndex].id
+
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function remove_categoria(){
+  current_ul = document.getElementById('categoria').innerHTML='Elige una Categoria'
+}
+
+function remove_sub_categoria(){
+  current_ul = document.getElementById('subcategoria').innerHTML='Elige una Sub Categoria'
+}
+
+
+
 $(document).ready(function() {
 var form = $('#send_lista_info');
 
-$('select').on('change', function() {
-   list_id = $(this).val().split(',')[0];
-   product_id = $(this).val().split(',')[1];
-   url =
-    $.ajax( {
-      type: "POST",
-      url: '/cliente/add_tolist/'+ list_id +'/'+product_id ,
-      dataType: 'json' ,
-      data: form.serialize(),
-      error: function (xhr, status) {
-          alert('Necesita refactorizar. Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
-      },
-      success: function( response ) {
-        alert(response['msg']);
-        $('select').val('none');
-      }
+  $('select').on('change', function() {
+   //ugly but id will help to identify category or something like that
+   if ($(this).attr('id') == 'categoria')
+   {
+     alert('fine');
+   } 
+   else
+   {
+     list_id = $(this).val().split(',')[0];
+     product_id = $(this).val().split(',')[1];
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/cliente/add_tolist/'+ list_id +'/'+product_id ,
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Necesita refactorizar. Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          alert(response['msg']);
+          $('select').val('none');
+        }
 
-    } );
+      } );
+    }
   });
 
 });
@@ -35,26 +64,28 @@ $('select').on('change', function() {
   <div class="container">
     <div class="row">
       <div class="grid_4">
-        <form id="bookingForm">
+        <form id="search_form" action="http://localhost:8080/cliente/productos/" method="post">
+   <!-- csrf-->
+    {% csrf_token %}
+
           <div class="fl1 ">
-          <em>Adults</em>
-          <select name="Adults" class="tmSelect auto" data-class="tmSelect tmSelect2" data-constraints="">
-              <option>1</option>
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
+          <em>Categoria</em>
+          
+          <select name="Categoria" id="categoria" class="tmSelect auto" data-class="tmSelect tmSelect2" data-constraints="">
+            <option id='cat_' class=''> Elige una categoria </option>
+	{% for categoria in categorias_list %}
+            <option id='cat_{{ categoria.id }}' class={{ categoria.id }}> {{ categoria.nombre }} </option>
+	{% endfor %}
           </select>
-          </div>
-        </form>
-      </div>
-{% for categoria in categorias_list %}
-            'cat_{{ categoria.id }}' {{ categoria.id }} - {{ categoria.nombre }} <br>
-{% endfor %}
 {% if sub_categorias_list %}
   {% for subcategoria in sub_categorias_list %}
+            <option id='cat_{{ categoria.id }}' class={{ categoria.id }}> {{ categoria.nombre }} </option>
   {% endfor %}
 {% endif %}
 
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </section>
@@ -73,10 +104,10 @@ $('select').on('change', function() {
             <img src="{{ producto.image_url }}"  alt="">
             <div class="gall_bot">
             <div class="text1"><a href="#">{{ producto.nombre }}</a></div>
-                <br>{{ producto.precio }}
                 <br>{{ producto.descripcion }}
+                <h3>Precio: {{ producto.precio }}</h3>
 
-                      <select id="{{ producto.id }}" onchange="submit_producto('{{ producto.id }}');">
+                      <select id="{{ producto.id }}">
                         <option value="none">Añadir a Lista</option>
                 {% for lista in user_listas %}
                         <option value="{{ lista.id }},{{ producto.id }}">{{ lista.nombre }}</option>
