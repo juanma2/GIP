@@ -27,9 +27,14 @@
           },
           name : 'elem_to_update',
            callback : function(value, settings) {
-               alert(value('msg'));
-               document.getElementById(this.id)=value['msg']
-               
+               var parsed_value = JSON.parse(value);
+               if (parsed_value['msg'] == 'ERR!!!') {
+	  	 alert('there was an error Processing your request')
+                 document.getElementById(this.id).textContent=-1;
+               } else {
+                 //here we go!
+                 document.getElementById(this.id).textContent=parsed_value['msg'];
+	       }
            }
 
 

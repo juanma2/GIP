@@ -236,24 +236,19 @@ def element_update_list(request):
     print "we are looking for elem  {0}  in list {1}".format(elem_id,lista_id)
     #we should check that this belongs to the user
     current_user = request.user
-    ele = Elemento.objects.get(id = elem_id ,lista_id = lista_i.id)
+    ele = Elemento.objects.get(id = elem_id ,lista_id = lista_id)
     # TODO: check if the list belongs to the user
     # TODO: this, will need to be updated to cantidad_to_update or precio_to_update
-    print ele
     ele.cantidad = search_parameters['elem_to_update']
     ele.save()
-    print "we are saves"
     data = {
       'msg': search_parameters['elem_to_update'],
       '0':'OK'
     }
     pay_load = json.dumps(data)
-
-
     # Always return an HttpResponseRedirect after successfully dealing
     # with POST data. This prevents data from being posted twice if a
     # user hits the Back button.
-    print "we are done"
     return HttpResponse(pay_load, content_type="application/json")
   except:
     data = {
