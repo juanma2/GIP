@@ -124,7 +124,7 @@ with open('/home/adminuser/GIP/carga_products.json') as data_file:
 for i in data:
   p = Proveedor()
   p.id = random.randint(1,MAX_PROVEEDORES - 1)
-  d = Producto(nombre = data[i][0].encode('utf-8'), descripcion = data[i][5].encode('utf-8'), formato = data[i][4].encode('utf-8'), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor=p,tarifa_id=random.randint(1,MAX_TARIFAS -1 ), categoria_id=random.randint(1,MAX_CATEGORIAS-1 ),image_url= data[i][7].encode('utf-8'), product_ref=data[i][3].encode('utf-8') )
+  d = Producto(nombre = data[i][0].encode('utf-8'), descripcion = data[i][5].encode('utf-8'), formato = data[i][4].encode('utf-8'), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor=p,tarifa_id=random.randint(1,MAX_TARIFAS -1 ), categoria_id=random.randint(1,MAX_CATEGORIAS-1 ),image_url= data[i][7].encode('utf-8'), product_ref=data[i][3].encode('utf-8'), precio = random.randint(1,100) )
   d.save()
 #
 #print "Current time " + time.strftime("%X")
