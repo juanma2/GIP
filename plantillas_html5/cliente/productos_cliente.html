@@ -76,10 +76,10 @@ $('select').on('change', function() {
                 <br>{{ producto.precio }}
                 <br>{{ producto.descripcion }}
 
-                      <select id="{{ promo.producto_id }}" onchange="submit_producto('{{ promo.producto_id }}');">
+                      <select id="{{ producto.id }}" onchange="submit_producto('{{ producto.id }}');">
                         <option value="none">Añadir a Lista</option>
                 {% for lista in user_listas %}
-                        <option value="{{ lista.id }},{{ promo.producto_id }}">{{ lista.nombre }}</option>
+                        <option value="{{ lista.id }},{{ producto.id }}">{{ lista.nombre }}</option>
 
                 {% endfor %}
                       </select>
