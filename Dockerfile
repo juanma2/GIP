@@ -1,3 +1,4 @@
+############################################################
 # Dockerfile to build Python WSGI Application Containers
 # Based on Ubuntu
 ############################################################
@@ -22,8 +23,8 @@ RUN apt-get install -y python python-dev python-distribute python-pip
 
 # Install GIP system requirements
 RUN apt-get install -y libmysqlclient-dev
-
 RUN apt-get install -y libpq-dev python-dev
+RUN apt-get install -y mysql-server
 
 # Clone app
 RUN git clone https://github.com/bvcelari/GIP
@@ -32,12 +33,15 @@ RUN git clone https://github.com/bvcelari/GIP
 RUN pip install -r /GIP/requirements.txt
 
 
-# Expose ports
+# Expose ports, check if many aare fine
 EXPOSE 8000 3306
 
 # Set the default directory where CMD will execute
 WORKDIR /GIP
 
-# There should be a script to create the DB and import carga_db 
-# in /GIP/startup.sh
+# start mysql
+# CMD /etc/init.d/mysql start
+# Set the default command to execute
+# when creating a new container
+# CMD python manage.py runserver 0.0.0.0:8000
 CMD /bin/bash
