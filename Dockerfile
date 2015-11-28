@@ -38,7 +38,4 @@ EXPOSE 8000 5432
 # Set the default directory where CMD will execute
 WORKDIR /GIP
 
-# Set the default command to execute
-# when creating a new container
-# i.e. using CherryPy to serve the application
-CMD python manage.py runserver 0.0.0.0:8000
+# There should be a script to create the DB and import carga_db 
