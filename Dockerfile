@@ -32,10 +32,12 @@ RUN git clone https://github.com/bvcelari/GIP
 RUN pip install -r /GIP/requirements.txt
 
 
-# Expose ports, check if many aare fine
-EXPOSE 8000 5432
+# Expose ports
+EXPOSE 8000 3306
 
 # Set the default directory where CMD will execute
 WORKDIR /GIP
 
 # There should be a script to create the DB and import carga_db 
+# in /GIP/startup.sh
+CMD /bin/bash
