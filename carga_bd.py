@@ -118,7 +118,7 @@ print "Current time " + time.strftime("%X")
 import json
 from pprint import pprint
 
-with open('/home/adminuser/GIP/carga_products.json') as data_file:
+with open('/GIP/carga_products.json') as data_file:
     data = json.load(data_file)
 
 for i in data:
