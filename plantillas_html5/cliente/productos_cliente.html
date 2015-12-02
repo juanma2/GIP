@@ -4,6 +4,55 @@
 
 //combo_option[combo_option.selectedIndex].id
 
+//Javascript to collect info from form id = search_form
+function submitform() {
+  dirty = 0;
+  myform = document.forms["search_form"];
+  myform.page = '{{ product_list.number }}';
+  cat = document.getElementById('categoria').options
+  cat_id = cat[cat.selectedIndex].id
+  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
+  // cat_id == 0 //is the default choose a category
+  
+  if ( cat_id != 0 )
+  {
+    addHidden(myform,'categoria', cat_id)
+    dirty = 1;
+    alert('not here')
+  }
+
+  if (document.getElementById('subcategoria'))
+  {
+    subcat = document.getElementById('subcategoria').options
+    subcat_id = subcat[subcat.selectedIndex].id
+
+    if (subcat_id != 0 )
+    {
+      addHidden(myform,'subcategoria', subcat_id)
+      dirty = 1;
+    }
+  }
+
+  if (document.getElementById('search').value != "")
+  {
+    if (document.getElementById('search').value.length < 3)
+    {
+      alert('Por favor, introduce al menos 3 caracteres')
+      return;
+    }
+    addHidden(myform,'search', document.getElementById('search').value)
+
+    dirty = 1;
+  }
+  if (dirty == 0 )
+  {
+    alert('Por favor, introduce algun filtro');
+    return;
+  }
+  myform.submit();
+  
+}
+
 function addHidden(theForm, key, value) {
     // Create a hidden input element, and append it to the form:
     var input = document.createElement('input');
@@ -13,24 +62,22 @@ function addHidden(theForm, key, value) {
     theForm.appendChild(input);
 }
 
-function remove_categoria(){
-  current_ul = document.getElementById('categoria').innerHTML='Elige una Categoria'
+function populate_form() {
+search_string = '{{ search_parameters.search }}';
+categoria = '{{ search_parameters.categoria }}';
+subcategoria = '{{ search_parameters.subcategoria }}';
 }
-
-function remove_sub_categoria(){
-  current_ul = document.getElementById('subcategoria').innerHTML='Elige una Sub Categoria'
-}
-
-
 
 $(document).ready(function() {
 var form = $('#send_lista_info');
+populate_form();
 
   $('select').on('change', function() {
    //ugly but id will help to identify category or something like that
-   if ($(this).attr('id') == 'categoria')
+   if ($(this).attr('id') == 'categoria' || $(this).attr('id') == 'subcategoria' ) 
    {
-     alert('fine');
+     //nothing to do here, choose a categoria do not mean anything
+     cat_id = $(this).children(":selected").attr("id");
    } 
    else
    {
@@ -43,7 +90,7 @@ var form = $('#send_lista_info');
         dataType: 'json' ,
         data: form.serialize(),
         error: function (xhr, status) {
-            alert('Necesita refactorizar. Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
         },
         success: function( response ) {
           alert(response['msg']);
@@ -63,7 +110,7 @@ var form = $('#send_lista_info');
 <section class="content gallery pad1"><div class="ic">Add something smart here</div>
   <div class="container">
     <div class="row">
-      <div class="grid_4">
+      <div class="grid_8">
         <form id="search_form" action="http://localhost:8080/cliente/productos/" method="post">
    <!-- csrf-->
     {% csrf_token %}
@@ -72,18 +119,31 @@ var form = $('#send_lista_info');
           <em>Categoria</em>
           
           <select name="Categoria" id="categoria" class="tmSelect auto" data-class="tmSelect tmSelect2" data-constraints="">
-            <option id='cat_' class=''> Elige una categoria </option>
+            <option id='0' class=''> Elige una categoria2 </option>
 	{% for categoria in categorias_list %}
             <option id='cat_{{ categoria.id }}' class={{ categoria.id }}> {{ categoria.nombre }} </option>
 	{% endfor %}
           </select>
-{% if sub_categorias_list %}
-  {% for subcategoria in sub_categorias_list %}
-            <option id='cat_{{ categoria.id }}' class={{ categoria.id }}> {{ categoria.nombre }} </option>
-  {% endfor %}
-{% endif %}
-
+        {% if sub_categorias_list %}
+          <select name="SubCategoria" id="subcategoria" class="tmSelect auto" data-class="tmSelect tmSelect2" data-constraints="">
+            <option id='0' class=''> Elige una sub-categoria </option>
+          {% for subcategoria in sub_categorias_list %}
+                    <option id='sub_cat_{{ subcategoria.id }}' class={{ subcategoria.id }}> {{ subcategoria.nombre }} </option>
+          {% endfor %}
+        {% endif %}
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <input class="" id="search" name="search" placeholder="Introduce un producto" data-constraints="" type="text">
           </div>
+          <div class="grid_8">
+            <a class="btn" data-type="submit" href="#" onclick="submitform();return false;">
+            Buscar
+            </a>
+          </div>
+
+        
         </form>
       </div>
     </div>

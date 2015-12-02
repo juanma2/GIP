@@ -69,8 +69,8 @@ def productos_cliente(request):
         search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search'])# ' %(search_parameters['search'],search_parameters['search'])
         full_search = full_search & search_string
       if 'categoria' in search_parameters:
-        cat_id = Categoria.objects.get(nombre=search_parameters['categoria']).id
-        search_cat = Q(categoria__id=Categoria.objects.get(nombre=search_parameters['categoria']).id)
+        cat_id = int(search_parameters['categoria'].split('_'))
+        search_cat = Q(categoria__id=cat_id)
         full_search = full_search & search_cat
       if 'subcategoria' in search_parameters:
         #TODO:is not tested, Will be necessary look for the father first, or check in the models :/
