@@ -141,7 +141,7 @@ populate_form();
     {% csrf_token %}
 
           <div class="fl1 ">
-          <em>Categoria</em>
+          <em style="vertical-align: middle">Categoria</em>
           
           <select name="Categoria" id="categoria" class="tmSelect auto" data-class="tmSelect tmSelect2" data-constraints="">
             <option id='0' class=''> Elige una categoria2 </option>
@@ -161,9 +161,7 @@ populate_form();
             &nbsp;
             &nbsp;
             <input class="" id="search" name="search" placeholder="Introduce un producto" data-constraints="" type="text">
-          </div>
-          <div class="grid_8">
-            <a class="btn" data-type="submit" href="#" onclick="submitform();return false;">
+            <a class="btn" style="vertical-align: bottom" data-type="submit" href="#" onclick="submitform();return false;">
             Buscar
             </a>
           </div>
@@ -191,7 +189,6 @@ populate_form();
             <div class="text1"><a href="#">{{ producto.nombre }}</a></div>
                 <br>{{ producto.descripcion }}
                 <h3>Precio: {{ producto.precio }}</h3>
-
                       <select id="{{ producto.id }}">
                         <option value="none">Añadir a Lista</option>
                 {% for lista in user_listas %}
@@ -199,9 +196,6 @@ populate_form();
 
                 {% endfor %}
                       </select>
-
-
-
             <br>
             <a href="#" class="btn">more</a></div>
           </div>
@@ -216,11 +210,36 @@ populate_form();
   </div>
 </section>
 
+
 <form method='post' id='send_lista_info' action="#">
      <input type="hidden" value="" />
      {% csrf_token %}
 </form>
-
-
 {% endblock %}
+
+{% block pagination %}
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <div class="row">
+      <div class="grid_4">
+
+
+      <div class="pagination">
+              {% if product_list.has_previous %}
+                  <a href="?page={{ product_list.previous_page_number }}" class="btn" style="vertical-align: bottom"> < Ant </a>
+              {% endif %}
+
+                  Pag. {{ product_list.number }} de {{ product_list.paginator.num_pages }}
+
+              {% if product_list.has_next %}
+                  <a href="?page={{ product_list.next_page_number }}" class="btn" style="vertical-align: bottom" > Sig > </a>
+              {% endif %}
+      </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
 
