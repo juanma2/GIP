@@ -18,7 +18,6 @@ function submitform() {
   {
     addHidden(myform,'categoria', cat_id)
     dirty = 1;
-    alert('not here')
   }
 
   if (document.getElementById('subcategoria'))
@@ -65,7 +64,33 @@ function addHidden(theForm, key, value) {
 function populate_form() {
 search_string = '{{ search_parameters.search }}';
 categoria = '{{ search_parameters.categoria }}';
+  if ( categoria != ''){
+    for (i = 0; i< document.getElementById('categoria').length; i++)
+      {
+        if (document.getElementById('categoria').options[i].id == categoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('categoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
 subcategoria = '{{ search_parameters.subcategoria }}';
+  if ( subcategoria != ''){
+    for (i = 0; i< document.getElementById('subcategoria').length; i++)
+      {
+        if (document.getElementById('subcategoria').options[i].id == subcategoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('subcategoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+
+
 }
 
 $(document).ready(function() {
@@ -121,7 +146,7 @@ populate_form();
           <select name="Categoria" id="categoria" class="tmSelect auto" data-class="tmSelect tmSelect2" data-constraints="">
             <option id='0' class=''> Elige una categoria2 </option>
 	{% for categoria in categorias_list %}
-            <option id='cat_{{ categoria.id }}' class={{ categoria.id }}> {{ categoria.nombre }} </option>
+            <option id='cat_{{ categoria.id }}' value="{{categoria.id}}" class={{ categoria.id }}> {{ categoria.nombre }} </option>
 	{% endfor %}
           </select>
         {% if sub_categorias_list %}

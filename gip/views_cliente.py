@@ -69,7 +69,7 @@ def productos_cliente(request):
         search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search'])# ' %(search_parameters['search'],search_parameters['search'])
         full_search = full_search & search_string
       if 'categoria' in search_parameters:
-        cat_id = int(search_parameters['categoria'].split('_'))
+        cat_id = int(search_parameters['categoria'].split('_')[1])
         search_cat = Q(categoria__id=cat_id)
         full_search = full_search & search_cat
       if 'subcategoria' in search_parameters:
