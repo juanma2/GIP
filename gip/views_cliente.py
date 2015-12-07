@@ -14,7 +14,7 @@ from gip.utils import is_cliente
 
 from django.db.models import Q
 
-ELEMENTOS_POR_PAGINA = 8
+ELEMENTOS_POR_PAGINA = 6
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
