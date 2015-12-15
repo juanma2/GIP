@@ -223,6 +223,51 @@ def add_tolist(request,lista_id,producto_id):
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
+def del_fromlist(request,lista_id,elemento_id):
+  current_user = request.user
+  #the session user is;
+  #print "the user"+str(current_user.id)
+  #print "want to del the product"+str(elemento_id)+" of the list "+str(lista_id)
+  #check if exist
+  if request.is_ajax():
+    #check that the element belong to the list
+    if len(Elemento.objects.filter(id = elemento_id,lista_id = lista_id)) == 1:
+     user_listas = Cliente.objects.get(id=current_user.id).listas.all().values_list('id',flat=True)
+     #print user_listas
+     #print lista_id
+     #check that the user own the list
+     if int(lista_id) in user_listas:
+       #print "the user has this list"
+       e = Elemento(id = elemento_id)
+       e.delete()
+       #print e.id
+       data = {
+         'msg':'Producto eliminado!!' ,
+         '0':'reload',
+         'lista_id': lista_id,
+         'elemento_id': elemento_id ,
+       }
+     else:
+       #dammm try catch!!
+       data = {
+         'msg':'el producto ya existe' ,
+         '1':'reset'
+       }
+
+    else:
+      data = {
+        'msg':'el producto ya existe' ,
+        '1':'reset'
+      }
+    pay_load = json.dumps(data)
+    return HttpResponse(pay_load, content_type="application/json")
+  else:
+    return HttpResponseRedirect(reverse('productos_cliente'))
+
+
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
 def element_update_list(request):
   #the session user is;
   print "want to add an element"

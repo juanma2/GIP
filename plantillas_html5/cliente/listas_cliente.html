@@ -86,6 +86,28 @@ function delform(id)
   }
 }
 
+function delelem(lista_id, elemento_id){
+    var form = $('#form_del');
+
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/cliente/del_fromlist/'+ lista_id +'/'+elemento_id ,
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          document.getElementById('row_elem_'+response['lista_id']+'_'+response['elemento_id']).remove()
+          alert(response['msg']);
+          
+        }
+
+      } );
+
+
+}
 
 function show(id){
 //learn js... 
@@ -151,6 +173,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
         <form id="form_del" action="http://localhost:8080/cliente/listas/del/{{ current_user.id }}" method="post">
 	        {% csrf_token %}
         </form>
+
         <form id="trickform">
           {% for lista, elementos in full_listas.iteritems %}
           <div id="lista_{{ lista.id }}" style="display:none">
@@ -169,13 +192,14 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
             
               <tbody>
              {% for i in elementos %}
-                <tr>
+                <tr id=row_elem_{{lista.id}}_{{ i.id }}>
                   <td>
                   <!-- {{ i.id }}--> {{ i.nombre }}
                   </td>
                   <td>{{ i.producto.nombre }}</td>
                   <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div><td>
                   <td>{{ i.producto.precio }}</td>
+                  <td><a href="#" onclick="javascript: delelem('{{ lista.id }}','{{ i.id }}')" style="font-size:8" class="fa fa-trash-o"></td>
                 </tr>
             
              {% endfor %}
