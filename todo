@@ -76,13 +76,13 @@ PRODUCTO
 ##############PENDING FROM VIEwS:
 cliente/"index"
 Todo:
-- Add link to "añadir a lista" and "añadir a pedido"
+- Add link to "añadir a pedido"
+- Decide what to do with offers that do not have product related
 
 cliente/productos/
 Todo:
 - Finish Subcategoria.
-- Pagination over searched items.
-- Add link to "añadir a lista" and "añadir a pedido"
+- Add link to "añadir a pedido"
 - Add option "eliminar filtros"
 - Add Icon to show view as "detailed" or "list"
 - Add "onclick" to show Product on a different layer
@@ -92,8 +92,5 @@ Improve:
 
 cliente/listas/
 Todo:
-- Add option to modify List name
-- add icom to remove elements from list
-- Check items in table: "numero(orden?), Producto, Stock Optimo(hideable,modificable), Existencias(hideable,modificable), Pedir(modificable), Importe, proveedor eleminar" 
-- Add icoms for "Ver con Stock", and "guardar"
+- Add icoms for "Ver con Stock", and "guardar". No need of guardar, products are auto saved on the fly
 - Add Ver propuesta de pedido
