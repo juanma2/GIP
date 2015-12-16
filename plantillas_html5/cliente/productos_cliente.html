@@ -5,7 +5,7 @@
 //combo_option[combo_option.selectedIndex].id
 
 //Javascript to collect info from form id = search_form
-function submitform() {
+function submitform(page=0) {
   dirty = 0;
   myform = document.forms["search_form"];
   myform.page = '{{ product_list.number }}';
@@ -43,11 +43,16 @@ function submitform() {
 
     dirty = 1;
   }
+  if (page != 0 ){
+    addHidden(myform,'page', page)
+    dirty = 1
+  }
   if (dirty == 0 )
   {
     alert('Por favor, introduce algun filtro');
     return;
   }
+  //paginate using the form 
   myform.submit();
   
 }
@@ -63,6 +68,10 @@ function addHidden(theForm, key, value) {
 
 function populate_form() {
 search_string = '{{ search_parameters.search }}';
+  if ( search_string != ''){
+    document.getElementById('search').value = search_string;
+  }
+
 categoria = '{{ search_parameters.categoria }}';
   if ( categoria != ''){
     for (i = 0; i< document.getElementById('categoria').length; i++)
@@ -226,13 +235,13 @@ populate_form();
 
       <div class="pagination">
               {% if product_list.has_previous %}
-                  <a href="?page={{ product_list.previous_page_number }}" class="btn" style="vertical-align: bottom"> < Ant </a>
+                  <a href="#" onclick="submitform({{ product_list.previous_page_number }});return false;" class="btn" style="vertical-align: bottom"> < Ant </a>
               {% endif %}
 
-                  Pag. {{ product_list.number }} de {{ product_list.paginator.num_pages }}
+                 <div current_page="{{ product_list.number }}"> Pag. {{ product_list.number }} de {{ product_list.paginator.num_pages }}
 
               {% if product_list.has_next %}
-                  <a href="?page={{ product_list.next_page_number }}" class="btn" style="vertical-align: bottom" > Sig > </a>
+                  <a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;"  class="btn" style="vertical-align: bottom" > Sig > </a>
               {% endif %}
       </div>
 

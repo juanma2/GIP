@@ -79,12 +79,19 @@ def productos_cliente(request):
         full_search = full_search & search_subcat
       all_product_list = Producto.objects.filter(full_search)
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
-      page = request.GET.get('page')
+      if 'page' in search_parameters:
+        page = search_parameters['page']
+      else:
+        page = 1
     else:
       all_product_list = Producto.objects.all()
       #this is he default search
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
-      page = request.GET.get('page')
+      try:
+        page = request.GET.get('page')
+      except:
+        #not sure
+        page =  1
     try:
         product_list = paginator.page(page)
     except PageNotAnInteger:
