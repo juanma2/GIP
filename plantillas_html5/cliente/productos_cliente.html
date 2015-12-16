@@ -153,7 +153,7 @@ populate_form();
           <em style="vertical-align: middle">Categoria</em>
           
           <select name="Categoria" id="categoria" class="tmSelect auto" data-class="tmSelect tmSelect2" data-constraints="">
-            <option id='0' class=''> Elige una categoria2 </option>
+            <option id='0' class=''> Elige una categoria </option>
 	{% for categoria in categorias_list %}
             <option id='cat_{{ categoria.id }}' value="{{categoria.id}}" class={{ categoria.id }}> {{ categoria.nombre }} </option>
 	{% endfor %}

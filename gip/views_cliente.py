@@ -313,4 +313,13 @@ def element_update_list(request):
     #return HttpResponseRedirect(reverse('listas_cliente'))
 
 
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def pedidos(request):
+    current_user = request.user
+    username = str(current_user.username)
+    current_page = "Listas"
+    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
+    #need to fix Elemento Model first
+    return None
 

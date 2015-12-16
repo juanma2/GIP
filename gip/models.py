@@ -135,6 +135,9 @@ class Elemento(models.Model):
     cantidad = models.IntegerField(default=0)
     producto = models.ForeignKey(Producto, null = True, blank = True )
     lista = models.ForeignKey(Lista)
+    order = models.IntegerField(default=0, null = True, blank = True ) #default order
+    stock_optimo = models.IntegerField(default=0, null = True, blank = True ) 
+    existencias = models.IntegerField(default=0, null = True, blank = True ) 
     def __unicode__(self):
         return u"%s" % (self.nombre)
 
