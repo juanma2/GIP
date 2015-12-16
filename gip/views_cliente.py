@@ -276,27 +276,42 @@ def del_fromlist(request,lista_id,elemento_id):
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
 def element_update_list(request):
-  #the session user is;
-  print "want to add an element"
-  #check if exist
+  print "want to update an element"
   try:
     search_parameters = request.POST.copy()
     #sadly, I can only send the id... that has the format: elem_LISTID_ELEMID
     print search_parameters
     lista_id = search_parameters['id'].split('_')[1]
     elem_id = search_parameters['id'].split('_')[2]
-    print "we are looking for elem  {0}  in list {1}".format(elem_id,lista_id)
+    paramenter_sort = search_parameters['id'].split('_')[0]
+    print "we are looking for elem  {0}  in list {1} and parameter {2} ".format(elem_id,lista_id,paramenter_sort)
     #we should check that this belongs to the user
     current_user = request.user
     ele = Elemento.objects.get(id = elem_id ,lista_id = lista_id)
     # TODO: check if the list belongs to the user
     # TODO: this, will need to be updated to cantidad_to_update or precio_to_update
-    ele.cantidad = search_parameters['elem_to_update']
-    ele.save()
-    data = {
-      'msg': search_parameters['elem_to_update'],
-      '0':'OK'
-    }
+    if search_parameters['id'].split('_')[0] == 'elem':
+      ele.cantidad = search_parameters['elem_to_update']
+      ele.save()
+      data = {
+        'msg': search_parameters['elem_to_update'],
+        '0':'OK'
+      }
+    elif search_parameters['id'].split('_')[0] == 'stoc':
+      ele.stock_optimo = search_parameters['elem_to_update']
+      ele.save()
+      data = {
+        'msg': search_parameters['elem_to_update'],
+        '0':'OK'
+      }
+    elif search_parameters['id'].split('_')[0] == 'exis':
+      ele.existencias = search_parameters['elem_to_update']
+      ele.save()
+      data = {
+        'msg': search_parameters['elem_to_update'],
+        '0':'OK'
+      }
+
     pay_load = json.dumps(data)
     # Always return an HttpResponseRedirect after successfully dealing
     # with POST data. This prevents data from being posted twice if a
