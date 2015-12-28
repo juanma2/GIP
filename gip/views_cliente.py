@@ -197,8 +197,25 @@ def listas_update_cliente(request):
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
-def elemento_add_cliente(request, lista_id):
-  pass
+def lista_add_custom(request):
+  current_user = request.user
+  if request.is_ajax():
+    if True: #conditions ....
+      data = {
+        'msg':'!!' ,
+        '0':'reload'
+      }
+    else:
+      data = {
+        'msg':'el producto ya existe' ,
+        '1':'reset'
+      }
+
+    pay_load = json.dumps(data)
+    return HttpResponse(pay_load, content_type="application/json")
+  else:
+    return HttpResponseRedirect(reverse('lista_add_custom'))
+
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
@@ -272,7 +289,7 @@ def del_fromlist(request,lista_id,elemento_id):
     return HttpResponseRedirect(reverse('productos_cliente'))
 
 
-
+#Todo: Would be nice if this request is ajax and is not properly prroceessed (302, redirect the whole page, no the div))
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
 def element_update_list(request):

@@ -15,6 +15,14 @@
 {% block purejavascript %}
  $(document).ready(function(){
         //add as edit the list_names
+        $('[class^="custom_elem_"]').editable('/cliente/listas/add_custom/', {
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}"},
+          name : 'custom_to_add',
+           callback : function(value, settings) {
+               alert('logicc to add element to the table');
+           }
+        });
+
 	$('[class^="lista_nombre_"]').editable('/cliente/listas/update/', {
           submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}"},
           name : 'lista_to_update',
@@ -125,6 +133,20 @@ function delform(id)
   }
 }
 
+function addcustomform(id)
+{
+    if (dirty == 0){
+    myform = document.forms["form_custom_ele"];
+    addHidden(myform,'elem_to_add', id)
+    myform.submit();
+  }
+  else
+  {
+    alert('Parece que has olvidado guardar algo');
+  }
+}
+
+
 function delelem(lista_id, elemento_id){
     var form = $('#form_del');
 
@@ -212,11 +234,19 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
         <form id="form_del" action="http://localhost:8080/cliente/listas/del/{{ current_user.id }}" method="post">
 	        {% csrf_token %}
         </form>
+        <form id="form_custom_ele" action="http://localhost:8080/cliente/listas/custom/{{ current_user.id }}" method="post">
+                {% csrf_token %}
+        </form>
 
         <form id="trickform">
           {% for lista, elementos in full_listas.iteritems %}
           <div id="lista_{{ lista.id }}" style="display:none">
-          <table><tr><td><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div><td><a href="#" onclick="javascript: delform('{{ lista.id }}')" style="font-size:8" class="fa fa-trash-o"></td></tr></table>
+          <table>
+          <tr>
+            <td><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div><td><a href="#" onclick="javascript: delform('{{ lista.id }}')" style="font-size:8" class="fa fa-trash-o"></td>
+            <td><div class="custom_elem_{{ lista.id }}" id="{{ lista.id }}" >Añade un Elemento</div><td><a href="#" onclick="javascript: addcustomform('{{ lista.id }}')" style="font-size:8" class="fa fa-plus"></td>
+            </td>
+          </tr></table>
           <br>
           <!-- TODO: rovide nice center and style for numbers and so on-->
             <table id="table_lista_{{ lista.id }}">
