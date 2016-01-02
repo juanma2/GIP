@@ -252,7 +252,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
             <table id="table_lista_{{ lista.id }}">
               <thead>
                 <tr>
-                  <th>nombre</th>
+                  <th>Nombre</th>
                   <th>Stock Optimo</th>
                   <th>Existencias</th>
                   <th>Pedir</th>
@@ -263,7 +263,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
               <tbody>
              {% for i in elementos %}
                 <tr id=row_elem_{{lista.id}}_{{ i.id }}>
-                  <td>{{ i.producto.nombre }}</td>
+                  <td>{{ i.nombre }}</td>
                   <td><div id="stoc_{{lista.id}}_{{ i.id }}" class="stoc_{{lista.id}}_{{ i.id }}">{{ i.stock_optimo }}</div><td>
                   <td><div id="exis_{{lista.id}}_{{ i.id }}" class="exis_{{lista.id}}_{{ i.id }}">{{ i.existencias }}</div><td>
                   <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div><td>
