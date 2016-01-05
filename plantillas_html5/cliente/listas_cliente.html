@@ -142,9 +142,12 @@ function submitform()
 function delform(id)
 {
   if (dirty == 0){
-    myform = document.forms["form_del"];
-    addHidden(myform,'lista_to_del', id)
-    myform.submit();
+    if(confirm('Estas seguro que quieres borrar la lista?'))
+    {
+        myform = document.forms["form_del"];
+        addHidden(myform,'lista_to_del', id)
+        myform.submit();
+    }
   }
   else
   {
