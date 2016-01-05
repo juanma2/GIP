@@ -19,7 +19,26 @@
           submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}"},
           name : 'custom_to_add',
            callback : function(value, settings) {
-               alert('logicc to add element to the table');
+               var parsed_value = JSON.parse(value);
+               document.getElementById(this.id).textContent='Añade un Elemento';
+               if (parsed_value['msg'] == '0')
+               {
+                 // Must get the id from the custom added... 
+                 var tableRef = document.getElementById('table_lista_'+this.id.split('_')[2]).getElementsByTagName('tbody')[0];
+
+                 // Insert a row in the table at the last row
+                 var newRow   = tableRef.insertRow(tableRef.rows.length);
+                 
+                 // Insert a cell in the row at index 0
+                 var newCell  = newRow.insertCell(0); // Product_name
+                 
+                 alert('TODO: will be added default 0 to colums')
+                 // Append a text node to the cell
+                 var newText  = document.createTextNode(parsed_value['name'])
+                 newCell.appendChild(newText);
+               } else {
+                 alert('Algo ha ido mal, el elemento no se ha añadido');
+               }
            }
         });
 
@@ -244,7 +263,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
           <table>
           <tr>
             <td><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div><td><a href="#" onclick="javascript: delform('{{ lista.id }}')" style="font-size:8" class="fa fa-trash-o"></td>
-            <td><div class="custom_elem_{{ lista.id }}" id="{{ lista.id }}" >Añade un Elemento</div><td><a href="#" onclick="javascript: addcustomform('{{ lista.id }}')" style="font-size:8" class="fa fa-plus"></td>
+            <td><div class="custom_elem_{{ lista.id }}" id="custom_elem_{{ lista.id }}" >Añade un Elemento</div><td><a href="#" onclick="javascript: addcustomform('{{ lista.id }}')" style="font-size:8" class="fa fa-plus"></td><!--TODO: text should be removed onclick -->
             </td>
           </tr></table>
           <br>

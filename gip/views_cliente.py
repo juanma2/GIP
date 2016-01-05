@@ -166,6 +166,7 @@ def listas_add_cliente(request,user_id):
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
 def listas_del_cliente(request,user_id):
+  #TODO: nothing check that this belong to the cliente
   search_parameters = request.POST.copy()
   my_cli = Cliente.objects.get(id=user_id)
   lis = Lista(id=search_parameters['lista_to_del'])
@@ -180,6 +181,7 @@ def listas_del_cliente(request,user_id):
 @user_passes_test(is_cliente)
 def listas_update_cliente(request):
   try:
+    #TODO: nothing check that this belong to the cliente
     search_parameters = request.POST.copy()
     print search_parameters
     lis = Lista(id=search_parameters['id'])
@@ -199,15 +201,24 @@ def listas_update_cliente(request):
 @user_passes_test(is_cliente)
 def lista_add_custom(request):
   current_user = request.user
+  search_parameters = request.POST.copy()
+  print search_parameters
   if request.is_ajax():
-    if True: #conditions ....
+    user_listas = Cliente.objects.get(id=current_user.id).listas.all().values_list('id',flat=True)
+    list_id = search_parameters['id'].split('_')[2]
+    if int(list_id) in user_listas: #conditions..., we are in the right list
+      #add the element here
+      ele = Elemento(nombre=search_parameters['custom_to_add'],cantidad= 0, lista_id = list_id )
+      ele.save()
+      #TODO: check if the same name of elemento already exist
       data = {
-        'msg':'!!' ,
-        '0':'reload'
+        'msg':'0',
+        '0':'reload',
+        'name':search_parameters['custom_to_add']
       }
     else:
       data = {
-        'msg':'el producto ya existe' ,
+        'msg':'1' ,
         '1':'reset'
       }
 
@@ -228,6 +239,7 @@ def add_tolist(request,lista_id,producto_id):
   if request.is_ajax():
     if len(Elemento.objects.filter(producto_id = producto_id,lista_id = lista_id)) == 0:
       p = Producto.objects.get(id=producto_id)
+      #AQUI!! estoy intentando guardar un elemento nuevo
       e = Elemento(nombre=p.nombre , cantidad= 0, producto_id = p.id, lista_id= lista_id )
       e.save()
       print e.id
