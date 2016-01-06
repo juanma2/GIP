@@ -22,5 +22,7 @@ And... remove passwd for mysql
 $ sed -i "s/        'PASSWORD': 'root',/        'PASSWORD': '',/g" gip/settings.py
 $ mysql -uroot --execute='create database gip;'
 $ python manage.py syncdb
-#execute it twice... till is migrated to django 1.8
+
+execute it twice... till is migrated to django 1.8
+
 $ python manage.py syncdb
