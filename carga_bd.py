@@ -93,15 +93,16 @@ for i in range(1,MAX_LISTAS*MAX_CLIENTES):
 
 #here comes... 25K products
 #for i in range(1,25000):
-print "Current time " + time.strftime("%X")
-print "creating provducts... "
-for i in range(1,MAX_PRODUCTOS):
-  p = Proveedor()
-  p.id = random.randint(1,MAX_PROVEEDORES - 1)
-  d = Producto(nombre='Producto'+str(i), descripcion='Descripcion'+str(i), formato='Formato'+str(i), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor=p,tarifa_id=random.randint(1,MAX_TARIFAS -1 ), categoria_id=random.randint(1,MAX_CATEGORIAS-1 ) )
-  d.save()
-
-print "Current time " + time.strftime("%X")
+###Should not be needed, we are usinng "real" data
+##print "Current time " + time.strftime("%X")
+##print "creating provducts... "
+##for i in range(1,MAX_PRODUCTOS):
+##  p = Proveedor()
+##  p.id = random.randint(1,MAX_PROVEEDORES - 1)
+##  d = Producto(nombre='Producto'+str(i), descripcion='Descripcion'+str(i), formato='Formato'+str(i), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor=p,tarifa_id=random.randint(1,MAX_TARIFAS -1 ), categoria_id=random.randint(1,MAX_CATEGORIAS-1 ) )
+##  d.save()
+##
+##print "Current time " + time.strftime("%X")
 
 
 
@@ -118,7 +119,7 @@ print "Current time " + time.strftime("%X")
 import json
 from pprint import pprint
 
-with open('/GIP/carga_products.json') as data_file:
+with open('./small_data_set.json') as data_file:
     data = json.load(data_file)
 
 for i in data:
