@@ -981,3 +981,41 @@ header h1 a img {
         width: auto;
     }
 }
+
+
+/* ========================= MANUAALLLY ADDED ================== */
+
+.listas table {
+    border-top: 1px solid #d9d9d9;
+    width: 100%;
+    line-height: 40px;
+    position: relative;
+    top: 2px;
+}
+
+.listas table tr {
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.listas table .fa {
+    font-size: 20px;
+    color: #adacac;
+    min-width: 24px;
+    margin-right: 27px;
+    line-height: 40px;
+}
+
+.listas blog table td+td .fa  {
+    margin-right: 5px;
+}
+
+.listas table td:first-child {
+   text-align: left;
+}
+
+.listas table td {
+    text-align: center;
+}
+
+
+

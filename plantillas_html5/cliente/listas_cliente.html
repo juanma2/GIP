@@ -252,7 +252,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
 <section class="content"><div class="ic">Add something smart here</div>
   <div class="container">
     <div class="row">
-        <div class="blog">
+        <div class="listas">
         <form id="form_del" action="http://localhost:8080/cliente/listas/del/{{ current_user.id }}" method="post">
 	        {% csrf_token %}
         </form>
@@ -279,6 +279,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                   <th>Existencias</th>
                   <th>Pedir</th>
                   <th>Precio</th>
+                  <th></th>
                 </tr>
               </thead>
             
@@ -286,9 +287,9 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
              {% for i in elementos %}
                 <tr id=row_elem_{{lista.id}}_{{ i.id }}>
                   <td>{{ i.nombre }}</td>
-                  <td><div id="stoc_{{lista.id}}_{{ i.id }}" class="stoc_{{lista.id}}_{{ i.id }}">{{ i.stock_optimo }}</div><td>
-                  <td><div id="exis_{{lista.id}}_{{ i.id }}" class="exis_{{lista.id}}_{{ i.id }}">{{ i.existencias }}</div><td>
-                  <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div><td>
+                  <td><div id="stoc_{{lista.id}}_{{ i.id }}" class="stoc_{{lista.id}}_{{ i.id }}">{{ i.stock_optimo }}</div></td>
+                  <td><div id="exis_{{lista.id}}_{{ i.id }}" class="exis_{{lista.id}}_{{ i.id }}">{{ i.existencias }}</div></td>
+                  <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
                   <td>{{ i.producto.precio }}</td>
                   <td><a href="#" onclick="javascript: delelem('{{ lista.id }}','{{ i.id }}')" style="font-size:8" class="fa fa-trash-o"></td>
                 </tr>
