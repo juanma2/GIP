@@ -232,7 +232,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
   <div class="container">
     <div class="row">
         <!-- TODO: Fix hitting enter and the incoming shit in this form-->
-        <form id="form" action="http://localhost:8080/cliente/listas/add/{{ current_user.id }}" method="post">
+        <form id="form" action="/cliente/listas/add/{{ current_user.id }}" method="post">
         <div class="response-error-message"></div>
         <label class="lista">
         <input type="text" name="lista" id="nueva_lista" placeholder="Crear lista:" value="" data-constraints="@Required @JustLetters" />
@@ -253,10 +253,10 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
   <div class="container">
     <div class="row">
         <div class="listas">
-        <form id="form_del" action="http://localhost:8080/cliente/listas/del/{{ current_user.id }}" method="post">
+        <form id="form_del" action="/cliente/listas/del/{{ current_user.id }}" method="post">
 	        {% csrf_token %}
         </form>
-        <form id="form_custom_ele" action="http://localhost:8080/cliente/listas/custom/{{ current_user.id }}" method="post">
+        <form id="form_custom_ele" action="/cliente/listas/custom/{{ current_user.id }}" method="post">
                 {% csrf_token %}
         </form>
 
