@@ -92,5 +92,8 @@ Improve:
 
 cliente/listas/
 Todo:
-- Add icoms for "Ver con Stock", and "guardar". No need of guardar, products are auto saved on the fly
-- Add Ver propuesta de pedido
+- Add icoms for "Ver con Stock", and "guardar". No need of guardar, products are auto saved on the fly.
+- Add "Editable" field to custom elementos, so can be renamed on the fly.
+- Add Ver propuesta de pedido.
+- Add "Drag and Drop" for ELementos  order in listas.
+- Check if an Elemento Must have a prodcut relateed or not.
