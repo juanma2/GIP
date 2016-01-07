@@ -214,7 +214,8 @@ def lista_add_custom(request):
       data = {
         'msg':'0',
         '0':'reload',
-        'name':search_parameters['custom_to_add']
+        'name':search_parameters['custom_to_add'],
+        'id': ele.id
       }
     else:
       data = {
@@ -362,8 +363,17 @@ def element_update_list(request):
 def pedidos(request):
     current_user = request.user
     username = str(current_user.username)
-    current_page = "Listas"
+    current_page = "Pedidos"
     user_listas = Cliente.objects.get(id=current_user.id).listas.all()
-    #need to fix Elemento Model first
-    return None
+    #sort by lista.. and add the staff there 
+    for lista_i in user_listas:
+      full_listas[lista_i]= Elemento.objects.filter(lista_id = lista_i.id)
+
+   
+
+    context = {'username': username,
+               'current_page': current_page,
+               'user_listas': user_listas}
+    return render(request, 'cliente/pedidos_cliente.html', context)
+
 

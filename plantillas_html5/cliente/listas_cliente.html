@@ -23,6 +23,8 @@
                document.getElementById(this.id).textContent='Añade un Elemento';
                if (parsed_value['msg'] == '0')
                {
+                 ele_id = parsed_value['id'];
+                 // TODO: full fill the divs ids, when is clear the frontend 
                  // Must get the id from the custom added... 
                  var tableRef = document.getElementById('table_lista_'+this.id.split('_')[2]).getElementsByTagName('tbody')[0];
 
@@ -31,11 +33,19 @@
                  
                  // Insert a cell in the row at index 0
                  var newCell  = newRow.insertCell(0); // Product_name
-                 
-                 alert('TODO: will be added default 0 to colums')
                  // Append a text node to the cell
-                 var newText  = document.createTextNode(parsed_value['name'])
-                 newCell.appendChild(newText);
+                 var nombre = document.createTextNode(parsed_value['name'])
+                 newCell.appendChild(nombre);
+                 var newCell  = newRow.insertCell(1); 
+                 var stockoptimo = document.createTextNode('0')
+                 newCell.appendChild(stockoptimo);
+                 var newCell  = newRow.insertCell(2); 
+                 var existencias = document.createTextNode('0')
+                 newCell.appendChild(existencias);
+                 var newCell  = newRow.insertCell(3); 
+                 var pedir = document.createTextNode('0')
+                 newCell.appendChild(pedir);
+
                } else {
                  alert('Algo ha ido mal, el elemento no se ha añadido');
                }
