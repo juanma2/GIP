@@ -1,0 +1,162 @@
+{% extends "cliente/base_cliente.html" %}
+{% load staticfiles %}
+
+{% block imports %}
+<link rel="stylesheet" href="{% static "gip_html5/css/form.css" %}" >
+<script src="{% static "gip_html5/js/modal.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery.jeditable.mini.js" %}" ></script>
+<!-- http://www.appelsiini.net/projects/jeditable -->
+{% endblock %}
+
+
+{% block body %}
+{% endblock %}
+
+{% block purejavascript %}
+ $(document).ready(function(){
+        //add as edit the list_names
+        //this should be a simple jquery regexp with elem_ stock_ and exis_ but it does not work 
+	$('[class^="elem_"]').editable('/cliente/elemento/update/',{
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}",
+          },
+          name : 'elem_to_update',
+           callback : function(value, settings) {
+               var parsed_value = JSON.parse(value);
+               if (parsed_value['msg'] == 'ERR!!!') {
+	  	 alert('there was an error Processing your request')
+                 document.getElementById(this.id).textContent=-1;
+               } else {
+                 //here we go!
+                 document.getElementById(this.id).textContent=parsed_value['msg'];
+	       }
+           }
+
+
+
+        });
+
+{% for lista, elementos in full_listas.iteritems %}
+calculate_totals('{{ lista.id }}')
+{% endfor %}
+
+
+
+  }); 
+
+
+
+dirty = 0;
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function submitform()
+{
+  if (dirty == 0){
+    myform = document.forms["form"];
+    // add your favorite JS validators here
+    //TODO: check for duplicated names for instance or only white spaces
+    addHidden(myform,'lista_to_add', document.getElementById('nueva_lista').value)
+    myform.submit();
+  }
+  else
+  {
+    alert('Parece que has olvidado guardar los cambios en las listas');
+  }
+  
+}
+
+function calculate_totals(list_id){
+  //learn js... 
+  list_items =  $('[class^=elem_'+list_id+']');
+  total = 0
+  for (i = 0; i < list_items.length; i++) {
+    item_id = list_items[i].id.split('_')[2]
+    precio = document.getElementById('precio_'+list_id+'_'+item_id).textContent
+    if (precio != '' && precio !=  0 ) {
+      cantidad = list_items[i].textContent;
+      precio = document.getElementById('precio_'+list_id+'_'+item_id).textContent
+      total = total + cantidad * precio 
+    }
+  }
+
+  document.getElementById('total_'+list_id).textContent='Total: '+ total
+}
+
+{% endblock %}
+
+
+{% block filtercategory %}
+
+{% endblock %}
+{% block content %}
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <!-- Collection of lists -->
+    <div class="row">
+    </div>
+    <!-- END Colection of lists -->
+  </div>
+</section>
+
+<section class="content"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <div class="row">
+        <div class="listas">
+
+        <form id="trickform">
+          {% for lista, elementos in full_listas.iteritems %}
+          <div id="lista_{{ lista.id }}">
+          <table>
+            <tr>
+              <td><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div></td>
+            </tr>
+          </table>
+          <br>
+          <!-- TODO: rovide nice center and style for numbers and so on-->
+            <table id="table_lista_{{ lista.id }}">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Pedir</th>
+                  <th>Precio</th>
+                </tr>
+              </thead>
+            
+              <tbody>
+             {% for i in elementos %}
+                <tr id=row_elem_{{lista.id}}_{{ i.id }}>
+                  <td>{{ i.nombre }}</td>
+                  <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
+                  <td><div id="precio_{{lista.id}}_{{ i.id }}">{{ i.producto.precio }}<div></td>
+                </tr>
+            
+             {% endfor %}
+                <tr>
+                  <td id="total_{{lista.id}}" colspan=4>TOTAL: </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+    <div class="row">
+      <p><br>
+      <p><br>
+      <!-- TODO: create a proper space between pedidos -->
+    </div>
+          {% endfor %}
+          </form>
+      </div>
+    </div>
+  </div>
+    <!-- END Hidden lists -->
+</section>
+
+
+
+{% endblock %}
+
