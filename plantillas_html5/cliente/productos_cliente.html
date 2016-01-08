@@ -5,7 +5,9 @@
 //combo_option[combo_option.selectedIndex].id
 
 //Javascript to collect info from form id = search_form
-function submitform(page=0) {
+function submitform(page) {
+  page = page || 0;
+
   dirty = 0;
   myform = document.forms["search_form"];
   myform.page = '{{ product_list.number }}';
