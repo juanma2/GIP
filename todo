@@ -73,6 +73,8 @@ PRODUCTO
 - ESPECIFICACIONES: Texto WYSIWYG
 
 
+############## Must be done:
+- Precio is  Float, no an integer (facepalm)
 ##############PENDING FROM VIEwS:
 cliente/"index"
 Todo:
