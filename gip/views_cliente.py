@@ -366,14 +366,20 @@ def pedidos(request):
     current_page = "Pedidos"
     user_listas = Cliente.objects.get(id=current_user.id).listas.all()
     #sort by lista.. and add the staff there 
+    full_listas = {}
+    full_listas_total = {}
     for lista_i in user_listas:
       full_listas[lista_i]= Elemento.objects.filter(lista_id = lista_i.id)
-
-   
-
+    #calculate the totals not here... for reasons
+    #for i in full_listas:
+    #  full_listas_total[i] = 0
+    #  for k in full_listas[i]:
+    #    if k.producto:
+    #      full_listas_total[i] += k.cantidad * k.producto.precio
     context = {'username': username,
                'current_page': current_page,
-               'user_listas': user_listas}
+               'user_listas': user_listas,
+               'full_listas': full_listas}
     return render(request, 'cliente/pedidos_cliente.html', context)
 
 
