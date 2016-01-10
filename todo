@@ -102,10 +102,7 @@ Todo:
 
 cliente/pedidos/
 Todo:
-- Remove Elementos from Lista pedido and add them to lista elementos.
 - Order by product, showing list, like:
 List1, product1, amount...
 List2, product1, amount...
 total per product: 2+amount
-- Add buttons: Imprimir, Hacer Pedido.
-- Create a List for remainig lista elementos
