@@ -99,3 +99,13 @@ Todo:
 - Add Ver propuesta de pedido.
 - Add "Drag and Drop" for ELementos  order in listas.
 - Check if an Elemento Must have a prodcut relateed or not.
+
+cliente/pedidos/
+Todo:
+- Remove Elementos from Lista pedido and add them to lista elementos.
+- Order by product, showing list, like:
+List1, product1, amount...
+List2, product1, amount...
+total per product: 2+amount
+- Add buttons: Imprimir, Hacer Pedido.
+- Create a List for remainig lista elementos
