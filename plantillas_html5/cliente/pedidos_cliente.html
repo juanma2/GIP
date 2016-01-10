@@ -16,29 +16,11 @@
  $(document).ready(function(){
         //add as edit the list_names
         //this should be a simple jquery regexp with elem_ stock_ and exis_ but it does not work 
-	$('[class^="elem_"]').editable('/cliente/elemento/update/',{
-          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}",
-          },
-          name : 'elem_to_update',
-           callback : function(value, settings) {
-               var parsed_value = JSON.parse(value);
-               if (parsed_value['msg'] == 'ERR!!!') {
-	  	 alert('there was an error Processing your request')
-                 document.getElementById(this.id).textContent=-1;
-               } else {
-                 //here we go!
-                 document.getElementById(this.id).textContent=parsed_value['msg'];
-	       }
-           }
-
-
-
-        });
-
 {% for lista, elementos in full_listas.iteritems %}
-calculate_totals('{{ lista.id }}')
+calculate_totals('{{ lista.id }}');
 {% endfor %}
 
+totals();
 
 
   }); 
@@ -85,7 +67,17 @@ function calculate_totals(list_id){
     }
   }
 
-  document.getElementById('total_'+list_id).textContent='Total: '+ total
+  document.getElementById('total_'+list_id).innerHTML ='<div class="totales">Sub Total: '+ total +'</div>'
+  return(total)
+}
+
+function totals(){
+sum = 0
+{% for lista, elementos in full_listas.iteritems %}
+sum = sum + calculate_totals('{{ lista.id }}')
+{% endfor %}
+
+document.getElementById('totales').innerHTML = '<div class="totales">TOTAL: '+ sum + '</div>'
 }
 
 {% endblock %}
@@ -114,7 +106,7 @@ function calculate_totals(list_id){
           <div id="lista_{{ lista.id }}">
           <table>
             <tr>
-              <td><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div></td>
+              <td><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" ><div class="totales">{{ lista.nombre }}</div></div></td>
             </tr>
           </table>
           <br>
@@ -138,7 +130,7 @@ function calculate_totals(list_id){
             
              {% endfor %}
                 <tr>
-                  <td id="total_{{lista.id}}" colspan=4>TOTAL: </td>
+                  <td id="total_{{lista.id}}" style="text-align:right;text:bold;padding:0px 100px" colspan=4><div class="totales">SUBTOTAL: </div></td>
                 </tr>
               </tbody>
             </table>
@@ -149,6 +141,18 @@ function calculate_totals(list_id){
       <!-- TODO: create a proper space between pedidos -->
     </div>
           {% endfor %}
+
+
+            <table id="table_totales">
+              <tbody>
+                <tr>
+                  <td id="totales" style="text-align:right;text:bold;padding:0px 100px" colspan=4>TOTAL: </td>
+                </tr>
+              </tbody>
+            </table>
+
+
+
           </form>
       </div>
     </div>
