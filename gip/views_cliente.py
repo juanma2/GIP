@@ -367,19 +367,22 @@ def pedidos(request):
     user_listas = Cliente.objects.get(id=current_user.id).listas.all()
     #sort by lista.. and add the staff there 
     full_listas = {}
-    full_listas_total = {}
+    lista_compra = {}
+    #Split products and elements.
     for lista_i in user_listas:
-      full_listas[lista_i]= Elemento.objects.filter(lista_id = lista_i.id)
-    #calculate the totals not here... for reasons
+      #TODO: I am sure this can be done better, one query and split in code or... something like that
+      full_listas[lista_i]= Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False)
+      lista_compra[lista_i]= Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = True)
+    #remove elementos from listas, and create an independent one for the view
     #for i in full_listas:
-    #  full_listas_total[i] = 0
     #  for k in full_listas[i]:
     #    if k.producto:
     #      full_listas_total[i] += k.cantidad * k.producto.precio
     context = {'username': username,
                'current_page': current_page,
                'user_listas': user_listas,
-               'full_listas': full_listas}
+               'full_listas': full_listas,
+               'lista_compra': lista_compra}
     return render(request, 'cliente/pedidos_cliente.html', context)
 
 

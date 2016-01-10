@@ -1025,4 +1025,20 @@ header h1 a img {
 
 }
 
+.boton {
+    display: inline-block;
+    border: 1px solid #969696;
+    color: #969696;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding: 5px 32px 11px;
+    font: bold 20px/20px 'Economica', sans-serif;
+}
+
+.boton:hover {
+    color: #fff;
+    border-color: #aaccaa;
+    background-color: #aaccaa;
+}
+
 

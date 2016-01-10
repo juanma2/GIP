@@ -127,7 +127,6 @@ document.getElementById('totales').innerHTML = '<div class="totales">TOTAL: '+ s
                   <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
                   <td><div id="precio_{{lista.id}}_{{ i.id }}">{{ i.producto.precio }}<div></td>
                 </tr>
-            
              {% endfor %}
                 <tr>
                   <td id="total_{{lista.id}}" style="text-align:right;text:bold;padding:0px 100px" colspan=4><div class="totales">SUBTOTAL: </div></td>
@@ -137,7 +136,6 @@ document.getElementById('totales').innerHTML = '<div class="totales">TOTAL: '+ s
           </div>
     <div class="row">
       <p><br>
-      <p><br>
       <!-- TODO: create a proper space between pedidos -->
     </div>
           {% endfor %}
@@ -146,6 +144,8 @@ document.getElementById('totales').innerHTML = '<div class="totales">TOTAL: '+ s
             <table id="table_totales">
               <tbody>
                 <tr>
+                  <td id="order_now"><a href="#" class="boton">Pedir</a></td>
+                  <td id="print"><a href="#" class="boton">Imprimir</a></td>
                   <td id="totales" style="text-align:right;text:bold;padding:0px 100px" colspan=4>TOTAL: </td>
                 </tr>
               </tbody>
@@ -154,6 +154,61 @@ document.getElementById('totales').innerHTML = '<div class="totales">TOTAL: '+ s
 
 
           </form>
+
+<!-- BEGIN THE MERCADO-->
+    <div class="row">
+      <p><br>
+      <hr>
+      <!-- TODO: create a style for this-->
+      <div class="totales"><center>Lista de la compra:</center></div>
+      <hr>
+      <!-- TODO: create a proper space between pedidos -->
+    </div>
+
+          {% for lista, elementos in lista_compra.iteritems %}
+          <div id="compra_lista_{{ lista.id }}">
+          <table>
+            <tr>
+              <td><div class="compra_lista_nombre_{{ lista.id }}" id="{{ lista.id }}" ><div class="totales">{{ lista.nombre }}</div></div></td>
+            </tr>
+          </table>
+          <br>
+          <!-- TODO: rovide nice center and style for numbers and so on-->
+            <table id="compra_table_lista_{{ lista.id }}">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Pedir</th>
+                </tr>
+              </thead>
+
+              <tbody>
+             {% for i in elementos %}
+                <tr id=compra_row_elem_{{lista.id}}_{{ i.id }}>
+                  <td>{{ i.nombre }}</td>
+                  <td><div id="compra_elem_{{lista.id}}_{{ i.id }}" class="compra_elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
+                </tr>
+             {% endfor %}
+              </tbody>
+            </table>
+            </div>
+    <div class="row">
+      <p><br>
+      <p><br>
+      <!-- TODO: create a proper space between pedidos -->
+    </div>
+          {% endfor %}
+
+            <table id="table_totales">
+              <tbody>
+                <tr>
+                  <td id="order_now"><a href="#" class="boton">Pedir</a></td>
+                  <td id="print"><a href="#" class="boton">Imprimir</a></td>
+                </tr>
+              </tbody>
+            </table>
+
+
       </div>
     </div>
   </div>
