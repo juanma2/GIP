@@ -172,7 +172,7 @@ populate_form();
             &nbsp;
             &nbsp;
             <input class="" id="search" name="search" placeholder="Introduce un producto" data-constraints="" type="text">
-            <a class="btn" style="vertical-align: bottom" data-type="submit" href="#" onclick="submitform();return false;">
+            <a class="boton" style="vertical-align: middle" data-type="submit" href="#" onclick="submitform();return false;">
             Buscar
             </a>
           </div>
@@ -236,15 +236,18 @@ populate_form();
 
 
       <div class="pagination">
+      <table>
+      <tr><td>
               {% if product_list.has_previous %}
-                  <a href="#" onclick="submitform({{ product_list.previous_page_number }});return false;" class="btn" style="vertical-align: bottom"> < Ant </a>
+                  <a href="#" onclick="submitform({{ product_list.previous_page_number }});return false;" class="boton" style="vertical-align: top"> < Ant </a>
               {% endif %}
-
-                 <div current_page="{{ product_list.number }}"> Pag. {{ product_list.number }} de {{ product_list.paginator.num_pages }}
-
+     </td><td>
+                 <div  style="padding: 5px 32px 11px;" current_page="{{ product_list.number }}"> Pag. {{ product_list.number }} de {{ product_list.paginator.num_pages }}
+     </td><td>
               {% if product_list.has_next %}
-                  <a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;"  class="btn" style="vertical-align: bottom" > Sig > </a>
+                  <a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;"  class="boton" style="vertical-align: middle" > Sig > </a>
               {% endif %}
+      </td></tr></table>
       </div>
 
       </div>
