@@ -106,3 +106,15 @@ Todo:
 List1, product1, amount...
 List2, product1, amount...
 total per product: 2+amount
+
+cliente/pedidos/:
+Todo:
+make_pedidos, se pone a 0 "pedir"
+
+cliente/historico/:
+Todo:
+Json.... y todo guardaito.
+
+
+Pedido minimo?
+
