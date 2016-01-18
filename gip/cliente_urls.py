@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^listas/add_custom/$', views_cliente.lista_add_custom, name='lista_add_custom'),
     url(r'^elemento/update/$', views_cliente.element_update_list, name='element_update_list'),
     url(r'^pedidos/$', views_cliente.pedidos , name='pedidos'),
+    url(r'^make/pedido/$', views_cliente.make_pedido , name='make_pedido'),
 ]

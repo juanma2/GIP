@@ -1,4 +1,5 @@
 import json
+from collections import Counter
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -11,6 +12,7 @@ from django.core.urlresolvers import reverse
 #import only the needed ones
 from gip.models import *
 from gip.utils import is_cliente
+from gip.helper_pedidos import send_order
 
 from django.db.models import Q
 
@@ -384,5 +386,46 @@ def pedidos(request):
                'full_listas': full_listas,
                'lista_compra': lista_compra}
     return render(request, 'cliente/pedidos_cliente.html', context)
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def make_pedido(request):
+    print "we are in Make Pedidos"
+    current_user = request.user
+    cliente = Cliente.objects.get(user = current_user.id)
+    username = str(current_user.username)
+    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
+    cliente = Cliente.objects.filter(user = current_user.id)
+    pedido = {}
+    cliente = cliente.values()[0]
+    orden = {}
+    for lista_i in user_listas:
+      current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False)
+      for ele in current_list:
+        if ele.producto.product_ref in orden:
+          orden[ele.producto.product_ref] += ele.cantidad
+        else:
+          orden[ele.producto.product_ref] = ele.cantidad
+        ##yes.. I am accessing by ID to a dict...
+        ##create Pedido like 
+        ## pedido[0] will have the information related with the user
+        ## pedido[0] = {'user_name':'CLIENTE1','date':'pick a standard','tarifa':'proveedor1'}....
+        ## pedido[1] will have amounts and prices (should be enough, because the price belongs to the ref, no to any other thing
+        ## pedido[1] = {'product_ref':'cantidad','CAJUL':'25','MNB':'34'} ....
+        ## pedido[2] If more information is requested could do like:
+        ## pedido[2] = {'product_ref':'whatever you need here, like comments','CAJUL':'comment',
+    pedido['cliente'] = cliente
+    pedido['orden'] = orden
+    print "Add logic to send order here"
+    send_order(pedido)
+    print "TODO: Add user history"
+    print "now, clean the remaining cantidades..."
+    for lista_i in user_listas:
+      current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
+    context = {'username': username,
+               'user_listas': user_listas}
+    return render(request, 'cliente/pedidos_cliente.html', context)
+
+
 
 
