@@ -418,7 +418,7 @@ def make_pedido(request):
     pedido['orden'] = orden
     print "Add logic to send order here"
     send_order(pedido)
-    print "TODO: Add user history"
+    print "Update to pending to send or something like that"
     print "now, clean the remaining cantidades..."
     for lista_i in user_listas:
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
