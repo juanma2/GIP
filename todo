@@ -75,6 +75,7 @@ PRODUCTO
 
 ############## Must be done:
 - Precio is  Float, no an integer (facepalm)
+- Usuario, must define how to transfer the Pedido, or must be the provider?
 ##############PENDING FROM VIEwS:
 cliente/"index"
 Todo:
@@ -110,6 +111,15 @@ total per product: 2+amount
 cliente/pedidos/:
 Todo:
 make_pedidos, se pone a 0 "pedir"
+##create Pedido like 
+## pedido[0] will have the information related with the user
+## pedido[0] = {'user_name':'CLIENTE1','date':'pick a standard','tarifa':'proveedor1'}....
+## pedido[1] will have amounts and prices (should be enough, because the price belongs to the ref, no to any other thing
+## pedido[1] = {'product_ref':'cantidad','CAJUL':'25','MNB':'34'} ....
+## pedido[2] If more information is requested could do like:
+## pedido[2] = {'product_ref':'whatever you need here, like comments','CAJUL':'comment',
+
+
 
 cliente/historico/:
 Todo:
