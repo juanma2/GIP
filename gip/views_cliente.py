@@ -429,3 +429,15 @@ def make_pedido(request):
 
 
 
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def historico(request):
+    current_user = request.user
+    username = str(current_user.username)
+    current_page = "Historico"
+    #sort by lista.. and add the staff there 
+    context = {'username': username,
+               'current_page': current_page,
+               }
+    return render(request, 'cliente/historico_pedidos.html', context)
+
