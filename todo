@@ -74,8 +74,7 @@ PRODUCTO
 
 
 ############## Must be done:
-- Precio is  Float, no an integer (facepalm)
-- Usuario, must define how to transfer the Pedido, or must be the provider?
+- how to transfer Pedido must be define by provider?
 ##############PENDING FROM VIEwS:
 cliente/"index"
 Todo:
