@@ -63,7 +63,7 @@ class Producto(models.Model):
     proveedor = models.ForeignKey(Proveedor)
     ###ESTA ES LA SOLUCION #la tarifa es unica, no many, anades un precio, y creas 4 PRODUCTOS
     ###CADA CLIENTE TIENE UNA TARIFA POR PROVEEDOR
-    precio = models.IntegerField(default=0)
+    precio = models.DecimalField(max_digits=6, decimal_places=2)
     tarifa = models.ForeignKey(Tarifas)
     categoria = models.ForeignKey(Categoria)
     image_url = models.CharField(max_length=300)
@@ -95,7 +95,18 @@ class Promo(models.Model):
 
 class Pedidos(models.Model):
     codigo = models.IntegerField(default=0) # db_index
-    producto_serializado = models.CharField(max_length=2000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
+    producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
+    total = models.DecimalField(max_digits=6, decimal_places=4)
+    PEDIDOS_ESTADOS = (
+        ('400', 'Pendiente Proveedor'),
+        ('500', 'Pendiente Cliente'),
+        ('600', 'Aceptado'),
+        ('700', 'Rechazado'),
+        ('800', 'Cancelado'),
+        ('900', 'Enviado'),
+        ('1000', 'Finalizado'),
+    )
+    estados = models.CharField(max_length=1, choices=PEDIDOS_ESTADOS)
     def __unicode__(self):
         return u"%s" % (self.codigo)
 
