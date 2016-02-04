@@ -7,6 +7,7 @@ import datetime
 import time
 django.setup()
 
+
 import rlcompleter, readline
 readline.parse_and_bind('tab:complete')
 from django.db import models
@@ -35,6 +36,7 @@ MAX_PROVEEDORES = 2
 MAX_PRODUCTOS = 7000
 MAX_PRODUCTOS = 1000
 MAX_PRODUCTOS = 100
+MAX_PRODUCTOS = 10 #just for the demo
 MAX_CLIENTES = 2000
 MAX_CLIENTES = 200
 MAX_CLIENTES = 20
