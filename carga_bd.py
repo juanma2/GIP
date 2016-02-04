@@ -165,6 +165,13 @@ for i in range(1,MAX_LISTAS*MAX_ELEMENTOS*MAX_CLIENTES):
   #TODO: p can be empty, 
   l = random.randint(1,MAX_LISTAS*MAX_CLIENTES- 1 )
   c = random.randint(1,20)
-  ele = Elemento(nombre='elem'+str(i),cantidad= c, producto_id = p, lista_id= l )
+  ele = Elemento(nombre='elem'+str(i),cantidad= c, lista_id= l )
   ele.save()
+  #we saved a custom element
+  p = Producto.objects.get(id= p )
+  e = Elemento(nombre=p.nombre , cantidad= c, producto_id = p.id, lista_id= l )
+  e.save()
+  #we saved a product in a list
+
+print "Current time " + time.strftime("%X")
 
