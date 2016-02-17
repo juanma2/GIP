@@ -32,5 +32,5 @@ urlpatterns = [
     url(r'^elemento/update/$', views_cliente.element_update_list, name='element_update_list'),
     url(r'^pedidos/$', views_cliente.pedidos , name='pedidos'),
     url(r'^make/pedido/$', views_cliente.make_pedido , name='make_pedido'),
-    url(r'^historico/$', views_cliente.historico, name='make_pedido'),
+    url(r'^historico/$', views_cliente.historico, name='historico'),
 ]

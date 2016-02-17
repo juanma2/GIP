@@ -1042,3 +1042,19 @@ header h1 a img {
 }
 
 
+.pedido table {
+    width: 100%;
+    line-height: 40px;
+    position: relative;
+    top: 2px;
+}
+
+.pedido table tr {
+ 
+}
+
+.pedido table td {
+    border: 1px solid #d9d9d9;
+    text-align: center;
+}
+

@@ -399,10 +399,12 @@ def make_pedido(request):
     pedido = {}
     cliente = cliente.values()[0]
     orden = {}
+    descripcion = {}
     precio = {}
     for lista_i in user_listas:
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False)
       for ele in current_list:
+        descripcion[ele.producto.product_ref] = ele.producto.nombre
         precio[ele.producto.product_ref] = float(ele.producto.precio)
         if ele.producto.product_ref in orden:
           orden[ele.producto.product_ref] += ele.cantidad
@@ -420,6 +422,7 @@ def make_pedido(request):
     pedido['orden'] = orden
     #we can send the price of the elements right now... not sure if is right
     pedido['precio'] = precio
+    pedido['descripcion'] = descripcion
     print "Add logic to send order here"
     send_order(pedido)
     print "Update to pending to send or something like that"

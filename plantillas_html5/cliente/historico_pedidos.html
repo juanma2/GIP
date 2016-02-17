@@ -1,0 +1,81 @@
+{% extends "cliente/base_cliente.html" %}
+{% load staticfiles %}
+
+{% block imports %}
+<link rel="stylesheet" href="{% static "gip_html5/css/form.css" %}" >
+<script src="{% static "gip_html5/js/modal.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery.jeditable.mini.js" %}" ></script>
+<!-- http://www.appelsiini.net/projects/jeditable -->
+{% endblock %}
+
+
+{% block body %}
+{% endblock %}
+
+{% block purejavascript %}
+function showhide(layer_id){
+//learn js...
+current_status = document.getElementById(layer_id).style.display;
+
+{% for pedido in pedidos%}
+document.getElementById('pedido_content_{{pedido.codigo}}').style.display='none';
+{% endfor %}
+
+  if (current_status == 'none')
+  {
+    document.getElementById(layer_id).style.display='';
+  }else
+  {
+    document.getElementById(layer_id).style.display='none';
+  }
+}
+
+{% endblock %}
+
+
+{% block filtercategory %}
+
+{% endblock %}
+{% block content %}
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <!-- Collection of lists -->
+    <div class="row">
+    </div>
+    <!-- END Colection of lists -->
+  </div>
+</section>
+
+<section class="content"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <div class="row">
+        {% for pedido in pedidos%}
+        <div class="pedido">
+          <table>
+            <tr>
+              <td>
+         pedido: {{ pedido.codigo }} 
+              </td><td>
+         total: {{ pedido.total }}
+              </td><td>
+         estado: {{ pedido.get_estados_display }}
+              </td><td>
+           <a href="#" onclick="javascript: showhide('pedido_content_{{pedido.codigo}}')" style="font-size:6" class="fa fa-plus"></a>
+              </td>
+           </tr>
+           <tr>
+           <td colspan=3>
+             <div id="pedido_content_{{pedido.codigo}}" style="display:none">{{ pedido.producto_serializado }}</div>
+           </td>
+           </tr>
+         </table>
+        </div>
+        {% endfor %}
+    </div>
+
+</section>
+
+
+
+{% endblock %}
+
