@@ -106,7 +106,7 @@ class Pedidos(models.Model):
         ('900', 'Enviado'),
         ('1000', 'Finalizado'),
     )
-    estados = models.CharField(max_length=1, choices=PEDIDOS_ESTADOS)
+    estados = models.CharField(max_length=4, choices=PEDIDOS_ESTADOS)
     cliente = models.ManyToManyField(User)
     def __unicode__(self):
         return u"%s" % (self.codigo)
