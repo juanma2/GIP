@@ -28,7 +28,7 @@ def send_order(pedido):
   for i in pedido['orden']:
     total += orden[i]*precio[i]
   print total 
-  p = Pedidos(producto_serializado=pedido, total = total , estados = PEDIDOS_ESTADOS[0])
+  p = Pedidos(producto_serializado=pedido, total = total , estados = PEDIDOS_ESTADOS[0][0])
   p.save()
   p.cliente.add(pedido['cliente']['user_id'])
   return True
