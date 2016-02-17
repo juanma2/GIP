@@ -94,9 +94,9 @@ class Promo(models.Model):
 
 
 class Pedidos(models.Model):
-    codigo = models.IntegerField(default=0) # db_index
+    codigo = models.IntegerField(default=0) # choose a random code... or something.
     producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
-    total = models.DecimalField(max_digits=6, decimal_places=4)
+    total = models.DecimalField(max_digits=25, decimal_places=4)
     PEDIDOS_ESTADOS = (
         ('400', 'Pendiente Proveedor'),
         ('500', 'Pendiente Cliente'),
@@ -107,6 +107,7 @@ class Pedidos(models.Model):
         ('1000', 'Finalizado'),
     )
     estados = models.CharField(max_length=1, choices=PEDIDOS_ESTADOS)
+    cliente = models.ManyToManyField(User)
     def __unicode__(self):
         return u"%s" % (self.codigo)
 
@@ -127,7 +128,7 @@ class Cliente(models.Model):
     web = models.CharField(max_length=200,blank=True)
     iae = models.CharField(max_length=200,blank=True)
     destino_reparto = models.ManyToManyField(Destinos) # This is many to many, not  only one
-    pedidos = models.ManyToManyField(Pedidos,blank=True) # This is many to many, not  only one
+    #pedidos = models.ManyToManyField(Pedidos,blank=True) # This is many to many, not  only one
     tarifa = models.ManyToManyField(Tarifas) # a client has many rates to be applied, one per provider
     listas = models.ManyToManyField(Lista,blank=True) # if is not empty, need to create one, with the user creation TODO 
     contacto_nombre = models.CharField(max_length=200)
