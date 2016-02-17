@@ -440,9 +440,11 @@ def historico(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Historico"
+    pedidos = Pedidos.objects.filter(cliente=current_user.id)
     #sort by lista.. and add the staff there 
     context = {'username': username,
                'current_page': current_page,
+               'pedidos': pedidos,
                }
     return render(request, 'cliente/historico_pedidos.html', context)
 
