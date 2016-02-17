@@ -399,9 +399,11 @@ def make_pedido(request):
     pedido = {}
     cliente = cliente.values()[0]
     orden = {}
+    precio = {}
     for lista_i in user_listas:
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False)
       for ele in current_list:
+        precio[ele.producto.product_ref] = float(ele.producto.precio)
         if ele.producto.product_ref in orden:
           orden[ele.producto.product_ref] += ele.cantidad
         else:
@@ -416,12 +418,15 @@ def make_pedido(request):
         ## pedido[2] = {'product_ref':'whatever you need here, like comments','CAJUL':'comment',
     pedido['cliente'] = cliente
     pedido['orden'] = orden
+    #we can send the price of the elements right now... not sure if is right
+    pedido['precio'] = precio
     print "Add logic to send order here"
     send_order(pedido)
     print "Update to pending to send or something like that"
     print "now, clean the remaining cantidades..."
     for lista_i in user_listas:
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
+      current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=1)
     context = {'username': username,
                'user_listas': user_listas}
     return render(request, 'cliente/pedidos_cliente.html', context)
