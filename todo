@@ -121,6 +121,8 @@ make_pedidos, se pone a 0 "pedir"
 
 
 
+cliente/pedido/:
+- check exceptions before redirect. add some info in the request like "Pedido Hecho" or something
 cliente/historico/:
 Todo:
 - conver
