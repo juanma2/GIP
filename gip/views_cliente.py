@@ -16,6 +16,9 @@ from gip.helper_pedidos import send_order
 
 from django.db.models import Q
 
+from django.shortcuts import redirect
+
+
 ELEMENTOS_POR_PAGINA = 6
 
 @login_required(login_url='/mylogin/')
@@ -430,9 +433,8 @@ def make_pedido(request):
     for lista_i in user_listas:
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=1)
-    context = {'username': username,
-               'user_listas': user_listas}
-    return render(request, 'cliente/pedidos_cliente.html', context)
+    #TODO: handle the exceptions!!
+    return redirect('/cliente/historico/', request)
 
 
 
