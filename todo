@@ -113,18 +113,17 @@ make_pedidos, se pone a 0 "pedir"
 -check if is better has pedido_id in Cliente model, or relate the pedido to a client_id. So far, will be removed in Cliente and added to Pedido model.
 
 ##create Pedido like 
-## pedido[0] will have the information related with the user
-## pedido[0] = {'user_name':'CLIENTE1','date':'pick a standard','tarifa':'proveedor1'}....
-## pedido[1] will have amounts and prices (should be enough, because the price belongs to the ref, no to any other thing
-## pedido[1] = {'product_ref':'cantidad','CAJUL':'25','MNB':'34'} ....
-## pedido[2] If more information is requested could do like:
-## pedido[2] = {'product_ref':'whatever you need here, like comments','CAJUL':'comment',
+## pedido['orden'] = {'product_ref':'cantidad','CAJUL':'25','MNB':'34'} ....
+## pedido[whatever] If more information is requested could do like:
+## pedido[whatever] = {'product_ref':'whatever you need here, like comments','CAJUL':'comment',
+## pedido[Â'precio'] = {'product_ref':'preciprecioo','CAJUL':'25.00',
+
 
 
 
 cliente/historico/:
 Todo:
-Json.... y todo guardaito.
+- conver
 
 
 Pedido minimo?
