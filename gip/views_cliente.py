@@ -432,7 +432,6 @@ def make_pedido(request):
     print "now, clean the remaining cantidades..."
     for lista_i in user_listas:
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
-      current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=1)
     #TODO: handle the exceptions!!
     return redirect('/cliente/historico/', request)
 
