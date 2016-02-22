@@ -1,3 +1,5 @@
+import datetime
+
 from gip.models import Pedidos
 from django.contrib.auth.models import User
 
@@ -28,7 +30,7 @@ def send_order(pedido):
   for i in pedido['orden']:
     total += orden[i]*precio[i]
   print total 
-  p = Pedidos(producto_serializado=pedido, total = total , estados = PEDIDOS_ESTADOS[0][0])
+  p = Pedidos(producto_serializado=pedido, total = total , estados = PEDIDOS_ESTADOS[0][0], fecha_creacion = datetime.datetime.now())
   p.save()
   p.cliente.add(pedido['cliente']['user_id'])
   return True
