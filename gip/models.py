@@ -3,6 +3,19 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
+#I wish to place it out of here, but... is not working in helpers :(
+def number_invoice():
+  no = Pedidos.objects.count()
+  if no == None:
+    num = 1
+  else:
+    num = no + 1
+  invoice_num = "{0:0>6}".format(num)
+  REF = 'REF'
+  YEAR = str(datetime.date.today().year)
+  MONTH = str(datetime.date.today().month)
+  return REF+YEAR+MONTH+invoice_num
+
 
 #http://stackoverflow.com/questions/9492190/django-categories-sub-categories-and-sub-sub-categories
 class Categoria(models.Model):
@@ -94,7 +107,8 @@ class Promo(models.Model):
 
 
 class Pedidos(models.Model):
-    codigo = models.IntegerField(default=0) # choose a random code... or something.
+    id = models.AutoField(primary_key=True)
+    codigo = models.CharField(max_length=16, default=number_invoice) #TODO: multithread issue requesting invoices numbers... wait for it
     producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
     total = models.DecimalField(max_digits=25, decimal_places=4)
     PEDIDOS_ESTADOS = (
@@ -108,6 +122,7 @@ class Pedidos(models.Model):
     )
     estados = models.CharField(max_length=4, choices=PEDIDOS_ESTADOS)
     cliente = models.ManyToManyField(User)
+    fecha_creacion = models.DateTimeField('fecha creacion')
     def __unicode__(self):
         return u"%s" % (self.codigo)
 
