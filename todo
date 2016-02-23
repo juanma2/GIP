@@ -72,6 +72,8 @@ PRODUCTO
 - ID_PROVEEDOR
 - ESPECIFICACIONES: Texto WYSIWYG
 
+############## ABout Users and proveedores
+- we can create a Group per provider, and add users to them...
 
 ############## Must be done:
 - how to transfer Pedido must be define by provider?
