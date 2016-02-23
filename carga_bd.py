@@ -26,13 +26,15 @@ from django.contrib.auth.models import User, Group
 
 grupocliente = Group.objects.create(name='cliente')
 grupocliente.save()
+#grupoproveedor = {}
+#May not work.. 
 grupoproveedor = Group.objects.create(name='proveedor')
-grupoproveedor.save()
+#grupoproveedor[1] = Group.objects.create(name='Proveedor2')
 
 #I want ot create 20K products, 25 providers and 10K clients.
 MAX_DESTINOS = 25
 MAX_TARIFAS = 4
-MAX_PROVEEDORES = 2
+MAX_PROVEEDORES = 3
 MAX_PRODUCTOS = 7000
 MAX_PRODUCTOS = 1000
 MAX_PRODUCTOS = 100
@@ -57,6 +59,9 @@ print "Current time " + time.strftime("%X")
 print "creating providers... "
 for i in range(1,MAX_PROVEEDORES):
   user = User.objects.create_user('PROVEEDOR'+str(i), 'p@p.com', 'password')
+  #this may not work... 
+  grupo = Group.objects.create(name='Grupo Proveedor'+str(i))
+  user.groups.add(grupo)
   user.groups.add(grupoproveedor)
   user.save()
   c = Proveedor(user=user, nombre='Proveedor'+str(i), descripcion='Descripcion'+str(i))
