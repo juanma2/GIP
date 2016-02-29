@@ -1,0 +1,253 @@
+{% extends "proveedor/base_bootstrap_proveedor.html" %}
+{% load staticfiles %}
+{% block purejavascript %}
+<script>
+//combo_option[combo_option.selectedIndex].id
+
+//Javascript to collect info from form id = search_form
+function submitform(page) {
+  page = page || 0;
+
+  dirty = 0;
+  myform = document.forms["search_form"];
+  myform.page = '{{ product_list.number }}';
+  cat = document.getElementById('categoria').options
+  cat_id = cat[cat.selectedIndex].id
+  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
+  // cat_id == 0 //is the default choose a category
+  
+  if ( cat_id != 0 )
+  {
+    addHidden(myform,'categoria', cat_id)
+    dirty = 1;
+  }
+
+  if (document.getElementById('subcategoria'))
+  {
+    subcat = document.getElementById('subcategoria').options
+    subcat_id = subcat[subcat.selectedIndex].id
+
+    if (subcat_id != 0 )
+    {
+      addHidden(myform,'subcategoria', subcat_id)
+      dirty = 1;
+    }
+  }
+
+  if (document.getElementById('search').value != "")
+  {
+    if (document.getElementById('search').value.length < 3)
+    {
+      alert('Por favor, introduce al menos 3 caracteres')
+      return;
+    }
+    addHidden(myform,'search', document.getElementById('search').value)
+
+    dirty = 1;
+  }
+  if (page != 0 ){
+    addHidden(myform,'page', page)
+    dirty = 1
+  }
+  if (dirty == 0 )
+  {
+    alert('Por favor, introduce algun filtro');
+    return;
+  }
+  //paginate using the form 
+  myform.submit();
+  
+}
+
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function populate_form() {
+search_string = '{{ search_parameters.search }}';
+  if ( search_string != ''){
+    document.getElementById('search').value = search_string;
+  }
+
+categoria = '{{ search_parameters.categoria }}';
+  if ( categoria != ''){
+    for (i = 0; i< document.getElementById('categoria').length; i++)
+      {
+        if (document.getElementById('categoria').options[i].id == categoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('categoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+subcategoria = '{{ search_parameters.subcategoria }}';
+  if ( subcategoria != ''){
+    for (i = 0; i< document.getElementById('subcategoria').length; i++)
+      {
+        if (document.getElementById('subcategoria').options[i].id == subcategoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('subcategoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+
+
+}
+
+$(document).ready(function() {
+var form = $('#send_lista_info');
+populate_form();
+
+  $('select').on('change', function() {
+   //ugly but id will help to identify category or something like that
+   if ($(this).attr('id') == 'categoria' || $(this).attr('id') == 'subcategoria' ) 
+   {
+     //nothing to do here, choose a categoria do not mean anything
+     cat_id = $(this).children(":selected").attr("id");
+   } 
+   else
+   {
+     list_id = $(this).val().split(',')[0];
+     product_id = $(this).val().split(',')[1];
+     url =
+      $.ajax( {
+        
+        type: "POST",
+        url: '/proveedor/del_product/'+product_id ,
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! ESto no debería de funcionar!!! tiens que implementarlo!!! un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          alert(response['msg']);
+          $('select').val('none');
+        }
+
+      } );
+    }
+  });
+
+});
+</script>
+{% endblock %}
+
+<div class="container">
+{% block left_menu %}
+       <div class="row">
+          <div class="col-md-2">
+            <div class="list-group table-of-contents">
+              <a class="list-group-item" href="altaproductoproveedor.html">Alta Producto</a>
+              <a class="list-group-item" href="editaproductosproveedorpaso1.html">Editar Producto</a>
+              <a class="list-group-item" href="eliminaproductoproveedorconadvertencia.html">Eliminar Producto</a>
+              <a class="list-group-item" href="#tables">Actualizacion Masiva</a>
+            </div>
+          </div>
+
+{% endblock %}
+
+{% block content %}
+
+  {% block searchbar %}
+          <!--empieza columna der-->
+          <div class="col-md-9">
+            <!--empieza menu buscador-->
+            <!--Localizador colapse !-->
+            <nav class="navbar navbar-default" role="navigation">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#localizacolapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a href="#" class="navbar-brand"><span class="glyphicon glyphicon-search"></span></a>
+                </div>
+                <div class="collapse navbar-collapse" id="localizacolapse">
+                  <ul class="nav navbar-nav">
+                    <li></li>
+                  </ul>
+                  <div>
+                    <form action="./" class="navbar-form navbar-right">
+                      <div class="formgroup">
+                        <input type="text" class="form-control" placeholder="Buscar">
+                        <button class="btn btn-default">Buscar</button>
+                      </div>
+                    </form>
+                    <form action="./" class="navbar-form navbar-right" role="select">
+                      <div class="form-group">
+                        <div>
+                          <select class="form-control" id="select1">
+                            <option>Categoria</option>
+                          </select>
+                          <select class="form-control" id="select2">
+                            <option>Categoria</option>
+                          </select>
+                          <button type="submit" class="btn btn-default">Buscar</button>
+                        </div>
+                        <!--Localizador select colapse !-->
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </nav>
+            <!--acaba menu buscador-->
+{% endblock %}
+{% block dataset %}
+            <!--Lo que se está haciendo, Alta producto, actualizacionmasiva....-->
+            <h4>Ultimos productos creados
+              <span class="glyphicon glyphicon-th"></span>
+              <span class="glyphicon glyphicon-list"></span>
+            </h4>
+            <!--empieza lo gordo que se muestra-->
+            <!--empieza celda producto-->
+{% for producto in product_list %}
+
+            <div class="col-md-3">
+              <h4 class="text-center">{{ producto.nombre }}</h4>
+              <img src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" class="img-responsive">
+              <h3 class="text-center">Precio: {{ producto.precio }}</h3>
+              <p>{{ producto.descripcion }}</p>
+              <a class="btn btn-primary">Editar</a>
+              <a class="btn btn-primary">Eliminar</a>
+            </div>
+{% endfor %}
+            <!--acaba celda producto-->
+
+
+{% endblock %}
+<form method='post' id='send_lista_info' action="#">
+     <input type="hidden" value="" />
+     {% csrf_token %}
+</form>
+{% endblock %}
+
+{% block pagination %}
+
+                        <div class="row">
+                            <ul class="pagination pagination-sm">
+              {% if product_list.has_previous %}
+                                <li>
+                                    <a href="#">«</a>
+                                </li>
+              {% endif %}
+                                <li>
+                                    Pag. <a href="#">{{ product_list.number }}</a> de {{ product_list.paginator.num_pages }}
+                               </li>
+              {% if product_list.has_next %}
+                  <a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;">»</a>
+              {% endif %}
+
+{% endblock %}
