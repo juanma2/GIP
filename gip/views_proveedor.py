@@ -82,6 +82,6 @@ def productos_proveedor(request):
                'search_parameters': search_parameters
                 }
 
-    return render(request, 'proveedor/productos_bootstrap_proveedor2.html', context)
+    return render(request, 'proveedor/productos_bootstrap_proveedor.html', context)
 
 
