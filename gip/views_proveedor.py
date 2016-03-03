@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+
 
 
 
@@ -9,8 +11,8 @@ from gip.models import *
 
 from gip.utils import is_proveedor
 
-ELEMENTOS_POR_PAGINA_PROVEEDOR = 6
-
+ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
+PROVEEDOR_ATTRIBUTE = 'proveedor'
 
 @login_required(login_url='/login/')
 @user_passes_test(is_proveedor)
@@ -24,6 +26,8 @@ def productos_proveedor(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Productos"
+    proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+    print proveedor.id
     #get all the categories
     categorias_list = Categoria.objects.all()
     user_listas = Cliente.objects.get(id=current_user.id).listas.all()
@@ -34,11 +38,11 @@ def productos_proveedor(request):
     if search_parameters:
       #wipe out the csrf:
       search_parameters.pop('csrfmiddlewaretoken')
-      #THE PAGINATION DO NOT WORK
       full_search = Q()
       if 'search' in search_parameters:
+        print "a provider is searching!!"
         #Miss split words and do it smart
-        search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search'])# ' %(search_parameters['search'],search_parameters['search'])
+        search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search']) | Q(product_ref__icontains=search_parameters['search']) # ' %(search_parameters['search'],search_parameters['search'])
         full_search = full_search & search_string
       if 'categoria' in search_parameters:
         cat_id = int(search_parameters['categoria'].split('_')[1])
@@ -49,14 +53,14 @@ def productos_proveedor(request):
         subcat_id = Categoria.objects.get(nombre=search_parameters['subcategoria']).id
         search_subcat = Q(categoria__id=Categoria.objects.get(nombre=search_parameters['categoria']).id)
         full_search = full_search & search_subcat
-      all_product_list = Producto.objects.filter(full_search)
+      all_product_list = Producto.objects.filter(full_search).order_by('-id').values('product_ref').distinct()
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
       if 'page' in search_parameters:
         page = search_parameters['page']
       else:
         page = 1
     else:
-      all_product_list = Producto.objects.all()
+      all_product_list = Producto.objects.all().order_by('-id').values('product_ref').distinct()
       #this is he default search
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
       try:
@@ -75,6 +79,7 @@ def productos_proveedor(request):
     #Get the listas 
     context = {'username': username,
                'current_page': current_page,
+               'proveedor': proveedor,
                'product_list': product_list,
                'categorias_list': categorias_list,
                'sub_categorias_list': sub_categorias_list,

@@ -1,17 +1,43 @@
 {% extends "proveedor/base_bootstrap_proveedor.html" %}
 {% load staticfiles %}
 {% block purejavascript %}
+    <style>
+        .cortandodescripcion {
+            overflow:hidden; /* Escondemos la parte sobrante */
+
+
+            text-overflow:ellipsis;
+            height: 120px;
+        }
+        .cortandotextonombre {
+            overflow:hidden; /* Escondemos la parte sobrante */
+              text-overflow:clip;
+  /*  white-space:nowrap;  usar cuando sepamos */
+  white-space:nowrap;
+  height: 30px;
+
+
+        }
+        .cortandotextonombre:hover {
+                        width: auto;
+                        white-space: initial;
+                        overflow:visible;
+                        cursor: pointer;
+                }
+
+    </style>
+
 <script>
 //combo_option[combo_option.selectedIndex].id
 
 //Javascript to collect info from form id = search_form
 function submitform(page) {
   page = page || 0;
-
   dirty = 0;
-  myform = document.forms["search_form"];
+  myform = document.forms["search_cat"];
   myform.page = '{{ product_list.number }}';
-  cat = document.getElementById('categoria').options
+  cat = document.getElementById('categoria').options;
+
   cat_id = cat[cat.selectedIndex].id
   //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
   // cat_id == 0 //is the default choose a category
@@ -108,36 +134,6 @@ $(document).ready(function() {
 var form = $('#send_lista_info');
 populate_form();
 
-  $('select').on('change', function() {
-   //ugly but id will help to identify category or something like that
-   if ($(this).attr('id') == 'categoria' || $(this).attr('id') == 'subcategoria' ) 
-   {
-     //nothing to do here, choose a categoria do not mean anything
-     cat_id = $(this).children(":selected").attr("id");
-   } 
-   else
-   {
-     list_id = $(this).val().split(',')[0];
-     product_id = $(this).val().split(',')[1];
-     url =
-      $.ajax( {
-        
-        type: "POST",
-        url: '/proveedor/del_product/'+product_id ,
-        dataType: 'json' ,
-        data: form.serialize(),
-        error: function (xhr, status) {
-            alert('Ooopps!!! ESto no debería de funcionar!!! tiens que implementarlo!!! un error:'+status+'.  Si persiste ponte en contacto con nosotros');
-        },
-        success: function( response ) {
-          alert(response['msg']);
-          $('select').val('none');
-        }
-
-      } );
-    }
-  });
-
 });
 </script>
 {% endblock %}
@@ -172,29 +168,39 @@ populate_form();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                   </button>
-                  <a href="#" class="navbar-brand"><span class="glyphicon glyphicon-search"></span></a>
+                  <a href="/proveedor/productos/" class="navbar-brand"><span class="glyphicon glyphicon-search"></span> Nueva busqueda</a>
                 </div>
                 <div class="collapse navbar-collapse" id="localizacolapse">
                   <ul class="nav navbar-nav">
                     <li></li>
                   </ul>
                   <div>
-                    <form action="./" class="navbar-form navbar-right">
+                    <form id="search_text" class="navbar-form navbar-right" action="/proveedor/productos/" method="post" role="select">
+                      {% csrf_token %}
                       <div class="formgroup">
-                        <input type="text" class="form-control" placeholder="Buscar">
-                        <button class="btn btn-default">Buscar</button>
+                        <input id="search" type="text" class="form-control" placeholder="Introduce texto">
+                        <button class="btn btn-default" onclick="submitform();return false;" >Buscar</button>
                       </div>
                     </form>
-                    <form action="./" class="navbar-form navbar-right" role="select">
+                    <form id="search_cat" class="navbar-form navbar-right" action="/proveedor/productos/" method="post" role="select">
+                      {% csrf_token %}
                       <div class="form-group">
                         <div>
-                          <select class="form-control" id="select1">
-                            <option>Categoria</option>
+                          <select name="Categoria" class="form-control" id="categoria">
+                            <option id='0' class=''> Elige una categoria </option>
+        {% for categoria in categorias_list %}
+            <option id='cat_{{ categoria.id }}' value="{{categoria.id}}" class={{ categoria.id }}> {{ categoria.nombre }} </option>
+        {% endfor %}
                           </select>
-                          <select class="form-control" id="select2">
-                            <option>Categoria</option>
-                          </select>
-                          <button type="submit" class="btn btn-default">Buscar</button>
+        {% if sub_categorias_list %}
+          <select name="SubCategoria" id="subcategoria" class="form-control">
+            <option id='0' class=''> Elige una sub-categoria </option>
+          {% for subcategoria in sub_categorias_list %}
+                    <option id='sub_cat_{{ subcategoria.id }}' class={{ subcategoria.id }}> {{ subcategoria.nombre }} </option>
+          {% endfor %}
+        {% endif %}
+
+                          <button type="submit" class="btn btn-default" id="search" onclick="submitform();return false;">Buscar</button>
                         </div>
                         <!--Localizador select colapse !-->
                       </div>
@@ -216,12 +222,16 @@ populate_form();
 {% for producto in product_list %}
 
             <div class="col-md-3">
+             <div class="cortandotextonombre">
               <h4 class="text-center">{{ producto.nombre }}</h4>
+             </div>
               <img src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" class="img-responsive">
-              <h3 class="text-center">Precio: {{ producto.precio }}</h3>
-              <p>{{ producto.descripcion }}</p>
-              <a class="btn btn-primary">Editar</a>
-              <a class="btn btn-primary">Eliminar</a>
+              <h3 class="text-center">REF: {{ producto.product_ref }}</h3>
+                <div class="cortandodescripcion">
+                  <p class="contenido">{{ producto.descripcion }}</p>
+                </div>
+                  <a href="/proveedor/{{ proveedor.id  }}/producto/{{ producto.id }}" class="btn btn-primary">Editar</a>
+                  <a href="" class="btn btn-primary">Eliminar</a>
             </div>
 {% endfor %}
             <!--acaba celda producto-->
