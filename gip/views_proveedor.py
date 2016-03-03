@@ -53,14 +53,14 @@ def productos_proveedor(request):
         subcat_id = Categoria.objects.get(nombre=search_parameters['subcategoria']).id
         search_subcat = Q(categoria__id=Categoria.objects.get(nombre=search_parameters['categoria']).id)
         full_search = full_search & search_subcat
-      all_product_list = Producto.objects.filter(full_search).order_by('-id').values('product_ref').distinct()
+      all_product_list = Producto.objects.filter(full_search).order_by('-id')
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
       if 'page' in search_parameters:
         page = search_parameters['page']
       else:
         page = 1
     else:
-      all_product_list = Producto.objects.all().order_by('-id').values('product_ref').distinct()
+      all_product_list = Producto.objects.all().order_by('-id')
       #this is he default search
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
       try:
