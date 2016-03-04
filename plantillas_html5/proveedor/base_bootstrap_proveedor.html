@@ -30,7 +30,7 @@
         <div class="collapse navbar-collapse" id="navbar-ex-collapse">
           <ul class="nav navbar-nav navbar-right">
             <li class="active">
-              <a href="indexproductosproveedor">Productos</a>
+              <a href="/proveedor/productos/">Productos</a>
             </li>
             <li>
               <a href="#">Clientes</a>
@@ -53,7 +53,17 @@
       <!--empieza contenido!-->
 
       <div class="container">
-{% block left_menu %}
+{% block left_menu_productos %}
+       <div class="row">
+          <div class="col-md-2">
+            <div class="list-group table-of-contents">
+              <a class="list-group-item" href="">Alta Producto</a>
+              <a class="list-group-item" href="/proveedor/productos/">Editar Producto</a>
+              <a class="list-group-item" href="/proveedor/productos/">Eliminar Producto</a>
+              <a class="list-group-item" href="#tables">Actualizacion Masiva</a>
+            </div>
+          </div>
+
 {% endblock %}
 
 {% block searchbar %}

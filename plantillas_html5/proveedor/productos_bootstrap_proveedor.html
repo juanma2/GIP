@@ -139,17 +139,7 @@ populate_form();
 {% endblock %}
 
 <div class="container">
-{% block left_menu %}
-       <div class="row">
-          <div class="col-md-2">
-            <div class="list-group table-of-contents">
-              <a class="list-group-item" href="altaproductoproveedor.html">Alta Producto</a>
-              <a class="list-group-item" href="editaproductosproveedorpaso1.html">Editar Producto</a>
-              <a class="list-group-item" href="eliminaproductoproveedorconadvertencia.html">Eliminar Producto</a>
-              <a class="list-group-item" href="#tables">Actualizacion Masiva</a>
-            </div>
-          </div>
-
+{% block left_menu_proveedor %}
 {% endblock %}
 
 {% block content %}
@@ -232,7 +222,7 @@ populate_form();
                   <p class="contenido"><b>Referencia: {{ producto.product_ref }}</b></p>
                   <p class="contenido">{{ producto.descripcion }}</p>
                 </div>
-                  <a href="/proveedor/{{ proveedor.id  }}/producto/{{ producto.id }}" class="btn btn-primary">Editar</a>
+                  <a href="/proveedor/{{ proveedor.id  }}/producto/{{ producto.id }}/" class="btn btn-primary">Editar</a>
                   <a href="" class="btn btn-primary">Eliminar</a>
             </div>
 {% endfor %}

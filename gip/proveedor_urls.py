@@ -21,5 +21,6 @@ from gip import views_proveedor
 urlpatterns = [
     url(r'^$', views_proveedor.index_proveedor, name='index_proveedor'),
     url(r'^productos/$', views_proveedor.productos_proveedor, name='productos_proveedor'),
+    url(r'^(?P<proveedor_id>[0-9]+)/producto/(?P<producto_id>[0-9]+)/$', views_proveedor.edit_producto_proveedor, name='edit_producto_proveedor'),
 
 ]
