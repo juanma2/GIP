@@ -1,7 +1,7 @@
 import datetime
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 
 #I wish to place it out of here, but... is not working in helpers :(
 def number_invoice():
@@ -73,7 +73,8 @@ class Producto(models.Model):
     cantidad_minima = models.IntegerField(default=0)
     formato = models.CharField(max_length=200)
     caducidad_precio = models.DateTimeField(default = datetime.datetime.now() + datetime.timedelta(days=1) )#by default +24 hours
-    proveedor = models.ForeignKey(Proveedor)
+    #so.. proveedor, is a group :(, otherwise, I do not know as proveedor user which products belongs to me.
+    proveedor = models.ForeignKey(Group)
     ###ESTA ES LA SOLUCION #la tarifa es unica, no many, anades un precio, y creas 4 PRODUCTOS
     ###CADA CLIENTE TIENE UNA TARIFA POR PROVEEDOR
     precio = models.DecimalField(max_digits=6, decimal_places=2)

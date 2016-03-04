@@ -24,12 +24,11 @@ from gip.models import Elemento
 
 from django.contrib.auth.models import User, Group
 
+#Roles definition
 grupocliente = Group.objects.create(name='cliente')
 grupocliente.save()
-#grupoproveedor = {}
-#May not work.. 
 grupoproveedor = Group.objects.create(name='proveedor')
-#grupoproveedor[1] = Group.objects.create(name='Proveedor2')
+grupoproveedor.save()
 
 #I want ot create 20K products, 25 providers and 10K clients.
 MAX_DESTINOS = 25
@@ -60,7 +59,7 @@ print "creating providers... "
 for i in range(1,MAX_PROVEEDORES):
   user = User.objects.create_user('PROVEEDOR'+str(i), 'p@p.com', 'password')
   #this may not work... 
-  grupo = Group.objects.create(name='Grupo Proveedor'+str(i))
+  grupo = Group.objects.create(name='Empresa Proveedor'+str(i))
   user.groups.add(grupo)
   user.groups.add(grupoproveedor)
   user.save()
@@ -104,8 +103,8 @@ for i in range(1,MAX_LISTAS*MAX_CLIENTES):
 ##print "Current time " + time.strftime("%X")
 ##print "creating provducts... "
 ##for i in range(1,MAX_PRODUCTOS):
-##  p = Proveedor()
-##  p.id = random.randint(1,MAX_PROVEEDORES - 1)
+## Not tested!!!
+##  p = grupo[len(grupo)-1]
 ##  d = Producto(nombre='Producto'+str(i), descripcion='Descripcion'+str(i), formato='Formato'+str(i), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor=p,tarifa_id=random.randint(1,MAX_TARIFAS -1 ), categoria_id=random.randint(1,MAX_CATEGORIAS-1 ) )
 ##  d.save()
 ##
@@ -130,9 +129,11 @@ with open('./small_data_set.json') as data_file:
     data = json.load(data_file)
 
 for i in data:
-  p = Proveedor()
-  p.id = random.randint(1,MAX_PROVEEDORES - 1)
-  d = Producto(nombre = data[i][0].encode('utf-8'), descripcion = data[i][5].encode('utf-8'), formato = data[i][4].encode('utf-8'), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor=p,tarifa_id=random.randint(1,MAX_TARIFAS -1 ), categoria_id=random.randint(1,MAX_CATEGORIAS-1 ),image_url= data[i][7].encode('utf-8'), product_ref=data[i][3].encode('utf-8'), precio = random.randint(1,100) )
+  ##Not tested, p may fail!!
+  p = grupo[len(grupo)-1]
+  ##Not tested, p may fail!!
+  for k in range(1,MAX_TARIFAS):
+    d = Producto(nombre = data[i][0].encode('utf-8'), descripcion = data[i][5].encode('utf-8'), formato = data[i][4].encode('utf-8'), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor_id=p.id,tarifa_id=k , categoria_id=random.randint(1,MAX_CATEGORIAS-1 ),image_url= data[i][7].encode('utf-8'), product_ref=data[i][3].encode('utf-8'), precio = random.randint(1,100) )
   d.save()
 #
 #print "Current time " + time.strftime("%X")

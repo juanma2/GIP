@@ -14,13 +14,15 @@ from gip.utils import is_proveedor
 ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
 PROVEEDOR_ATTRIBUTE = 'proveedor'
 
-@login_required(login_url='/login/')
+@login_required(login_url='/mylogin/')
 @user_passes_test(is_proveedor)
 def index_proveedor(request):
     my_test_string = 'Vista Proveedor'
     context = {'my_test_string': my_test_string}
     return render(request, 'proveedor/index_proveedor.html', context)
 
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
 def productos_proveedor(request):
     #we will retrieve Promo and show per Tarifa/User
     current_user = request.user
@@ -28,6 +30,7 @@ def productos_proveedor(request):
     current_page = "Productos"
     proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
     print proveedor.id
+    print proveedor
     #get all the categories
     categorias_list = Categoria.objects.all()
     user_listas = Cliente.objects.get(id=current_user.id).listas.all()
@@ -39,10 +42,12 @@ def productos_proveedor(request):
       #wipe out the csrf:
       search_parameters.pop('csrfmiddlewaretoken')
       full_search = Q()
+      #if we are searching, we are searching one proveedor
+      proveedor_search = (Q(proveedor = proveedor.id))
       if 'search' in search_parameters:
         print "a provider is searching!!"
         #Miss split words and do it smart
-        search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search']) | Q(product_ref__icontains=search_parameters['search']) # ' %(search_parameters['search'],search_parameters['search'])
+        search_string= Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search']) | Q(product_ref__icontains=search_parameters['search']) # ' %(search_parameters['search'],search_parameters['search'])
         full_search = full_search & search_string
       if 'categoria' in search_parameters:
         cat_id = int(search_parameters['categoria'].split('_')[1])
@@ -53,6 +58,8 @@ def productos_proveedor(request):
         subcat_id = Categoria.objects.get(nombre=search_parameters['subcategoria']).id
         search_subcat = Q(categoria__id=Categoria.objects.get(nombre=search_parameters['categoria']).id)
         full_search = full_search & search_subcat
+      #add the provider here
+      full_search = full_search & proveedor_search
       all_product_list = Producto.objects.filter(full_search).order_by('-id')
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
       if 'page' in search_parameters:
@@ -60,7 +67,7 @@ def productos_proveedor(request):
       else:
         page = 1
     else:
-      all_product_list = Producto.objects.all().order_by('-id')
+      all_product_list = Producto.objects.filter(proveedor= proveedor.id).order_by('-id')
       #this is he default search
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
       try:
