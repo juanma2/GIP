@@ -116,6 +116,14 @@ def edit_producto_proveedor(request, proveedor_id, producto_id):
     producto = Producto.objects.get(id=producto_id)
     print producto.product_ref
     edit_producto = Producto.objects.filter(product_ref=producto.product_ref)
+    tarifas_availables = Tarifas.objects.filter(elproveedor=proveedor.id)
+    for i in tarifas_availables:
+      for k in edit_producto:
+        print i #if i.id in k['tarifa_id']
+    print "tarifas availables"
+    print tarifas_availables
+    print "edit_producto"
+    print edit_producto
   else:
     return redirect('/proveedor/404/', request)
   context= {'username': username,
@@ -123,6 +131,7 @@ def edit_producto_proveedor(request, proveedor_id, producto_id):
              'proveedor': proveedor,
              'producto': producto,
              'edit_producto': edit_producto,
+             'tarifas_availables': tarifas_availables,
              'categorias_list': categorias_list,
               }
 

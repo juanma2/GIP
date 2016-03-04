@@ -74,13 +74,14 @@ function addHidden(theForm, key, value) {
     theForm.appendChild(input);
 }
 
-function populate_form() {
-search_string = '{{ search_parameters.search }}';
-  if ( search_string != ''){
-    document.getElementById('search').value = search_string;
-  }
+function populate_tarifas(){
+  {% for tarifa in edit_producto %}
+    document.getElementById('tarifa_{{tarifa.tarifa.id}}').value='{{tarifa.precio }}'
+  {% endfor %}
+}
 
-categoria = '{{ search_parameters.categoria }}';
+function populate_categoria(){
+categoria = 'cat_{{ producto.categoria.id }}';
   if ( categoria != ''){
     for (i = 0; i< document.getElementById('categoria').length; i++)
       {
@@ -93,7 +94,7 @@ categoria = '{{ search_parameters.categoria }}';
       }
   }
 
-subcategoria = '{{ search_parameters.subcategoria }}';
+subcategoria = '{{ producto.subcategoria }}';
   if ( subcategoria != ''){
     for (i = 0; i< document.getElementById('subcategoria').length; i++)
       {
@@ -106,13 +107,11 @@ subcategoria = '{{ search_parameters.subcategoria }}';
       }
   }
 
-
-
 }
 
 $(document).ready(function() {
-var form = $('#send_lista_info');
-populate_form();
+populate_tarifas();
+populate_categoria();
 
 });
 </script>
@@ -165,14 +164,13 @@ populate_form();
                           <input class="form-control" placeholder="Cantidad Minima" type="text" value="{{ producto.cantidad_minima }}">
                         </div>
                       </div>
-{% for tarifa in edit_producto %}
+{% for tarifa in tarifas_availables %}
                       <div class="form-group">
-                        <label for="{{ tarifa.tarifa }}" class="col-lg-2 control-label">{{ tarifa.tarifa }}</label>
+                        <label for="{{ tarifa.nombre }}" class="col-lg-2 control-label">{{ tarifa.nombre }}</label>
                         <div class="col-lg-10">
-                          <input id="prod_{{tarifa.id}}_tarifa_{{tarifa.tarifa.id}}" class="form-control" placeholder="Tarifa 1" type="text" value="{{ tarifa.precio }}">
+                          <input id="tarifa_{{tarifa.id}}" class="form-control" placeholder="{{ tarifa.nombre }}" type="text">
                         </div>
                       </div>
-
 {% endfor %} 
                       <div class="form-group">
                         <label class="col-lg-2 control-label" for="Descripción">Descripción</label>

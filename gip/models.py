@@ -62,7 +62,7 @@ class Tarifas(models.Model):
     nombre = models.CharField(max_length=200) 
     descripcion = models.CharField(max_length=200)
     porciento = models.IntegerField(default=0)
-    elproveedor = models.ForeignKey(Proveedor)
+    elproveedor = models.ForeignKey(Group)
     def __unicode__(self):
         return "%s - %s" % (self.nombre,self.elproveedor)
 
@@ -83,6 +83,7 @@ class Producto(models.Model):
     image_url = models.CharField(max_length=300)
     especificaciones = models.CharField(max_length=2000,default="need to add WYSIWYG")
     #add something like disable.
+    baja = models.BooleanField(default=False)
     def ha_caducado(self):
         #TODO: check and debug, timezone is not defined!!
         return self.caducidad_precio <= timezone.now() - datetime.timedelta(days=1)
