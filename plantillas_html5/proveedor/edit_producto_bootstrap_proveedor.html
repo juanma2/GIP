@@ -10,61 +10,15 @@
 
 //combo_option[combo_option.selectedIndex].id
 
-//Javascript to collect info from form id = search_form
-function submitform(page) {
-  page = page || 0;
-  dirty = 0;
-  myform = document.forms["search_cat"];
-  myform.page = '{{ product_list.number }}';
-  cat = document.getElementById('categoria').options;
+function submit_edit() {
+niceObj = nicEditors.findEditor('texcontenido');
+wyswygc = niceObj.getContent()
 
-  cat_id = cat[cat.selectedIndex].id
-  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
-  // cat_id == 0 //is the default choose a category
-  
-  if ( cat_id != 0 )
-  {
-    addHidden(myform,'categoria', cat_id)
-    dirty = 1;
-  }
+myform = document.forms["edit_product"];
+addHidden(myform,'texcontenido', wyswygc)
+myform.submit();
 
-  if (document.getElementById('subcategoria'))
-  {
-    subcat = document.getElementById('subcategoria').options
-    subcat_id = subcat[subcat.selectedIndex].id
-
-    if (subcat_id != 0 )
-    {
-      addHidden(myform,'subcategoria', subcat_id)
-      dirty = 1;
-    }
-  }
-
-  if (document.getElementById('search').value != "")
-  {
-    if (document.getElementById('search').value.length < 3)
-    {
-      alert('Por favor, introduce al menos 3 caracteres')
-      return;
-    }
-    addHidden(myform,'search', document.getElementById('search').value)
-
-    dirty = 1;
-  }
-  if (page != 0 ){
-    addHidden(myform,'page', page)
-    dirty = 1
-  }
-  if (dirty == 0 )
-  {
-    alert('Por favor, introduce algun filtro');
-    return;
-  }
-  //paginate using the form 
-  myform.submit();
-  
 }
-
 function addHidden(theForm, key, value) {
     // Create a hidden input element, and append it to the form:
     var input = document.createElement('input');
@@ -126,18 +80,20 @@ populate_categoria();
 {% block dataset %}
           <div class="col-md-9">
             <h4>Editar producto</h4>
-            <form class="form-horizontal">
-                    <fieldset>
+            <form id="edit_product" action="/proveedor/{{ proveedor.id }}/producto/{{ producto.id }}/" method="post" class="form-horizontal">
+    {% csrf_token %}
+
+                    <fieldset form="edit_product">
                       <div class="form-group">
                         <label for="Referencia" class="col-lg-2 control-label">Referencia</label>
                         <div class="col-lg-10">
-                          <input class="form-control"  type="text" value="{{ producto.product_ref }}">
+                          <input name="product_ref" class="form-control"  type="text" value="{{ producto.product_ref }}">
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="Nombre_Comercial" class="col-lg-2 control-label">Nombre</label>
                         <div class="col-lg-10">
-                          <input class="form-control" placeholder="Nombre Comercial" type="text" value="{{ producto.nombre }}"> 
+                          <input name="nombre" class="form-control" placeholder="Nombre Comercial" type="text" value="{{ producto.nombre }}"> 
                         </div>
                       </div>
                       <div class="form-group">
@@ -155,20 +111,20 @@ populate_categoria();
                       <div class="form-group">
                         <label for="Formato" class="col-lg-2 control-label">Formato</label>
                         <div class="col-lg-10">
-                          <input class="form-control" placeholder="Formato" type="text" value="{{ producto.formato  }}">
+                          <input name="formato" class="form-control" placeholder="Formato" type="text" id="formato" value="{{ producto.formato  }}">
                         </div>
                       </div>
                       <div class="form-group">
                         <label for="Cantidad_minima" class="col-lg-2 control-label">Cantidad Minima</label>
                         <div class="col-lg-10">
-                          <input class="form-control" placeholder="Cantidad Minima" type="text" value="{{ producto.cantidad_minima }}">
+                          <input name="cantidad_minima" class="form-control" placeholder="Cantidad Minima" type="text" id="cantidad_minima" value="{{ producto.cantidad_minima }}">
                         </div>
                       </div>
 {% for tarifa in tarifas_availables %}
                       <div class="form-group">
                         <label for="{{ tarifa.nombre }}" class="col-lg-2 control-label">{{ tarifa.nombre }}</label>
                         <div class="col-lg-10">
-                          <input id="tarifa_{{tarifa.id}}" class="form-control" placeholder="{{ tarifa.nombre }}" type="text">
+                          <input name="tarifa_{{tarifa.id}}" id="tarifa_{{tarifa.id}}" class="form-control" placeholder="{{ tarifa.nombre }}" type="text">
                         </div>
                       </div>
 {% endfor %} 
@@ -176,7 +132,7 @@ populate_categoria();
                         <label class="col-lg-2 control-label" for="Descripción">Descripción</label>
                         <div class="col-lg-10">
                           <div class="form-group"method="post">
-    <textarea class="form-control" rows="3"id="texcontenido">{{ producto.especificaciones }}</textarea>
+    <textarea class="form-control" rows="3" id="texcontenido">{{ producto.especificaciones }}</textarea>
   </div>
 
                           <span class="help-block">Descripción del producto, cualidades y caracteristicas</span>
@@ -197,7 +153,7 @@ populate_categoria();
                       <div class="form-group">
                         <div class="col-lg-10 col-lg-offset-3">
                           <button type="reset" class="btn btn-default">Cancelar</button>
-                          <button type="submit" class="btn btn-primary">Crear</button>
+                          <button type="submit" onClick="submit_edit()" class="btn btn-primary">Crear</button>
                         </div>
                       </div>
                     </fieldset>
