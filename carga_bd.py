@@ -79,8 +79,12 @@ print "Current time " + time.strftime("%X")
 #to do that, i need Tarifas 125 tarifas and 2.5K CP
 print "creating tarifas... "
 for i in range(1,MAX_TARIFAS):
-  a = Tarifas(nombre='tarifa'+str(i), descripcion='descripcion'+str(i), elproveedor_id=random.randint(1,MAX_PROVEEDORES- 1 ))
-  a.save()
+  ##You must choose elproveedor_id from groups, cannot be a random int any more!!
+  ##Not tested, can fail!!
+  #a = Tarifas(nombre='tarifa'+str(i), descripcion='descripcion'+str(i), elproveedor_id=random.randint(1,MAX_PROVEEDORES- 1 ))
+  for j in Group.objects.all().filter(name__icontains='proveedor').exclude(name='proveedor'):
+    a = Tarifas(nombre='tarifa'+str(i), descripcion='descripcion'+str(i), elproveedor_id=j.id)
+    a.save()
   #time.sleep(0.01)
 
 print "Current time " + time.strftime("%X")
