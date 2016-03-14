@@ -10,14 +10,14 @@
 
 //combo_option[combo_option.selectedIndex].id
 
-function submit_edit() {
-niceObj = nicEditors.findEditor('texcontenido');
-wyswygc = niceObj.getContent()
-
-myform = document.forms["edit_product"];
-addHidden(myform,'texcontenido', wyswygc)
-myform.submit();
-
+function submit_edit(create) {
+    niceObj = nicEditors.findEditor('texcontenido');
+    wyswygc = niceObj.getContent()
+    
+    myform = document.forms["edit_product"];
+    addHidden(myform,'texcontenido', wyswygc)
+    addHidden(myform,'create', create)
+    myform.submit();
 }
 function addHidden(theForm, key, value) {
     // Create a hidden input element, and append it to the form:
@@ -67,6 +67,14 @@ $(document).ready(function() {
 populate_tarifas();
 populate_categoria();
 
+{% if status_answer %}
+  {% if status_answer.exist %}
+alert('El producto ya existe, puedes consultarlo <a href="{{ status_answer.exist }}">aqui</a>')
+  {% endif %}
+  {% if status_answer.error %}
+alert('Ha habido un error en el formulario.Debería de ser revisado en Javascript antes de enviarlo. Si persiste ponte en contacto con nosotros y cuentanos que ha dicho: {{ status_answer.error  }}');
+  {% endif %}
+{% endif %}
 });
 </script>
 {% endblock %}
@@ -80,7 +88,7 @@ populate_categoria();
 {% block dataset %}
           <div class="col-md-9">
             <h4>Editar producto</h4>
-            <form id="edit_product" action="/proveedor/{{ proveedor.id }}/producto/{{ producto.id }}/" method="post" class="form-horizontal">
+            <form id="edit_product" action="/proveedor/{{ proveedor.id }}/add_producto/" method="post" class="form-horizontal">
     {% csrf_token %}
 
                     <fieldset form="edit_product">
@@ -153,7 +161,8 @@ populate_categoria();
                       <div class="form-group">
                         <div class="col-lg-10 col-lg-offset-3">
                           <button type="reset" class="btn btn-default">Cancelar</button>
-                          <button type="submit" onClick="submit_edit()" class="btn btn-primary">Actualizar</button>
+                          <button type="submit" onClick="submit_edit('create')" class="btn btn-primary">Crear</button>
+                          <button type="submit" onClick="submit_edit('edit')" class="btn btn-primary">Crear y editar</button>
                         </div>
                       </div>
                     </fieldset>
