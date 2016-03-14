@@ -227,8 +227,8 @@ def add_producto_proveedor(request, proveedor_id):
         print p.id
         return redirect('/proveedor/'+proveedor_id+'/producto/'+str(p.id),request)
     else:
-      #someone is trying something... there is no add_parameters :/
-      return redirect('/proveedor/404/', request)
+      #first time here... or someone is trying something... there is no add_parameters :/
+      pass 
   else:
     #someone is trying something... add logg to this, is looking for another proveedor
     return redirect('/proveedor/404/', request)

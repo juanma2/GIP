@@ -69,7 +69,8 @@ populate_categoria();
 
 {% if status_answer %}
   {% if status_answer.exist %}
-alert('El producto ya existe, puedes consultarlo <a href="{{ status_answer.exist }}">aqui</a>')
+    $('#advertenciaproductoyaexiste').modal('show'); 
+
   {% endif %}
   {% if status_answer.error %}
 alert('Ha habido un error en el formulario.Debería de ser revisado en Javascript antes de enviarlo. Si persiste ponte en contacto con nosotros y cuentanos que ha dicho: {{ status_answer.error  }}');
@@ -78,7 +79,34 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
 });
 </script>
 {% endblock %}
+{% block modal %}
+{% if status_answer %}
+  {% if status_answer.exist %}
+<div class="container">
 
+        <div class="modal" id="advertenciaproductoyaexiste">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-warning">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Advertencia, este producto ya existe</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Si quiere modificar este producto <a href="{{ status_answer.exist }}">pinche aqui</a></p>
+                        <p>Pulse cerrar si quiere volver al formulario anterior y revisar los datos de producto.</p>
+                        <p>Compruebe que la referencia de su producto es la adecuada y no pertenece a otro producto.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+  {% endif %}
+{% endif %}
+</div>
+{% endblock %}
 <div class="container">
 {% block left_menu_producto %}
 {% endblock %}
