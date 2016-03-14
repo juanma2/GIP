@@ -133,3 +133,14 @@ Todo:
 
 Pedido minimo?
 
+
+proveedor/producto/
+- Make only one product shown for each tarifa...
+Todo:
+- for godness sake, add a timestamp to the product, so you can sort by last creation/modifciation
+
+proveedor/add_producto
+- may happen that tarifa is empty..nothing will be created, and nothing will be returned, JS shuold help with this. and allow us to create 
+products with only some tarifas and not all of them.
+
+
