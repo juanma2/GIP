@@ -241,3 +241,22 @@ def add_producto_proveedor(request, proveedor_id):
               }
   return render(request, 'proveedor/add_producto_bootstrap_proveedor.html', context)
 
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def masive_add_producto_proveedor(request,proveedor_id):
+  current_user = request.user
+  username = str(current_user.username)
+  current_page = "Productos"
+  status_answer = {}
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  categorias_list = Categoria.objects.all()
+  ##Check if the proveedor is the right one... avoid requests from another providers
+  context= { 'username': username,
+             'current_page': current_page,
+             'status_answer': status_answer,
+             'proveedor': proveedor,
+             'categorias_list': categorias_list,
+              }
+  return render(request, 'proveedor/masive_product_bootstrap_proveedor.html', context)
+
