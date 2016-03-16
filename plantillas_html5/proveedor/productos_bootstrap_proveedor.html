@@ -24,7 +24,77 @@
                         overflow:visible;
                         cursor: pointer;
                 }
-
+ /*  =========================
+ 		INTENTO CON FLEXBOX <script src="https://gist.github.com/aquistamos/79c1a3b512910b45ad26.js"></script>
+ 	 ========================= */ 
+.gallery {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 980px;
+}
+.gallery li {
+    box-sizing: border-box;
+    display: flex;
+    float: left;
+    padding: 0.625rem;
+    position: relative;
+    transition: width 0.3s ease-out 0s;
+    width: 25%;
+}
+.gallery li .box {
+    background-color: #fff;
+    overflow: hidden;
+    padding: 6px 6px 30px;
+    position: relative;
+}
+.gallery li figure {
+    display: block;
+    margin-bottom: 6px;
+    width: 100%;
+}
+.gallery li img {
+    height: auto;
+    width: 100%;
+}
+.gallery li h3 {
+    color: #000;
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 100%;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+.gallery li time {
+    bottom: 0;
+    box-sizing: border-box;
+    font-weight: 400;
+    left: 0;
+    padding: 6px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+/*  ==.gallery li:nth-child(2n) .box {
+    background: #eee none repeat scroll 0 0;
+}
+== */ 
+@media screen and (max-width: 992px) {
+.gallery {
+    width: auto;
+}
+}
+@media screen and (max-width: 768px) {
+.gallery li {
+    width: 50%;
+}
+}
+@media screen and (max-width: 468px) {
+.gallery li {
+    width: 100%;
+}
+}
     </style>
 
 <script>
@@ -130,6 +200,32 @@ subcategoria = '{{ search_parameters.subcategoria }}';
 
 }
 
+function delprod(product_id){
+    alert('cliecked!!')
+    var form = $('#form_del_prod');
+
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/proveedor/del_product/{{ proveedor.id }}/' + product_id,
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          //remove all the products!!, this will be an issue, with other searches already done in Database
+          document.getElementById('row_elem_'+response['lista_id']+'_'+response['elemento_id']).remove()
+          alert(response['msg']);
+
+        }
+
+      } );
+
+
+}
+
+
 $(document).ready(function() {
 var form = $('#send_lista_info');
 populate_form();
@@ -209,12 +305,13 @@ populate_form();
             </h4>
             <!--empieza lo gordo que se muestra-->
             <!--empieza celda producto-->
+<ul  class="gallery">            
 {% for producto in product_list %}
-
-            <div class="col-md-3">
-             <div class="cortandotextonombre">
-              <h4 class="text-center">{{ producto.nombre }}</h4>
-             </div>
+<li>
+            <div class="box">
+             
+              <h4 class="text-center  cortandotextonombre">{{ producto.nombre }}</h4>
+             
               <img src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" class="img-responsive">
               <h3 class="text-center">Precio: {{ producto.precio }}</h3>
                 <div class="cortandodescripcion">
@@ -223,17 +320,22 @@ populate_form();
                   <p class="contenido">{{ producto.descripcion }}</p>
                 </div>
                   <a href="/proveedor/{{ proveedor.id  }}/producto/{{ producto.id }}/" class="btn btn-primary">Editar</a>
-                  <a href="" class="btn btn-primary">Eliminar</a>
+                  <a href="#" onclick="javascript: delprod('{{ producto.id }}')" class="btn btn-primary">Eliminar</a>
             </div>
+</li>
 {% endfor %}
             <!--acaba celda producto-->
-
+</ul>
 
 {% endblock %}
 <form method='post' id='send_lista_info' action="#">
      <input type="hidden" value="" />
      {% csrf_token %}
 </form>
+<form id="form_del_prod" action="/del_product/{{ proveedor.id }}/" method="post">
+     {% csrf_token %}
+</form>
+
 {% endblock %}
 
 {% block pagination %}
