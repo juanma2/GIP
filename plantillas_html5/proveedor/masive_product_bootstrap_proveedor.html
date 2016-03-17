@@ -1,10 +1,12 @@
 {% extends "proveedor/base_bootstrap_proveedor.html" %}
+
 {% load staticfiles %}
 {% block purejavascript %}
   
 {% endblock %}
 <div class="container">
-{% block left_menu_producto %}
+{% block left_menu_productos %}
+{% include "proveedor/menu_producto_bootstrap_proveedor.html" %}
 {% endblock %}
 
 {% block content %}

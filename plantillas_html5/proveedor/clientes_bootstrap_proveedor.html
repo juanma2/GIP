@@ -1,5 +1,4 @@
 {% extends "proveedor/base_bootstrap_proveedor.html" %}
-
 {% load staticfiles %}
 {% block purejavascript %}
     <style>
@@ -309,9 +308,10 @@ populate_form();
 
 
 <div class="container">
-{% block left_menu_productos %}
-{% include "proveedor/menu_producto_bootstrap_proveedor.html" %}
+{% block left_menu_clientes %}
+{% include "proveedor/menu_cliente_bootstrap_proveedor.html" %}
 {% endblock %}
+
 
 {% block content %}
 
@@ -320,7 +320,7 @@ populate_form();
           <div class="col-md-9">
             <!--empieza menu buscador-->
             <!--Localizador colapse !-->
-            <nav class="navbar navbar-default" role="navigation">
+                        <nav class="navbar navbar-default" role="navigation">
               <div class="container-fluid">
                 <div class="navbar-header">
                   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#localizacolapse">
@@ -329,88 +329,98 @@ populate_form();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                   </button>
-                  <a href="/proveedor/productos/" class="navbar-brand"><span class="glyphicon glyphicon-search"></span> Nueva busqueda</a>
+                  <a href="#" class="navbar-brand"><span class="glyphicon glyphicon-search"></span> Nueva busqueda</a>
                 </div>
                 <div class="collapse navbar-collapse" id="localizacolapse">
                   <ul class="nav navbar-nav">
                     <li></li>
                   </ul>
                   <div>
-                    <form id="search_text" class="navbar-form navbar-right" action="/proveedor/productos/" method="post" role="select">
-                      {% csrf_token %}
+                    <form action="./" class="navbar-form navbar-right">
                       <div class="formgroup">
-                        <input id="search" type="text" class="form-control" placeholder="Introduce texto">
-                        <button class="btn btn-default" onclick="submitform();return false;" >Buscar</button>
+                        <input type="search" class="form-control" placeholder="Buscar">
+                        <button class="btn btn-default">Buscar</button>
                       </div>
                     </form>
-                    <form id="search_cat" class="navbar-form navbar-right" action="/proveedor/productos/" method="post" role="select">
-                      {% csrf_token %}
-                      <div class="form-group">
-                        <div>
-                          <select name="Categoria" class="form-control" id="categoria">
-                            <option id='0' class='' value="0"> Elige una categoria </option>
-        {% for categoria in categorias_list %}
-            <option id='cat_{{ categoria.id }}' value="{{categoria.id}}" class={{ categoria.id }}> {{ categoria.nombre }} </option>
-        {% endfor %}
-                          </select>
-        {% if sub_categorias_list %}
-          <select name="SubCategoria" id="subcategoria" class="form-control">
-            <option id='0' class='' value="0"> Elige una sub-categoria </option>
-          {% for subcategoria in sub_categorias_list %}
-                    <option id='sub_cat_{{ subcategoria.id }}' class={{ subcategoria.id }}> {{ subcategoria.nombre }} </option>
-          {% endfor %}
-        {% endif %}
 
-                          <button type="submit" class="btn btn-default" id="search" onclick="submitform();return false;">Buscar</button>
-                        </div>
-                        <!--Localizador select colapse !-->
-                      </div>
-                    </form>
                   </div>
                 </div>
               </div>
             </nav>
+
             <!--acaba menu buscador-->
 {% endblock %}
 {% block dataset %}
             <!--Lo que se está haciendo, Alta producto, actualizacionmasiva....-->
-            <h4>Ultimos productos creados
-              <span class="glyphicon glyphicon-th"></span>
-              <span class="glyphicon glyphicon-list"></span>
-            </h4>
-            <!--empieza lo gordo que se muestra-->
-            <!--empieza celda producto-->
-<ul  class="gallery">            
-{% for producto in product_list %}
-<li>
-            <div class="box">
-             
-              <h4 class="text-center  cortandotextonombre">{{ producto.nombre }}</h4>
-             
-              <img src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" class="img-responsive">
-              <h3 class="text-center">Precio: {{ producto.precio }}</h3>
-                <div class="cortandodescripcion">
-                  <p class="contenido"><b>Tarifa: {{ producto.tarifa }}</b></p>
-                  <p class="contenido"><b>Referencia: {{ producto.product_ref }}</b></p>
-                  <p class="contenido">{{ producto.descripcion }}</p>
-                </div>
-                  <a href="/proveedor/{{ proveedor.id  }}/producto/{{ producto.id }}/" class="btn btn-primary">Editar</a>
-                  <a href="#" onclick="javascript: show_modal('{{ producto.id }}')" class="btn btn-primary">Eliminar</a>
+            <h4>Ultimos clientes con actividad lo que nos venga mejor mostrar en la entrada de clientes</h4>
+            <hr>
+            <div class="row">
+              <div class="col-md-12">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>C.I.F.</th>
+                      <th>Razon Social</th>
+                      <th>Provincia</th>
+                      <th>C.P.</th>
+                      <th>Ult. Pedido</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>35195645-B</td>
+                      <td>Mark S.L.</td>
+                      <td>Sevilla</td>
+                      <td>41007</td>
+                      <td>865472651</td>
+                    </tr>
+                    <tr>
+                      <td>64279515-B</td>
+                      <td>Jacob &amp; Morgan Gmb</td>
+                      <td>Germania</td>
+                      <td>28080</td>
+                      <td>785562662</td>
+                    </tr>
+                    <tr>
+                      <td>86457826-B</td>
+                      <td>
+                        <a href="fichaclienteproveedortabpanedef.html">Gutierrez y Fernandez S.L.</a>
+                      </td>
+                      <td>Pamplona</td>
+                      <td>32015</td>
+                      <td><a href="#">796215635</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-</li>
-{% endfor %}
-            <!--acaba celda producto-->
-</ul>
+            <div class="row">
+              <ul class="pagination pagination-sm">
+                <li class="disabled">
+                  <a href="#">«</a>
+                </li>
+                <li class="active">
+                  <a href="#">1</a>
+                </li>
+                <li>
+                  <a href="#">2</a>
+                </li>
+                <li>
+                  <a href="#">3</a>
+                </li>
+                <li>
+                  <a href="#">4</a>
+                </li>
+                <li>
+                  <a href="#">5</a>
+                </li>
+                <li>
+                  <a href="#">»</a>
+                </li>
+              </ul>
+            </div>
 
 {% endblock %}
-<form method='post' id='send_lista_info' action="#">
-     <input type="hidden" value="" />
-     {% csrf_token %}
-</form>
-<form id="form_del_prod" action="/del_product/{{ proveedor.id }}/" method="post">
-     {% csrf_token %}
-</form>
-
 {% endblock %}
 
 {% block pagination %}
@@ -419,16 +429,16 @@ populate_form();
             <div class="col-md-12">
 
                             <ul class="pagination pagination-sm">
-              {% if product_list.has_previous %}
+              {% if client_list.has_previous %}
                                 <li>
                                     <a href="#">«</a>
                                 </li>
               {% endif %}
                                 <li>
-                                    Pag. <a href="#">{{ product_list.number }}</a> de {{ product_list.paginator.num_pages }}
+                                    Pag. <a href="#">{{ client_list.number }}</a> de {{ client_list.paginator.num_pages }}
                                </li>
-              {% if product_list.has_next %}
-                  <a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;">»</a>
+              {% if client_list.has_next %}
+                  <a href="#" onclick="submitform({{ client_list.next_page_number }} );return false;">»</a>
               {% endif %}
            </div>
                          </div>

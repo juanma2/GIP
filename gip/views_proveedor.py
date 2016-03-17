@@ -306,3 +306,20 @@ def del_product(request,proveedor_id,product_id):
   else:
       return HttpResponseRedirect(reverse('nopnopnopnpo'))
 
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def clientes_proveedor(request):
+  #we will retrieve Promo and show per Tarifa/User
+  current_user = request.user
+  username = str(current_user.username)
+  current_page = "Productos"
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  print proveedor.id
+  print proveedor
+  context= { 'username': username,
+             'current_page': current_page,
+             'proveedor': proveedor,
+              }
+  return render(request, 'proveedor/clientes_bootstrap_proveedor.html', context)
+

@@ -108,7 +108,8 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
 {% endif %}
 {% endblock %}
 <div class="container">
-{% block left_menu_producto %}
+{% block left_menu_productos %}
+{% include "proveedor/menu_producto_bootstrap_proveedor.html" %}
 {% endblock %}
 
 {% block content %}

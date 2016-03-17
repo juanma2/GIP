@@ -72,8 +72,10 @@ populate_categoria();
 {% endblock %}
 
 <div class="container">
-{% block left_menu_producto %}
+{% block left_menu_productos %}
+{% include "proveedor/menu_producto_bootstrap_proveedor.html" %}
 {% endblock %}
+
 
 {% block content %}
 

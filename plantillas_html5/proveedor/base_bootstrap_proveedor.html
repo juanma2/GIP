@@ -50,7 +50,7 @@
               <a href="/proveedor/productos/">Productos</a>
             </li>
             <li>
-              <a href="#">Clientes</a>
+              <a href="/proveedor/clientes/">Clientes</a>
             </li>
             <li>
               <a href="#">Pedidos</a>
@@ -71,15 +71,9 @@
 
       <div class="container">
 {% block left_menu_productos %}
-       <div class="row">
-          <div class="col-md-2">
-            <div class="list-group table-of-contents">
-              <a class="list-group-item" href="/proveedor/{{ proveedor.id }}/add_producto/">Alta Producto</a>
-              <a class="list-group-item active" href="/proveedor/productos/">Editar Producto</a>
-              <a class="list-group-item" href="/proveedor/productos/">Eliminar Producto</a>
-              <a class="list-group-item" href="/proveedor/{{ proveedor.id }}/act_masive/">Actualizacion Masiva</a>
-            </div>
-          </div>
+{% endblock %}
+
+{% block left_menu_clientes %}
 
 {% endblock %}
 
