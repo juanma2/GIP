@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.contrib.auth.models import Group, User
+from django.utils.timezone import now
 
 #I wish to place it out of here, but... is not working in helpers :(
 def number_invoice():
@@ -82,6 +83,8 @@ class Producto(models.Model):
     categoria = models.ForeignKey(Categoria)
     image_url = models.CharField(max_length=300)
     especificaciones = models.CharField(max_length=2000,default="need to add WYSIWYG")
+    fecha_creacion = models.DateTimeField(default = now)
+    fecha_actualizacion = models.DateTimeField(default = now, null=True, blank=True )
     #add something like disable.
     baja = models.BooleanField(default=False)
     def ha_caducado(self):
@@ -114,13 +117,22 @@ class Pedidos(models.Model):
     producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
     total = models.DecimalField(max_digits=25, decimal_places=4)
     PEDIDOS_ESTADOS = (
-        ('400', 'Pendiente Proveedor'),
-        ('500', 'Pendiente Cliente'),
-        ('600', 'Aceptado'),
-        ('700', 'Rechazado'),
-        ('800', 'Cancelado'),
-        ('900', 'Enviado'),
-        ('1000', 'Finalizado'),
+        ('1000','Recepcion'),
+        ('1100','Rechazado'),
+        ('1110','Comunicacion Rechazado----- '),
+        ('1120','Recepcion Rechazado'),
+        ('1200','Pactar Alternativa'),
+        ('1210','Reformular Pedido'),
+        ('1220','No Aceptado Cliente'),
+        ('1230','Aceptado Cliente'),
+        ('1211','Recepcion Rechazoi----- '),
+        ('2000','Cursar Pedido'),
+        ('3000','En preparacion'),
+        ('4000','En camino'),
+        ('4000','Entregado'),
+        ('5000','Cobrado'),
+        ('XXXX','Historico'),
+        
     )
     estados = models.CharField(max_length=4, choices=PEDIDOS_ESTADOS)
     cliente = models.ManyToManyField(User)
