@@ -246,9 +246,27 @@ $.ajaxSetup({
         success: function( response ) {
           //remove all the products!!, this will be an issue, with other searches already done in Database
           alert(response['msg']);
-          submitform();
+  myform = document.forms["search_cat"];
+  cat = document.getElementById('categoria').options;
 
-        }
+  cat_id = cat[cat.selectedIndex].id
+  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
+  // cat_id == 0 //is the default choose a category
+  
+  if ( cat_id != 0 || document.getElementById('search').value != "")
+  {
+          submitform();
+  }else
+  {
+location.reload()
+
+  }
+  
+  
+        
+
+
+         }
 
       } );
 
