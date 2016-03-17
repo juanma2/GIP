@@ -24,4 +24,6 @@ urlpatterns = [
     url(r'^(?P<proveedor_id>[0-9]+)/producto/(?P<producto_id>[0-9]+)/$', views_proveedor.edit_producto_proveedor, name='edit_producto_proveedor'),
     url(r'^(?P<proveedor_id>[0-9]+)/add_producto/$', views_proveedor.add_producto_proveedor, name='add_producto_proveedor'),
     url(r'^(?P<proveedor_id>[0-9]+)/act_masive/$', views_proveedor.masive_add_producto_proveedor, name='masive_add_producto_proveedor'),
+    url(r'^del_product/(?P<proveedor_id>[0-9]+)/(?P<product_id>[0-9]+)$', views_proveedor.del_product, name='del_product'),
+
 ]

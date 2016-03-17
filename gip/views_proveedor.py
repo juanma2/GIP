@@ -4,6 +4,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.shortcuts import redirect
 
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+from django.core.urlresolvers import reverse
+
+
 from gip.models import Producto
 
 import sys, time
@@ -252,6 +257,7 @@ def masive_add_producto_proveedor(request,proveedor_id):
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
   categorias_list = Categoria.objects.all()
   ##Check if the proveedor is the right one... avoid requests from another providers
+  ##TODO:Add a lot of logic... is not done!!
   context= { 'username': username,
              'current_page': current_page,
              'status_answer': status_answer,
@@ -259,4 +265,50 @@ def masive_add_producto_proveedor(request,proveedor_id):
              'categorias_list': categorias_list,
               }
   return render(request, 'proveedor/masive_product_bootstrap_proveedor.html', context)
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def del_product(request,proveedor_id,product_id):
+  current_user = request.user
+  username = str(current_user.username)
+  current_page = "Productos"
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  print "we are in the right del proudc of proveedor"
+  if str(proveedor.id) == proveedor_id:
+    if request.is_ajax():
+      #check that the element belong to the list
+      if len(Elemento.objects.filter(id = elemento_id,lista_id = lista_id)) == 1:
+       user_listas = Cliente.objects.get(id=current_user.id).listas.all().values_list('id',flat=True)
+       #print user_listas
+       #print lista_id
+       #check that the user own the list
+       if int(lista_id) in user_listas:
+         #print "the user has this list"
+         e = Elemento(id = elemento_id)
+         e.delete()
+         #print e.id
+         data = {
+           'msg':'Producto eliminado!!' ,
+           '0':'reload',
+           'lista_id': lista_id,
+           'elemento_id': elemento_id ,
+         }
+       else:
+         #dammm try catch!!
+         data = {
+           'msg':'el producto ya existe' ,
+           '1':'reset'
+         }
+
+      else:
+        data = {
+          'msg':'el producto ya existe' ,
+          '1':'reset'
+        }
+      pay_load = json.dumps(data)
+      return HttpResponse(pay_load, content_type="application/json")
+    else:
+      return HttpResponseRedirect(reverse('productos_cliente'))
+  else:
+      return HttpResponseRedirect(reverse('nopnopnopnpo'))
 
