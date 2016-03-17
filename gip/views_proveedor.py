@@ -13,6 +13,8 @@ from gip.models import Producto
 
 import sys, time
 import datetime
+import json
+
 
 
 
@@ -71,14 +73,14 @@ def productos_proveedor(request):
       full_search = full_search & search_subcat
     #add the provider here
     full_search = full_search & proveedor_search
-    all_product_list = Producto.objects.filter(full_search).order_by('-fecha_actualizacion')
+    all_product_list = Producto.objects.filter(full_search).order_by('-fecha_actualizacion').exclude(baja=True)
     paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
     if 'page' in search_parameters:
       page = search_parameters['page']
     else:
       page = 1
   else:
-    all_product_list = Producto.objects.filter(proveedor= proveedor.id).order_by('-id')
+    all_product_list = Producto.objects.filter(proveedor= proveedor.id).order_by('-fecha_actualizacion').exclude(baja=True)
     #this is he default search
     paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
     try:
@@ -274,38 +276,29 @@ def del_product(request,proveedor_id,product_id):
   username = str(current_user.username)
   current_page = "Productos"
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
-  print "we are in the right del proudc of proveedor"
+  print "requested product delete"
+  print proveedor_id
+  print product_id
   if str(proveedor.id) == proveedor_id:
     if request.is_ajax():
-      #check that the element belong to the list
-      if len(Elemento.objects.filter(id = elemento_id,lista_id = lista_id)) == 1:
-       user_listas = Cliente.objects.get(id=current_user.id).listas.all().values_list('id',flat=True)
-       #print user_listas
-       #print lista_id
-       #check that the user own the list
-       if int(lista_id) in user_listas:
-         #print "the user has this list"
-         e = Elemento(id = elemento_id)
-         e.delete()
-         #print e.id
-         data = {
+      current_product = Producto.objects.get(id = product_id)
+      all_of_them = Producto.objects.filter(product_ref = current_product.product_ref)
+      try:
+        for i in all_of_them:
+          i.baja = True
+          i.save()
+          i.id 
+        data = {
            'msg':'Producto eliminado!!' ,
            '0':'reload',
-           'lista_id': lista_id,
-           'elemento_id': elemento_id ,
          }
-       else:
+        print "Job done!!"
+      except:
          #dammm try catch!!
          data = {
-           'msg':'el producto ya existe' ,
-           '1':'reset'
+           'msg':'No ha sido posible realizar su peticin' ,
+           '0':'reload'
          }
-
-      else:
-        data = {
-          'msg':'el producto ya existe' ,
-          '1':'reset'
-        }
       pay_load = json.dumps(data)
       return HttpResponse(pay_load, content_type="application/json")
     else:

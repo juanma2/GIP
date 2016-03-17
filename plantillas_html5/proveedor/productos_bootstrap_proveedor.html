@@ -200,10 +200,40 @@ subcategoria = '{{ search_parameters.subcategoria }}';
 
 }
 
+function show_modal(product_id)
+{
+
+document.getElementById('product_to_delete').value=product_id;
+$('#advertenciaborrarproducto').modal('show'); 
+
+}
 function delprod(product_id){
-    alert('cliecked!!')
+    var product_id = document.getElementById('product_to_delete').value
     var form = $('#form_del_prod');
 
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
      url =
       $.ajax( {
         type: "POST",
@@ -215,8 +245,8 @@ function delprod(product_id){
         },
         success: function( response ) {
           //remove all the products!!, this will be an issue, with other searches already done in Database
-          document.getElementById('row_elem_'+response['lista_id']+'_'+response['elemento_id']).remove()
           alert(response['msg']);
+          submitform();
 
         }
 
@@ -232,7 +262,32 @@ populate_form();
 
 });
 </script>
+<div class="container">
+
+        <div class="modal" id="advertenciaborrarproducto">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-warning">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Advertencia, este producto ya existe</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Estas seguro que desea borrar el producto?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="delprod()">Borrar</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="hidden" id="product_to_delete">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
 {% endblock %}
+
+
 
 <div class="container">
 {% block left_menu_proveedor %}
@@ -273,14 +328,14 @@ populate_form();
                       <div class="form-group">
                         <div>
                           <select name="Categoria" class="form-control" id="categoria">
-                            <option id='0' class=''> Elige una categoria </option>
+                            <option id='0' class='' value="0"> Elige una categoria </option>
         {% for categoria in categorias_list %}
             <option id='cat_{{ categoria.id }}' value="{{categoria.id}}" class={{ categoria.id }}> {{ categoria.nombre }} </option>
         {% endfor %}
                           </select>
         {% if sub_categorias_list %}
           <select name="SubCategoria" id="subcategoria" class="form-control">
-            <option id='0' class=''> Elige una sub-categoria </option>
+            <option id='0' class='' value="0"> Elige una sub-categoria </option>
           {% for subcategoria in sub_categorias_list %}
                     <option id='sub_cat_{{ subcategoria.id }}' class={{ subcategoria.id }}> {{ subcategoria.nombre }} </option>
           {% endfor %}
@@ -320,7 +375,7 @@ populate_form();
                   <p class="contenido">{{ producto.descripcion }}</p>
                 </div>
                   <a href="/proveedor/{{ proveedor.id  }}/producto/{{ producto.id }}/" class="btn btn-primary">Editar</a>
-                  <a href="#" onclick="javascript: delprod('{{ producto.id }}')" class="btn btn-primary">Eliminar</a>
+                  <a href="#" onclick="javascript: show_modal('{{ producto.id }}')" class="btn btn-primary">Eliminar</a>
             </div>
 </li>
 {% endfor %}
