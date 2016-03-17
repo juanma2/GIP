@@ -117,22 +117,21 @@ class Pedidos(models.Model):
     producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
     total = models.DecimalField(max_digits=25, decimal_places=4)
     PEDIDOS_ESTADOS = (
-        ('1000','Recepcion'),
-        ('1100','Rechazado'),
-        ('1110','Comunicacion Rechazado----- '),
-        ('1120','Recepcion Rechazado'),
-        ('1200','Pactar Alternativa'),
-        ('1210','Reformular Pedido'),
-        ('1220','No Aceptado Cliente'),
-        ('1230','Aceptado Cliente'),
-        ('1211','Recepcion Rechazoi----- '),
-        ('2000','Cursar Pedido'),
-        ('3000','En preparacion'),
-        ('4000','En camino'),
-        ('4000','Entregado'),
-        ('5000','Cobrado'),
-        ('XXXX','Historico'),
-        
+        ('10000','Recepcion'),
+        ('11000','Rechazado'),
+        ('11100','Comunicacion Rechazado Cliente'),
+        ('11200','Recepcion Rechazado'),
+        ('12000','Pactar Alternativa'),
+        ('12100','Reformular Pedido'),
+        ('12200','No Aceptado Cliente'),
+        ('12300','Aceptado Cliente'),
+        ('12110','Recepcion Rechazo Proveedor'),
+        ('20000','Cursar Pedido'),
+        ('30000','En preparacion'),
+        ('40000','En camino'),
+        ('40000','Entregado'),
+        ('50000','Cobrado'),
+        ('90000','Historico'),
     )
     estados = models.CharField(max_length=4, choices=PEDIDOS_ESTADOS)
     cliente = models.ManyToManyField(User)
