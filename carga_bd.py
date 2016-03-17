@@ -137,6 +137,7 @@ for i in data:
   ##Not tested, p may fail!!
   for j in Group.objects.all().filter(name__icontains='proveedor').exclude(name='proveedor'):
     for k in range(1,MAX_TARIFAS):
+      #May crash due to fechacreacion o fechaupdate... they has default, shoudl not happen
       d = Producto(nombre = data[i][0].encode('utf-8'), descripcion = data[i][5].encode('utf-8'), formato = data[i][4].encode('utf-8'), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor_id=j.id,tarifa_id=k , categoria_id=random.randint(1,MAX_CATEGORIAS-1 ),image_url= data[i][7].encode('utf-8'), product_ref=data[i][3].encode('utf-8'), precio = random.randint(1,100) )
     d.save()
 #
