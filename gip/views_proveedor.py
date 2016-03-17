@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 from gip.models import Producto
 
 import sys, time
-
+import datetime
 
 
 
@@ -71,7 +71,7 @@ def productos_proveedor(request):
       full_search = full_search & search_subcat
     #add the provider here
     full_search = full_search & proveedor_search
-    all_product_list = Producto.objects.filter(full_search).order_by('-id')
+    all_product_list = Producto.objects.filter(full_search).order_by('-fecha_actualizacion')
     paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
     if 'page' in search_parameters:
       page = search_parameters['page']
@@ -136,6 +136,7 @@ def edit_producto_proveedor(request, proveedor_id, producto_id):
       if edit_parameters[current_tarifa] and edit_parameters[current_tarifa] != [u'']:
         p.precio = edit_parameters[current_tarifa]
         edit_parameters.pop(current_tarifa)
+      p.fecha_actualizacion = datetime.datetime.now()
       p.save()
       for i in tarifas_availables:
         current_tarifa = 'tarifa_'+str(i.id)
