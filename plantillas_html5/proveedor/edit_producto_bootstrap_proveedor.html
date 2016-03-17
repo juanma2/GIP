@@ -100,7 +100,7 @@ populate_categoria();
                         <label for="categoria" class="col-lg-2 control-label">Categoria</label>
                         <div class="col-lg-10">
                           <select name="categoria" class="form-control" id="categoria">
-                            <option id='0' class=''> Elige una categoria </option>
+                            <option id='0' class='' value="0"> Elige una categoria </option>
         {% for categoria in categorias_list %}
             <option id='cat_{{ categoria.id }}' value="{{categoria.id}}" class={{ categoria.id }}> {{ categoria.nombre }} </option>
         {% endfor %}
