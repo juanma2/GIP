@@ -136,10 +136,15 @@ Pedido minimo?
 
 proveedor/producto/
 - Make only one product shown for each tarifa...
+- Add filter by baja en prodcutos
+- Add safe to descripcion, so you will not see html tags
 
 
 proveedor/add_producto
 - may happen that tarifa is empty..nothing will be created, and nothing will be returned, JS shuold help with this. and allow us to create 
 products with only some tarifas and not all of them.
 
+proveedor/clientes:
+ - Must add data to model:
+  * baja
 
