@@ -104,31 +104,8 @@
 function submitform(page) {
   page = page || 0;
   dirty = 0;
-  myform = document.forms["search_cat"];
-  myform.page = '{{ product_list.number }}';
-  cat = document.getElementById('categoria').options;
-
-  cat_id = cat[cat.selectedIndex].id
-  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
-  // cat_id == 0 //is the default choose a category
-  
-  if ( cat_id != 0 )
-  {
-    addHidden(myform,'categoria', cat_id)
-    dirty = 1;
-  }
-
-  if (document.getElementById('subcategoria'))
-  {
-    subcat = document.getElementById('subcategoria').options
-    subcat_id = subcat[subcat.selectedIndex].id
-
-    if (subcat_id != 0 )
-    {
-      addHidden(myform,'subcategoria', subcat_id)
-      dirty = 1;
-    }
-  }
+  myform = document.forms["search_text"];
+  myform.page = '{{ client_list.number }}';
 
   if (document.getElementById('search').value != "")
   {
@@ -141,7 +118,9 @@ function submitform(page) {
 
     dirty = 1;
   }
+  alert('before check page')
   if (page != 0 ){
+    alert(page)
     addHidden(myform,'page', page)
     dirty = 1
   }
@@ -281,7 +260,6 @@ populate_form();
 });
 </script>
 <div class="container">
-
         <div class="modal" id="advertenciaborrarproducto">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -290,12 +268,12 @@ populate_form();
                         <h4 class="modal-title">Advertencia, este producto ya existe</h4>
                     </div>
                     <div class="modal-body">
-                        <p>Estas seguro que desea borrar el producto?</p>
+                        <p>Estas seguro que desea borrar el cliente?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="delprod()">Borrar</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="hidden" id="product_to_delete">
+                        <input type="hidden" id="client_to_delete">
 
                     </div>
                 </div>
@@ -329,17 +307,19 @@ populate_form();
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                   </button>
-                  <a href="#" class="navbar-brand"><span class="glyphicon glyphicon-search"></span> Nueva busqueda</a>
+                  <a href="/proveedor/clientes/" class="navbar-brand"><span class="glyphicon glyphicon-search"></span> Nueva busqueda</a>
                 </div>
                 <div class="collapse navbar-collapse" id="localizacolapse">
                   <ul class="nav navbar-nav">
                     <li></li>
                   </ul>
                   <div>
-                    <form action="./" class="navbar-form navbar-right">
+                    <form id="search_text" action="/proveedor/clientes/" method="post" class="navbar-form navbar-right">
+                      {% csrf_token %}
                       <div class="formgroup">
-                        <input type="search" class="form-control" placeholder="Buscar">
-                        <button class="btn btn-default">Buscar</button>
+                        <input id="search" type="text" class="form-control" placeholder="Introduce texto">
+
+                        <button onclick="submitform();return false;" class="btn btn-default">Buscar</button>
                       </div>
                     </form>
 
@@ -367,59 +347,23 @@ populate_form();
                     </tr>
                   </thead>
                   <tbody>
+{% for user in client_list %}
                     <tr>
-                      <td>35195645-B</td>
-                      <td>Mark S.L.</td>
-                      <td>Sevilla</td>
-                      <td>41007</td>
-                      <td>865472651</td>
-                    </tr>
-                    <tr>
-                      <td>64279515-B</td>
-                      <td>Jacob &amp; Morgan Gmb</td>
-                      <td>Germania</td>
-                      <td>28080</td>
-                      <td>785562662</td>
-                    </tr>
-                    <tr>
-                      <td>86457826-B</td>
+                      <td>{{ user.cliente.cif }}</td>
+                      <td>{{ user.cliente.nombre }}</td>
+                      <td>{{ user.cliente.ciudad }}</td>
                       <td>
-                        <a href="fichaclienteproveedortabpanedef.html">Gutierrez y Fernandez S.L.</a>
-                      </td>
-                      <td>Pamplona</td>
-                      <td>32015</td>
-                      <td><a href="#">796215635</a></td>
+{% for area in user.cliente.destino_reparto.all %}
+{{ area }},
+{% endfor %}
+</td>
+                      <td>{{ user.cliente.telefono }}</td>
                     </tr>
+{% endfor %}
                   </tbody>
                 </table>
               </div>
             </div>
-            <div class="row">
-              <ul class="pagination pagination-sm">
-                <li class="disabled">
-                  <a href="#">«</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li>
-                  <a href="#">»</a>
-                </li>
-              </ul>
-            </div>
-
 {% endblock %}
 {% endblock %}
 
@@ -438,7 +382,7 @@ populate_form();
                                     Pag. <a href="#">{{ client_list.number }}</a> de {{ client_list.paginator.num_pages }}
                                </li>
               {% if client_list.has_next %}
-                  <a href="#" onclick="submitform({{ client_list.next_page_number }} );return false;">»</a>
+                  <a href="#" onclick="submitform({{ client_list.next_page_number }});return false;">»</a>
               {% endif %}
            </div>
                          </div>
