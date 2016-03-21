@@ -373,7 +373,7 @@ populate_form();
                             <ul class="pagination pagination-sm">
               {% if client_list.has_previous %}
                                 <li>
-                                    <a href="#">«</a>
+                                    <a href="#" onclick="submitform({{ client_list.previous_page_number }});return false;" >«</a>
                                 </li>
               {% endif %}
                                 <li>
