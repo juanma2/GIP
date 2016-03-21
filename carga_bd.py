@@ -58,7 +58,6 @@ print "Current time " + time.strftime("%X")
 print "creating providers... "
 for i in range(1,MAX_PROVEEDORES):
   user = User.objects.create_user('PROVEEDOR'+str(i), 'p@p.com', 'password')
-  #this may not work... 
   grupo = Group.objects.create(name='Empresa Proveedor'+str(i))
   user.groups.add(grupo)
   user.groups.add(grupoproveedor)
@@ -79,9 +78,6 @@ print "Current time " + time.strftime("%X")
 #to do that, i need Tarifas 125 tarifas and 2.5K CP
 print "creating tarifas... "
 for i in range(1,MAX_TARIFAS):
-  ##You must choose elproveedor_id from groups, cannot be a random int any more!!
-  ##Not tested, can fail!!
-  #a = Tarifas(nombre='tarifa'+str(i), descripcion='descripcion'+str(i), elproveedor_id=random.randint(1,MAX_PROVEEDORES- 1 ))
   for j in Group.objects.all().filter(name__icontains='proveedor').exclude(name='proveedor'):
     a = Tarifas(nombre='tarifa'+str(i), descripcion='descripcion'+str(i), elproveedor_id=j.id)
     a.save()
@@ -152,6 +148,7 @@ print "creating clients... "
 for i in range(1,MAX_CLIENTES):
   user = User.objects.create_user('CLIENTE'+str(i), 'p@p.com', 'password')
   user.groups.add(grupocliente)
+  ##HERE, redo this, You are missing the grupo de proveedor that belongs to each user....
   user.save()
   cliente = Cliente(user=user, nombre='Cliente'+str(i), descripcion='Descripcion'+str(i), cif='NIFNIFNIF'+str(i), direccion='calle direccion' ,ciudad='ciudadXX', telefono='telefono 123', contacto_nombre='Contact'+str(i) )
   #a client can has more than one CP
@@ -186,3 +183,6 @@ for i in range(1,MAX_LISTAS*MAX_ELEMENTOS*MAX_CLIENTES):
 
 print "Current time " + time.strftime("%X")
 
+
+
+##HERE, redo this, You are missing the grupo de proveedor that belongs to each user....
