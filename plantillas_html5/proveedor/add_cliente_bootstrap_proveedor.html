@@ -1,0 +1,505 @@
+{% extends "proveedor/base_bootstrap_proveedor.html" %}
+{% load staticfiles %}
+{% block purejavascript %}
+
+    <!-- el editor -->
+    <script src="http://js.nicedit.com/nicEdit-latest.js" type="text/javascript"> </script>
+    <script type="text/javascript">bkLib.onDomLoaded(function() { new nicEditor(   {buttonList : ['fontSize', 'bold', 'italic', 'underline','left','center','right','justify','ol','ul','fontSize','fontFamily','fontFormat','indent','outdent', 'strikeThrough', 'subscript', 'superscript']}).panelInstance('texcontenido'); });
+    </script>
+<script>
+
+//combo_option[combo_option.selectedIndex].id
+
+function submit_edit(create) {
+    niceObj = nicEditors.findEditor('texcontenido');
+    wyswygc = niceObj.getContent()
+    
+    myform = document.forms["edit_product"];
+    addHidden(myform,'texcontenido', wyswygc)
+    addHidden(myform,'create', create)
+    myform.submit();
+}
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function populate_tarifas(){
+  {% for tarifa in edit_producto %}
+    document.getElementById('tarifa_{{tarifa.tarifa.id}}').value='{{tarifa.precio }}'
+  {% endfor %}
+}
+
+function populate_categoria(){
+categoria = 'cat_{{ producto.categoria.id }}';
+  if ( categoria != ''){
+    for (i = 0; i< document.getElementById('categoria').length; i++)
+      {
+        if (document.getElementById('categoria').options[i].id == categoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('categoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+subcategoria = '{{ producto.subcategoria }}';
+  if ( subcategoria != ''){
+    for (i = 0; i< document.getElementById('subcategoria').length; i++)
+      {
+        if (document.getElementById('subcategoria').options[i].id == subcategoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('subcategoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+}
+
+$(document).ready(function() {
+populate_tarifas();
+populate_categoria();
+
+{% if status_answer %}
+  {% if status_answer.exist %}
+    $('#advertenciaproductoyaexiste').modal('show'); 
+
+  {% endif %}
+  {% if status_answer.error %}
+alert('Ha habido un error en el formulario.Debería de ser revisado en Javascript antes de enviarlo. Si persiste ponte en contacto con nosotros y cuentanos que ha dicho: {{ status_answer.error  }}');
+  {% endif %}
+{% endif %}
+});
+</script>
+{% endblock %}
+{% block modal %}
+{% if status_answer %}
+  {% if status_answer.exist %}
+<div class="container">
+
+        <div class="modal" id="advertenciaproductoyaexiste">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-warning">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Advertencia, este producto ya existe</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Si quiere modificar este producto <a href="{{ status_answer.exist }}">pinche aqui</a></p>
+                        <p>Pulse cerrar si quiere volver al formulario anterior y revisar los datos de producto.</p>
+                        <p>Compruebe que la referencia de su producto es la adecuada y no pertenece a otro producto.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+  {% endif %}
+{% endif %}
+{% endblock %}
+<div class="container">
+{% block left_menu_productos %}
+{% include "proveedor/menu_producto_bootstrap_proveedor.html" %}
+{% endblock %}
+
+{% block content %}
+
+{% block dataset %}
+          <div class="col-md-9">
+<h4>Alta nuevo cliente</h4>
+              <!--empieza lo gordo que se muestra-->
+              <form class="form-horizontal">
+              <!--Datos del cliente-->
+                <fieldset>
+                <legend>Datos del cliente <sup>*Los datos con sombra roja son obligatorios</sup></legend>
+                  <div class="form-group">
+                    <label for="NIF" class="col-lg-2 control-label">N.I.F.:</label>
+                    <div class="col-lg-10">
+                      <input class="form-control required" placeholder="N.I.F." type="text" >
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="Razón Social" class="col-lg-2 control-label">Nombre o Razón social</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="Nombre Comercial" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="Dirección" class="col-lg-2 control-label">Dirección</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="Dirección" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="C.P.:" class="col-lg-2 control-label">C.P.:</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Codigo Postal" type="text">
+                    </div>
+                    <label for="Ciudad" class="col-lg-2 control-label">Ciudad</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Ciudad" type="text">
+                    </div>
+                    <label for="TProvincia" class="col-lg-2 control-label">Provincia</label>
+                    <div class="col-lg-2">
+                      <select class="form-control" name="provincia">
+                                                        <option value='0'>Provincia</option>
+                                                        <option value='2'>~Alava</option>
+                                                        <option value='3'>Albacete</option>
+                                                        <option value='4'>Alicante/Alacant</option>
+                                                        <option value='5'>Almería</option>
+                                                        <option value='6'>Asturias</option>
+                                                        <option value='7'>~Avila</option>
+                                                        <option value='8'>Badajoz</option>
+                                                        <option value='9'>Barcelona</option>
+                                                        <option value='10'>Burgos</option>
+                                                        <option value='11'>Cáceres</option>
+                                                        <option value='12'>Cádiz</option>
+                                                        <option value='13'>Cantabria</option>
+                                                        <option value='14'>Castellón/Castelló</option>
+                                                        <option value='15'>Ceuta</option>
+                                                        <option value='16'>Ciudad Real</option>
+                                                        <option value='17'>Córdoba</option>
+                                                        <option value='18'>Cuenca</option>
+                                                        <option value='19'>Girona</option>
+                                                        <option value='20'>Las Palmas</option>
+                                                        <option value='21'>Granada</option>
+                                                        <option value='22'>Guadalajara</option>
+                                                        <option value='23'>Guipúzcoa</option>
+                                                        <option value='24'>Huelva</option>
+                                                        <option value='25'>Huesca</option>
+                                                        <option value='26'>Illes Balears</option>
+                                                        <option value='27'>Jaén</option>
+                                                        <option value='28'>A Coruña</option>
+                                                        <option value='29'>La Rioja</option>
+                                                        <option value='30'>León</option>
+                                                        <option value='31'>Lleida</option>
+                                                        <option value='32'>Lugo</option>
+                                                        <option value='33'>Madrid</option>
+                                                        <option value='34'>Málaga</option>
+                                                        <option value='35'>Melilla</option>
+                                                        <option value='36'>Murcia</option>
+                                                        <option value='37'>Navarra</option>
+                                                        <option value='38'>Ourense</option>
+                                                        <option value='39'>Palencia</option>
+                                                        <option value='40'>Pontevedra</option>
+                                                        <option value='41'>Salamanca</option>
+                                                        <option value='42'>Segovia</option>
+                                                        <option value='43'>Sevilla</option>
+                                                        <option value='44'>Soria</option>
+                                                        <option value='45'>Tarragona</option>
+                                                        <option value='46'>Santa Cruz de Tenerife</option>
+                                                        <option value='47'>Teruel</option>
+                                                        <option value='48'>Toledo</option>
+                                                        <option value='49'>Valencia/Valéncia</option>
+                                                        <option value='50'>Valladolid</option>
+                                                        <option value='51'>Vizcaya</option>
+                                                        <option value='52'>Zamora</option>
+                                                        <option value='53'>Zaragoza</option>
+                                                    </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="Telefono" class="col-lg-2 control-label">Telefono</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Telefono" type="text">
+                    </div>
+                    <label for="Movil" class="col-lg-2 control-label">Movil</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Movil" type="text">
+                    </div>
+                    <label for="Fax" class="col-lg-2 control-label">Fax</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Fax" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="email" class="col-lg-2 control-label">email</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="email" type="email">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-lg-2 control-label" for="Tarifa">Tarifa</label>
+                    <div class="col-lg-5">
+                      <select class="form-control" id="select">
+                        <option>Tarifa 1</option>
+                        <option>Tarifa 2</option>
+                        <option>Tarifa 3</option>
+                      </select>
+                    </div>
+                  </div>
+                                        <!--editordetexto-->
+                                                        <div class="form-group">
+                                                        <label class="col-lg-2 control-label" for="Descripción">Notas</label>
+                                                                        <div class="col-lg-10">
+                                                                        <div class="form-group"method="post">
+                                                                        <textarea class="form-control" rows="3"id="texcontenido">Para ver como hacer el post, empaquetarlo y enviar dentro de los datos del formulario, visitar las siguientes webs: http://nicedit.com/ y  http://trucosw3.blogspot.com.es/2010/09/convertir-un-textarea-en-un-completo.html</textarea>
+                                                                                </div>
+                                                                        </div>
+                                                        </div>
+
+                </fieldset>
+                <!--Datos del Contacto-->
+                <fieldset>
+                <legend>Datos de contacto</legend>
+
+                  <div class="form-group">
+                    <label for="Nombre_contacto" class="col-lg-2 control-label">Nombre</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="Nombre contacto" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="Dirección" class="col-lg-2 control-label">Dirección</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="Dirección" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="C.P.:" class="col-lg-2 control-label">C.P.:</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Codigo Postal" type="text">
+                    </div>
+                    <label for="Ciudad" class="col-lg-2 control-label">Ciudad</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Ciudad" type="text">
+                    </div>
+                    <label for="TProvincia" class="col-lg-2 control-label">Provincia</label>
+                    <div class="col-lg-2">
+                      <select class="form-control" name="provincia">
+                                                        <option value='0'>Provincia</option>
+                                                        <option value='2'>~Alava</option>
+                                                        <option value='3'>Albacete</option>
+                                                        <option value='4'>Alicante/Alacant</option>
+                                                        <option value='5'>Almería</option>
+                                                        <option value='6'>Asturias</option>
+                                                        <option value='7'>~Avila</option>
+                                                        <option value='8'>Badajoz</option>
+                                                        <option value='9'>Barcelona</option>
+                                                        <option value='10'>Burgos</option>
+                                                        <option value='11'>Cáceres</option>
+                                                        <option value='12'>Cádiz</option>
+                                                        <option value='13'>Cantabria</option>
+                                                        <option value='14'>Castellón/Castelló</option>
+                                                        <option value='15'>Ceuta</option>
+                                                        <option value='16'>Ciudad Real</option>
+                                                        <option value='17'>Córdoba</option>
+                                                        <option value='18'>Cuenca</option>
+                                                        <option value='19'>Girona</option>
+                                                        <option value='20'>Las Palmas</option>
+                                                        <option value='21'>Granada</option>
+                                                        <option value='22'>Guadalajara</option>
+                                                        <option value='23'>Guipúzcoa</option>
+                                                        <option value='24'>Huelva</option>
+                                                        <option value='25'>Huesca</option>
+                                                        <option value='26'>Illes Balears</option>
+                                                        <option value='27'>Jaén</option>
+                                                        <option value='28'>A Coruña</option>
+                                                        <option value='29'>La Rioja</option>
+                                                        <option value='30'>León</option>
+                                                        <option value='31'>Lleida</option>
+                                                        <option value='32'>Lugo</option>
+                                                        <option value='33'>Madrid</option>
+                                                        <option value='34'>Málaga</option>
+                                                        <option value='35'>Melilla</option>
+                                                        <option value='36'>Murcia</option>
+                                                        <option value='37'>Navarra</option>
+                                                        <option value='38'>Ourense</option>
+                                                        <option value='39'>Palencia</option>
+                                                        <option value='40'>Pontevedra</option>
+                                                        <option value='41'>Salamanca</option>
+                                                        <option value='42'>Segovia</option>
+                                                        <option value='43'>Sevilla</option>
+                                                        <option value='44'>Soria</option>
+                                                        <option value='45'>Tarragona</option>
+                                                        <option value='46'>Santa Cruz de Tenerife</option>
+                                                        <option value='47'>Teruel</option>
+                                                        <option value='48'>Toledo</option>
+                                                        <option value='49'>Valencia/Valéncia</option>
+                                                        <option value='50'>Valladolid</option>
+                                                        <option value='51'>Vizcaya</option>
+                                                        <option value='52'>Zamora</option>
+                                                        <option value='53'>Zaragoza</option>
+                                                    </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="Telefono" class="col-lg-2 control-label">Telefono</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Telefono" type="text">
+                    </div>
+                    <label for="Movil" class="col-lg-2 control-label">Movil</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Movil" type="text">
+                    </div>
+                    <label for="Fax" class="col-lg-2 control-label">Fax</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Fax" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                  <div class="form-group">
+                    <label for="email" class="col-lg-2 control-label">email</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="email" type="text">
+                    </div>
+                  </div>
+
+                                        <!--editordetexto-->
+                                                        <div class="form-group">
+                                                        <label class="col-lg-2 control-label" for="Descripción">Notas</label>
+                                                                        <div class="col-lg-10">
+                                                                        <div class="form-group"method="post">
+                                                                        <textarea class="form-control" rows="3"id="texcontenido2">Para ver como hacer el post, empaquetarlo y enviar dentro de los datos del formulario, visitar las siguientes webs: http://nicedit.com/ y  http://trucosw3.blogspot.com.es/2010/09/convertir-un-textarea-en-un-completo.html</textarea>
+                                                                                </div>
+                                                                        </div>
+                                                        </div>
+
+
+
+
+                </fieldset>
+
+                <!--Datos de envio-->
+                <fieldset>
+                <legend>Datos de envio</legend>
+
+                  <div class="form-group">
+                    <label for="Nombre_envio" class="col-lg-2 control-label">Nombre</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="Nombre envio" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="Dirección" class="col-lg-2 control-label">Dirección</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="Dirección" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="C.P.:" class="col-lg-2 control-label">C.P.:</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Codigo Postal" type="text">
+                    </div>
+                    <label for="Ciudad" class="col-lg-2 control-label">Ciudad</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Ciudad" type="text">
+                    </div>
+                    <label for="TProvincia" class="col-lg-2 control-label">Provincia</label>
+                    <div class="col-lg-2">
+                      <select class="form-control" name="provincia">
+                                                        <option value='0'>Provincia</option>
+                                                        <option value='2'>~Alava</option>
+                                                        <option value='3'>Albacete</option>
+                                                        <option value='4'>Alicante/Alacant</option>
+                                                        <option value='5'>Almería</option>
+                                                        <option value='6'>Asturias</option>
+                                                        <option value='7'>~Avila</option>
+                                                        <option value='8'>Badajoz</option>
+                                                        <option value='9'>Barcelona</option>
+                                                        <option value='10'>Burgos</option>
+                                                        <option value='11'>Cáceres</option>
+                                                        <option value='12'>Cádiz</option>
+                                                        <option value='13'>Cantabria</option>
+                                                        <option value='14'>Castellón/Castelló</option>
+                                                        <option value='15'>Ceuta</option>
+                                                        <option value='16'>Ciudad Real</option>
+                                                        <option value='17'>Córdoba</option>
+                                                        <option value='18'>Cuenca</option>
+                                                        <option value='19'>Girona</option>
+                                                        <option value='20'>Las Palmas</option>
+                                                        <option value='21'>Granada</option>
+                                                        <option value='22'>Guadalajara</option>
+                                                        <option value='23'>Guipúzcoa</option>
+                                                        <option value='24'>Huelva</option>
+                                                        <option value='25'>Huesca</option>
+                                                        <option value='26'>Illes Balears</option>
+                                                        <option value='27'>Jaén</option>
+                                                        <option value='28'>A Coruña</option>
+                                                        <option value='29'>La Rioja</option>
+                                                        <option value='30'>León</option>
+                                                        <option value='31'>Lleida</option>
+                                                        <option value='32'>Lugo</option>
+                                                        <option value='33'>Madrid</option>
+                                                        <option value='34'>Málaga</option>
+                                                        <option value='35'>Melilla</option>
+                                                        <option value='36'>Murcia</option>
+                                                        <option value='37'>Navarra</option>
+                                                        <option value='38'>Ourense</option>
+                                                        <option value='39'>Palencia</option>
+                                                        <option value='40'>Pontevedra</option>
+                                                        <option value='41'>Salamanca</option>
+                                                        <option value='42'>Segovia</option>
+                                                        <option value='43'>Sevilla</option>
+                                                        <option value='44'>Soria</option>
+                                                        <option value='45'>Tarragona</option>
+                                                        <option value='46'>Santa Cruz de Tenerife</option>
+                                                        <option value='47'>Teruel</option>
+                                                        <option value='48'>Toledo</option>
+                                                        <option value='49'>Valencia/Valéncia</option>
+                                                        <option value='50'>Valladolid</option>
+                                                        <option value='51'>Vizcaya</option>
+                                                        <option value='52'>Zamora</option>
+                                                        <option value='53'>Zaragoza</option>
+                                                    </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="Telefono" class="col-lg-2 control-label">Telefono</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Telefono" type="text">
+                    </div>
+                    <label for="Movil" class="col-lg-2 control-label">Movil</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Movil" type="text">
+                    </div>
+                    <label for="Fax" class="col-lg-2 control-label">Fax</label>
+                    <div class="col-lg-2">
+                      <input class="form-control" placeholder="Fax" type="text">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="email" class="col-lg-2 control-label">email</label>
+                    <div class="col-lg-10">
+                      <input class="form-control" placeholder="email" type="text">
+                    </div>
+                  </div>
+
+                                        <!--editordetexto-->
+                                                        <div class="form-group">
+                                                        <label class="col-lg-2 control-label" for="Descripción">Notas</label>
+                                                                        <div class="col-lg-10">
+                                                                        <div class="form-group"method="post">
+                                                                        <textarea class="form-control" rows="3"id="texcontenido3">Para ver como hacer el post, empaquetarlo y enviar dentro de los datos del formulario, visitar las siguientes webs: http://nicedit.com/ y  http://trucosw3.blogspot.com.es/2010/09/convertir-un-textarea-en-un-completo.html</textarea>
+                                                                                </div>
+                                                                        </div>
+                                                        </div>
+
+
+
+                  <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                      <button type="reset" class="btn btn-default">Cancelar</button>
+                      <button type="submit" class="btn btn-primary">Crear</button>
+                    </div>
+                  </div>
+                </fieldset>
+              </form>
+              <!--acaba columna der-->
+
+          </div>
+        </div>
+      </div>
+
+{% endblock %}
+{% endblock %}

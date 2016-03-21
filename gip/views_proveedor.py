@@ -26,7 +26,9 @@ from gip.models import *
 from gip.utils import is_proveedor
 
 ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
+ELEMENTOS_POR_PAGINA_CLIENTE = 5
 PROVEEDOR_ATTRIBUTE = 'proveedor'
+CLIENTE_ATTRIBUTE = 'cliente'
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_proveedor)
@@ -310,16 +312,93 @@ def del_product(request,proveedor_id,product_id):
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_proveedor)
 def clientes_proveedor(request):
-  #we will retrieve Promo and show per Tarifa/User
   current_user = request.user
   username = str(current_user.username)
-  current_page = "Productos"
+  current_page = "Clientes"
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
-  print proveedor.id
   print proveedor
+  client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).order_by('-id')
+  print client_list
+  search_parameters = request.POST.copy()
+  if search_parameters:
+    print "there is a search"
+    print search_parameters
+    #wipe out the csrf:
+    search_parameters.pop('csrfmiddlewaretoken')
+    full_search = Q()
+    #if we are searching, we are searching one proveedor
+    proveedor_search = (Q(groups__id = proveedor.id))
+    if 'search' in search_parameters:
+      print "a provider is searching client!!"
+      #Miss split words and do it smart
+      search_string= Q(cliente__nombre__icontains=search_parameters['search']) |  Q(cliente__cif__icontains=search_parameters['search']) # ' %(search_parameters['search'],search_parameters['search'])
+      full_search = full_search & search_string
+    full_search = full_search & proveedor_search
+    print full_search
+    all_client_list = User.objects.filter(full_search).order_by('-id').exclude(groups__name=PROVEEDOR_ATTRIBUTE) #must add baja to Client
+    paginator = Paginator(all_client_list, ELEMENTOS_POR_PAGINA_CLIENTE)
+    print "the result is"
+    print all_client_list
+    if 'page' in search_parameters:
+      page = search_parameters['page']
+    else:
+      page = 1
+  else:
+    all_client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).order_by('-id')
+    #this is he default search
+    paginator = Paginator(all_client_list, ELEMENTOS_POR_PAGINA_CLIENTE)
+    try:
+      page = request.GET.get('page')
+    except:
+      #not sure
+      page =  1
+  try:
+      client_list = paginator.page(page)
+  except PageNotAnInteger:
+      # If page is not an integer, deliver first page.
+      client_list = paginator.page(1)
+  except EmptyPage:
+      # If page is out of range (e.g. 9999), deliver last page of results.
+      client_list = paginator.page(paginator.num_pages)
+
   context= { 'username': username,
              'current_page': current_page,
              'proveedor': proveedor,
+             'client_list': client_list,
               }
   return render(request, 'proveedor/clientes_bootstrap_proveedor.html', context)
+
+
+
+login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def add_cliente_proveedor(request):
+  current_user = request.user
+  username = str(current_user.username)
+  current_page = "Productos"
+  status_answer = {}
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  categorias_list = Categoria.objects.all()
+  ##Check if the proveedor is the right one... avoid requests from another providers
+  if str(proveedor.id):
+    tarifas_availables = Tarifas.objects.filter(elproveedor=proveedor.id)
+    ##We have something to save ....
+    add_parameters = request.POST.copy()
+    print add_parameters
+    if add_parameters:
+      pass
+    else:
+      #first time here... or someone is trying something... there is no add_parameters :/
+      pass
+  else:
+    #someone is trying something... add logg to this, is looking for another proveedor
+    return redirect('/proveedor/404/', request)
+  context= { 'username': username,
+             'current_page': current_page,
+             'status_answer': status_answer,
+             'proveedor': proveedor,
+             'tarifas_availables': tarifas_availables,
+             'categorias_list': categorias_list,
+              }
+  return render(request, 'proveedor/add_cliente_bootstrap_proveedor.html', context)
 
