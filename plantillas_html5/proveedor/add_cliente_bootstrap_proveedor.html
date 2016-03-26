@@ -15,12 +15,21 @@
 
 
 function submit_edit(create) {
+    myform = document.forms["add_client"];
     niceObj = nicEditors.findEditor('texcontenido');
     wyswygc = niceObj.getContent()
-    
-    myform = document.forms["edit_product"];
     addHidden(myform,'texcontenido', wyswygc)
+
+    niceObj = nicEditors.findEditor('texcontenido_contacto');
+    wyswygc = niceObj.getContent()
+    addHidden(myform,'texcontenido_contacto', wyswygc)
+
+    niceObj = nicEditors.findEditor('texcontenido_envio');
+    wyswygc = niceObj.getContent()
+    addHidden(myform,'texcontenido_envio', wyswygc)
+
     addHidden(myform,'create', create)
+
     myform.submit();
 }
 function addHidden(theForm, key, value) {
@@ -38,38 +47,9 @@ function populate_tarifas(){
   {% endfor %}
 }
 
-function populate_categoria(){
-categoria = 'cat_{{ producto.categoria.id }}';
-  if ( categoria != ''){
-    for (i = 0; i< document.getElementById('categoria').length; i++)
-      {
-        if (document.getElementById('categoria').options[i].id == categoria )
-        {
-          // Item is found. Set its property and exit
-          document.getElementById('categoria').options[i].selected = true;
-          break;
-        }
-      }
-  }
-
-subcategoria = '{{ producto.subcategoria }}';
-  if ( subcategoria != ''){
-    for (i = 0; i< document.getElementById('subcategoria').length; i++)
-      {
-        if (document.getElementById('subcategoria').options[i].id == subcategoria )
-        {
-          // Item is found. Set its property and exit
-          document.getElementById('subcategoria').options[i].selected = true;
-          break;
-        }
-      }
-  }
-
-}
 
 $(document).ready(function() {
 populate_tarifas();
-populate_categoria();
 
 {% if status_answer %}
   {% if status_answer.exist %}
@@ -120,47 +100,66 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
           <div class="col-md-9">
 <h4>Alta nuevo cliente</h4>
               <!--empieza lo gordo que se muestra-->
-              <form class="form-horizontal">
+              <form id="add_client" action="/proveedor/{{ proveedor.id }}/add_cliente/" class="form-horizontal" method="post">
+                  {% csrf_token %}
+
+                <fieldset>
+                <legend>Datos de Usuario</legend>
+                  <div class="form-group">
+                    <label for="Nombre de usuario" class="col-lg-2 control-label">Nombre de Usuario</label>
+                    <div class="col-lg-10">
+                      <input name="cliente" id="cliente" class="form-control required" placeholder="cliente" type="text">
+                    </div>
+                  <div class="form-group">
+                  </div>
+                    <label for="password" class="col-lg-2 control-label">Contraseña</label>
+                    <div class="col-lg-10">
+                      <input name="password" id="password" class="form-control required" placeholder="password" type="password">
+                    </div>
+
+                  </div>
+
+                </fieldset>
               <!--Datos del cliente-->
                 <fieldset>
                 <legend>Datos del cliente <sup>*Los datos con sombra roja son obligatorios</sup></legend>
                   <div class="form-group">
                     <label for="NIF" class="col-lg-2 control-label">N.I.F.:</label>
                     <div class="col-lg-10">
-                      <input name="nif" class="form-control required" placeholder="N.I.F." type="text" >
+                      <input name="nif" id="nif" class="form-control required" placeholder="N.I.F." type="text">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="Razón Social" class="col-lg-2 control-label">Nombre o Razón social</label>
                     <div class="col-lg-10">
-                      <input name="nombre" class="form-control" placeholder="Nombre Comercial" type="text">
+                      <input name="nombre" id="nombre" class="form-control" placeholder="Nombre Comercial" type="text">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="Dirección" class="col-lg-2 control-label">Dirección</label>
                     <div class="col-lg-10">
-                      <input id="direccion" class="form-control" placeholder="Dirección" type="text">
+                      <input name="direccion" id="direccion" class="form-control" placeholder="Dirección" type="text">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="C.P.:" class="col-lg-2 control-label">C.P.:</label>
                     <div class="col-lg-2">
-                      <input id="cp" class="form-control" placeholder="Codigo Postal" type="text">
+                      <input name="cp" id="cp" class="form-control" placeholder="Codigo Postal" type="text">
                     </div>
                     <label for="Ciudad" class="col-lg-2 control-label">Ciudad</label>
                     <div class="col-lg-2">
-                      <input id="ciudad" class="form-control" placeholder="Ciudad" type="text">
+                      <input name="ciudad" id="ciudad" class="form-control" placeholder="Ciudad" type="text">
                     </div>
                     <label for="TProvincia" class="col-lg-2 control-label">Provincia</label>
                     <div class="col-lg-2">
-                      <select id="provincia" class="form-control" name="provincia">
+                      <select name="provincia" id="provincia" class="form-control">
                                                         <option value='0'>Provincia</option>
-                                                        <option value='2'>~Alava</option>
+                                                        <option value='2'>Alava</option>
                                                         <option value='3'>Albacete</option>
                                                         <option value='4'>Alicante/Alacant</option>
                                                         <option value='5'>Almería</option>
                                                         <option value='6'>Asturias</option>
-                                                        <option value='7'>~Avila</option>
+                                                        <option value='7'>Avila</option>
                                                         <option value='8'>Badajoz</option>
                                                         <option value='9'>Barcelona</option>
                                                         <option value='10'>Burgos</option>
@@ -213,30 +212,30 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                   <div class="form-group">
                     <label for="Telefono" class="col-lg-2 control-label">Telefono</label>
                     <div class="col-lg-2">
-                      <input id="telefono" class="form-control" placeholder="Telefono" type="text">
+                      <input name="telefono" id="telefono" class="form-control" placeholder="Telefono" type="text">
                     </div>
                     <label for="Movil" class="col-lg-2 control-label">Movil</label>
                     <div class="col-lg-2">
-                      <input id="movil" class="form-control" placeholder="Movil" type="text">
+                      <input name="movil" id="movil" class="form-control" placeholder="Movil" type="text">
                     </div>
                     <label for="Fax" class="col-lg-2 control-label">Fax</label>
                     <div class="col-lg-2">
-                      <input id="fax" class="form-control" placeholder="Fax" type="text">
+                      <input name="fax" id="fax" class="form-control" placeholder="Fax" type="text">
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="email" class="col-lg-2 control-label">email</label>
+                    <label for="email" class="col-lg-2 control-label">Email</label>
                     <div class="col-lg-10">
-                      <input id="fax" class="form-control" placeholder="email" type="email">
+                      <input name="email" id="email" class="form-control" placeholder="email" type="email">
                     </div>
                   </div>
                   <div class="form-group">
                     <label class="col-lg-2 control-label" for="Tarifa">Tarifa</label>
                     <div class="col-lg-5">
-                      <select class="form-control" id="select">
+                      <select name="tarifa" class="form-control" id="select">
 {% for tarifa in tarifas_availables %}
 
-                          <option name="tarifa_{{tarifa.id}}" id="tarifa_{{tarifa.id}}">{{ tarifa.nombre }}</option>
+                          <option value="tarifa_{{tarifa.id}}" name="tarifa_{{tarifa.id}}" id="tarifa_{{tarifa.id}}">{{ tarifa.nombre }}</option>
 {% endfor %}
 
                       </select>
@@ -246,7 +245,7 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                                                         <div class="form-group">
                                                         <label class="col-lg-2 control-label" for="Descripción">Notas</label>
                                                                         <div class="col-lg-10">
-                                                                        <div class="form-group"method="post">
+                                                                        <div class="form-group" method="post">
                                                                         <textarea class="form-control" rows="3" id="texcontenido">{{ producto.descripcion }}</textarea>
                                                                                 </div>
                                                                         </div>
@@ -260,23 +259,23 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                   <div class="form-group">
                     <label for="Nombre_contacto" class="col-lg-2 control-label">Nombre</label>
                     <div class="col-lg-10">
-                      <input id="nombre_contacto" class="form-control" placeholder="Nombre contacto" type="text">
+                      <input name="nombre_contacto" id="nombre_contacto" class="form-control" placeholder="Nombre contacto" type="text">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="Dirección" class="col-lg-2 control-label">Dirección</label>
                     <div class="col-lg-10">
-                      <input id="direccion_contacto" class="form-control" placeholder="Dirección" type="text">
+                      <input name="direccion_contacto" id="direccion_contacto" class="form-control" placeholder="Dirección" type="text">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="C.P.:" class="col-lg-2 control-label">C.P.:</label>
                     <div class="col-lg-2">
-                      <input id="cp_contacto" class="form-control" placeholder="Codigo Postal" type="text">
+                      <input name="cp_contacto" id="cp_contacto" class="form-control" placeholder="Codigo Postal" type="text">
                     </div>
                     <label for="Ciudad" class="col-lg-2 control-label">Ciudad</label>
                     <div class="col-lg-2">
-                      <input id="ciudad_contacto" class="form-control" placeholder="Ciudad" type="text">
+                      <input name="ciudad_contacto" id="ciudad_contacto" class="form-control" placeholder="Ciudad" type="text">
                     </div>
                     <label for="TProvincia" class="col-lg-2 control-label">Provincia</label>
                     <div class="col-lg-2">
@@ -340,22 +339,22 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                   <div class="form-group">
                     <label for="Telefono" class="col-lg-2 control-label">Telefono</label>
                     <div class="col-lg-2">
-                      <input id="telefono_contacto" class="form-control" placeholder="Telefono" type="text">
+                      <input name="telefono_contacto" id="telefono_contacto" class="form-control" placeholder="Telefono" type="text">
                     </div>
                     <label for="Movil" class="col-lg-2 control-label">Movil</label>
                     <div class="col-lg-2">
-                      <input id="movil_contacto" class="form-control" placeholder="Movil" type="text">
+                      <input name="movil_contacto" id="movil_contacto" class="form-control" placeholder="Movil" type="text">
                     </div>
                     <label for="Fax" class="col-lg-2 control-label">Fax</label>
                     <div class="col-lg-2">
-                      <input id="fax_contacto" class="form-control" placeholder="Fax" type="text">
+                      <input name="fax_contacto" id="fax_contacto" class="form-control" placeholder="Fax" type="text">
                     </div>
                   </div>
                   <div class="form-group">
                   <div class="form-group">
                     <label for="email" class="col-lg-2 control-label">email</label>
                     <div class="col-lg-10">
-                      <input id="email_contacto" class="form-control" placeholder="email" type="text">
+                      <input name="email_contacto" id="email_contacto" class="form-control" placeholder="email" type="text">
                     </div>
                   </div>
 
@@ -363,7 +362,7 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                                                         <div class="form-group">
                                                         <label class="col-lg-2 control-label" for="Descripción">Notas</label>
                                                                         <div class="col-lg-10">
-                                                                        <div class="form-group"method="post">
+                                                                        <div class="form-group" method="post">
                                                                         <textarea class="form-control" rows="3" id="texcontenido_contacto">{{ producto.descripcion }}</textarea>
                                                                                 </div>
                                                                         </div>
@@ -381,23 +380,23 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                   <div class="form-group">
                     <label for="Nombre_envio" class="col-lg-2 control-label">Nombre</label>
                     <div class="col-lg-10">
-                      <input id="nombre_envio" class="form-control" placeholder="Nombre envio" type="text">
+                      <input name="nombre_envio" id="nombre_envio" class="form-control" placeholder="Nombre envio" type="text">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="Dirección" class="col-lg-2 control-label">Dirección</label>
                     <div class="col-lg-10">
-                      <input id="direccion_envio" class="form-control" placeholder="Dirección" type="text">
+                      <input name="direccion_envio" id="direccion_envio" class="form-control" placeholder="Dirección" type="text">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="C.P.:" class="col-lg-2 control-label">C.P.:</label>
                     <div class="col-lg-2">
-                      <input id="cp_envio" class="form-control" placeholder="Codigo Postal" type="text">
+                      <input name="cp_envio" id="cp_envio" class="form-control" placeholder="Codigo Postal" type="text">
                     </div>
                     <label for="Ciudad" class="col-lg-2 control-label">Ciudad</label>
                     <div class="col-lg-2">
-                      <input id="ciudad_envio" class="form-control" placeholder="Ciudad" type="text">
+                      <input name="ciudad_envio" id="ciudad_envio" class="form-control" placeholder="Ciudad" type="text">
                     </div>
                     <label for="TProvincia" class="col-lg-2 control-label">Provincia</label>
                     <div class="col-lg-2">
@@ -461,21 +460,21 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                   <div class="form-group">
                     <label for="Telefono" class="col-lg-2 control-label">Telefono</label>
                     <div class="col-lg-2">
-                      <input id="telefono_envio" class="form-control" placeholder="Telefono" type="text">
+                      <input name="telefono_envio" id="telefono_envio" class="form-control" placeholder="Telefono" type="text">
                     </div>
                     <label for="Movil" class="col-lg-2 control-label">Movil</label>
                     <div class="col-lg-2">
-                      <input id="movil_envio" class="form-control" placeholder="Movil" type="text">
+                      <input name="movil_envio" id="movil_envio" class="form-control" placeholder="Movil" type="text">
                     </div>
                     <label for="Fax" class="col-lg-2 control-label">Fax</label>
                     <div class="col-lg-2">
-                      <input id="fax_envio" class="form-control" placeholder="Fax" type="text">
+                      <input name="fax_envio" id="fax_envio" class="form-control" placeholder="Fax" type="text">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="email" class="col-lg-2 control-label">email</label>
                     <div class="col-lg-10">
-                      <input id="email_envio" class="form-control" placeholder="email" type="text">
+                      <input name="email_envio" id="email_envio" class="form-control" placeholder="email" type="text">
                     </div>
                   </div>
 
@@ -483,7 +482,7 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                                                         <div class="form-group">
                                                         <label class="col-lg-2 control-label" for="Descripción">Notas</label>
                                                                         <div class="col-lg-10">
-                                                                        <div class="form-group"method="post">
+                                                                        <div class="form-group" method="post">
                                                                         <textarea class="form-control" rows="3" id="texcontenido_envio">{{ cliente.descripcion }}</textarea>
                                                                                 </div>
                                                                         </div>
@@ -493,8 +492,9 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
 
                   <div class="form-group">
                     <div class="col-lg-10 col-lg-offset-2">
+                      <button type="submit" onClick="submit_edit('create')" class="btn btn-primary">Crear</button>
+                      <button type="submit" onClick="submit_edit('edit')" class="btn btn-primary">Crear y editar</button>
                       <button type="reset" class="btn btn-default">Cancelar</button>
-                      <button type="submit" class="btn btn-primary">Crear</button>
                     </div>
                   </div>
                 </fieldset>

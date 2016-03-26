@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.core.urlresolvers import reverse
 
 
-from gip.models import Producto
+from gip.models import Producto, Cliente
 
 import sys, time
 import datetime
@@ -372,7 +372,7 @@ def clientes_proveedor(request):
 
 login_required(login_url='/mylogin/')
 @user_passes_test(is_proveedor)
-def add_cliente_proveedor(request):
+def add_cliente_proveedor(request, proveedor_id):
   current_user = request.user
   username = str(current_user.username)
   current_page = "Productos"
@@ -380,17 +380,39 @@ def add_cliente_proveedor(request):
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
   categorias_list = Categoria.objects.all()
   ##Check if the proveedor is the right one... avoid requests from another providers
-  if str(proveedor.id):
+  print "provider should match"
+  print proveedor.id
+  print proveedor_id
+  if str(proveedor.id) == proveedor_id:
     tarifas_availables = Tarifas.objects.filter(elproveedor=proveedor.id)
     ##We have something to save ....
     add_parameters = request.POST.copy()
     print add_parameters
     if add_parameters:
-      pass
+      print add_parameters['cliente']
+      #create user, add cliente group, add proveedor group, and add cliente object
+      user = User.objects.create_user(add_parameters['cliente'], add_parameters['email'],add_parameters['password'])
+      grupo_cliente = Group.objects.get(name='cliente')
+      grupo_proveedor = Group.objects.get(id=proveedor.id)
+      user.groups.add(grupo_cliente)
+      user.groups.add(grupo_proveedor)
+      user.save()
+      print add_parameters['tarifa']
+      client = Cliente(user = user, nombre = add_parameters['nombre'], descripcion = add_parameters['texcontenido'], cif = add_parameters['nif'], direccion = add_parameters['direccion'], ciudad = add_parameters['ciudad'], telefono = add_parameters['telefono'], contacto_nombre = add_parameters['nombre_contacto'] )
+      #add tarifa ,listas(no need, but check with no list), destinos de reparto
+      client.save()
+      client.tarifa.add(add_parameters['tarifa'].split('_')[1])
+      #TODO:check the real cp ID , not the one the come with the request like 41011
+      client.destino_reparto.add(1)
+      print "destino reparto is not properly added"
+      #cliente = Cliente(user=user, nombre='Cliente'+str(i), descripcion='Descripcion'+str(i), cif='NIFNIFNIF'+str(i), direccion='calle direccion' ,ciudad='ciudadXX', telefono='telefono 123', contacto_nombre='Contact'+str(i) )
+      client.save()
     else:
       #first time here... or someone is trying something... there is no add_parameters :/
+      print "looks like something is missing or is the first visit"
       pass
   else:
+    print "we should be redirected... there is no real providr"
     #someone is trying something... add logg to this, is looking for another proveedor
     return redirect('/proveedor/404/', request)
   context= { 'username': username,
