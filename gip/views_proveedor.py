@@ -399,11 +399,14 @@ def add_cliente_proveedor(request, proveedor_id):
       user.save()
       print add_parameters['tarifa']
       client = Cliente(user = user, nombre = add_parameters['nombre'], descripcion = add_parameters['texcontenido'], cif = add_parameters['nif'], direccion = add_parameters['direccion'], ciudad = add_parameters['ciudad'], telefono = add_parameters['telefono'], contacto_nombre = add_parameters['nombre_contacto'] )
-      #add tarifa ,listas(no need, but check with no list), destinos de reparto
+      #add tarifa ,listas(need to has at least one list), but check with no list), destinos de reparto
       client.save()
       client.tarifa.add(add_parameters['tarifa'].split('_')[1])
       #TODO:check the real cp ID , not the one the come with the request like 41011
       client.destino_reparto.add(1)
+      lis = Lista(nombre='lista 1')
+      lis.save()
+      client.listas.add(lis.id)
       print "destino reparto is not properly added"
       #cliente = Cliente(user=user, nombre='Cliente'+str(i), descripcion='Descripcion'+str(i), cif='NIFNIFNIF'+str(i), direccion='calle direccion' ,ciudad='ciudadXX', telefono='telefono 123', contacto_nombre='Contact'+str(i) )
       client.save()
