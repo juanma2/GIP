@@ -347,7 +347,7 @@ populate_form();
                   <tbody>
 {% for user in client_list %}
                     <tr>
-                      <td>{{ user.cliente.cif }}</td>
+                      <td><a href="/proveedor/{{ proveedor.id }}/edit_cliente/{{ user.cliente.id }}/">{{ user.cliente.cif }}</td>
                       <td>{{ user.cliente.nombre }}</td>
                       <td>{{ user.cliente.ciudad }}</td>
                       <td>

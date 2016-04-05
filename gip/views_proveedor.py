@@ -426,3 +426,39 @@ def add_cliente_proveedor(request, proveedor_id):
               }
   return render(request, 'proveedor/add_cliente_bootstrap_proveedor.html', context)
 
+login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def edit_cliente_proveedor(request, proveedor_id, client_id):
+  current_user = request.user
+  username = str(current_user.username)
+  current_page = "Productos"
+  status_answer = {}
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  categorias_list = Categoria.objects.all()
+  ##Check if the proveedor is the right one... avoid requests from another providers
+  print "provider should match"
+  print proveedor.id
+  print proveedor_id
+  if str(proveedor.id) == proveedor_id:
+    tarifas_availables = Tarifas.objects.filter(elproveedor=proveedor.id)
+    client = Cliente.objects.get(id=client_id) 
+    print "destino reparto is not properly added"
+    #else:
+    #  #first time here... or someone is trying something... there is no add_parameters :/
+    #  print "looks like something is missing or is the first visit"
+    #  pass
+  else:
+    print "we should be redirected... this is not real provider"
+    #someone is trying something... add logg to this, is looking for another proveedor
+    return redirect('/proveedor/404/', request)
+  context= { 'username': username,
+             'current_page': current_page,
+             'status_answer': status_answer,
+             'proveedor': proveedor,
+             'tarifas_availables': tarifas_availables,
+             'categorias_list': categorias_list,
+             'client': client,
+           }
+  return render(request, 'proveedor/edit_cliente_bootstrap_proveedor.html', context)
+
+
