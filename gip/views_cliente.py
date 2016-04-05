@@ -43,7 +43,7 @@ def index_cliente(request):
            promo_list.append(promo) 
     #get tarifa:
     #Promo.objects.filter(tarifa=1)
-    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
+    user_listas = Cliente.objects.get(user_id=current_user.id).listas.all()
 
     context = {'username': username, 
                'current_page': current_page,
@@ -106,7 +106,7 @@ def productos_cliente(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         product_list = paginator.page(paginator.num_pages)
     #Get the listas 
-    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
+    user_listas = Cliente.objects.get(user_id=current_user.id).listas.all()
     context = {'username': username,
                'current_page': current_page,
                'product_list': product_list,
@@ -126,7 +126,7 @@ def listas_cliente(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Listas"
-    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
+    user_listas = Cliente.objects.get(user_id=current_user.id).listas.all()
     form_parameters = request.POST.copy()
     print form_parameters
     if form_parameters:
@@ -154,7 +154,7 @@ def listas_cliente(request):
 def listas_add_cliente(request,user_id):
   search_parameters = request.POST.copy()
   print search_parameters
-  my_cli = Cliente.objects.get(id=user_id)
+  my_cli = Cliente.objects.get(user_id=user_id)
   #TODO: Fix this.do not know why, but hitting "intro" send a different parameter
   if 'lista_to_add' in search_parameters:
     lis = Lista(nombre=search_parameters['lista_to_add'])
@@ -173,7 +173,7 @@ def listas_add_cliente(request,user_id):
 def listas_del_cliente(request,user_id):
   #TODO: nothing check that this belong to the cliente
   search_parameters = request.POST.copy()
-  my_cli = Cliente.objects.get(id=user_id)
+  my_cli = Cliente.objects.get(user_id=user_id)
   lis = Lista(id=search_parameters['lista_to_del'])
   lis.delete()
   #my_cli.listas.add(lis.id)
@@ -209,7 +209,7 @@ def lista_add_custom(request):
   search_parameters = request.POST.copy()
   print search_parameters
   if request.is_ajax():
-    user_listas = Cliente.objects.get(id=current_user.id).listas.all().values_list('id',flat=True)
+    user_listas = Cliente.objects.get(user_id=current_user.id).listas.all().values_list('id',flat=True)
     list_id = search_parameters['id'].split('_')[2]
     if int(list_id) in user_listas: #conditions..., we are in the right list
       #add the element here
@@ -274,7 +274,7 @@ def del_fromlist(request,lista_id,elemento_id):
   if request.is_ajax():
     #check that the element belong to the list
     if len(Elemento.objects.filter(id = elemento_id,lista_id = lista_id)) == 1:
-     user_listas = Cliente.objects.get(id=current_user.id).listas.all().values_list('id',flat=True)
+     user_listas = Cliente.objects.get(user_id=current_user.id).listas.all().values_list('id',flat=True)
      #print user_listas
      #print lista_id
      #check that the user own the list
@@ -369,7 +369,7 @@ def pedidos(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Pedidos"
-    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
+    user_listas = Cliente.objects.get(user_id=current_user.id).listas.all()
     #sort by lista.. and add the staff there 
     full_listas = {}
     lista_compra = {}
@@ -395,10 +395,10 @@ def pedidos(request):
 def make_pedido(request):
     print "we are in Make Pedidos"
     current_user = request.user
-    cliente = Cliente.objects.get(user = current_user.id)
+    cliente = Cliente.objects.get(user_id = current_user.id)
     username = str(current_user.username)
-    user_listas = Cliente.objects.get(id=current_user.id).listas.all()
-    cliente = Cliente.objects.filter(user = current_user.id)
+    user_listas = Cliente.objects.get(user_id=current_user.id).listas.all()
+    cliente = Cliente.objects.filter(user_id = current_user.id)
     pedido = {}
     cliente = cliente.values()[0]
     orden = {}
