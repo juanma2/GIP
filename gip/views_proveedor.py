@@ -407,15 +407,14 @@ def add_cliente_proveedor(request, proveedor_id):
       lis = Lista(nombre='lista 1')
       lis.save()
       client.listas.add(lis.id)
-      print "destino reparto is not properly added"
-      #cliente = Cliente(user=user, nombre='Cliente'+str(i), descripcion='Descripcion'+str(i), cif='NIFNIFNIF'+str(i), direccion='calle direccion' ,ciudad='ciudadXX', telefono='telefono 123', contacto_nombre='Contact'+str(i) )
       client.save()
+      print "destino reparto is not properly added"
     else:
       #first time here... or someone is trying something... there is no add_parameters :/
       print "looks like something is missing or is the first visit"
       pass
   else:
-    print "we should be redirected... there is no real providr"
+    print "we should be redirected... this is not real provider"
     #someone is trying something... add logg to this, is looking for another proveedor
     return redirect('/proveedor/404/', request)
   context= { 'username': username,
