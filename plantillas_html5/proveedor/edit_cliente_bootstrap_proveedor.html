@@ -14,8 +14,8 @@
 <script>
 
 
-function submit_edit(create) {
-    myform = document.forms["add_client"];
+function submit_edit(save) {
+    myform = document.forms["edit_client"];
     niceObj = nicEditors.findEditor('texcontenido');
     wyswygc = niceObj.getContent()
     addHidden(myform,'texcontenido', wyswygc)
@@ -28,7 +28,7 @@ function submit_edit(create) {
     wyswygc = niceObj.getContent()
     addHidden(myform,'texcontenido_envio', wyswygc)
 
-    addHidden(myform,'create', create)
+    addHidden(myform,'save', save)
 
     myform.submit();
 }
@@ -54,21 +54,21 @@ document.getElementById("direccion").value= '{{ client.direccion }}';
 document.getElementById("cp").value= '{{ client. }}';
 document.getElementById("ciudad").value= '{{ client.ciudad }}';
 document.getElementById("provincia").value= '{{ client. }}';
-document.getElementById("telefono").value= '{{ client. }}';
-document.getElementById("movil").value= '{{ client. }}';
-document.getElementById("fax").value= '{{ client. }}';
-document.getElementById("email").value= '{{ client. }}';
-document.getElementById("texcontenido").value= '{{ client. }}';
-document.getElementById("nombre_contacto").value= '{{ client. }}';
-document.getElementById("direccion_contacto").value= '{{ client. }}';
+document.getElementById("telefono").value= '{{ client.telefono }}';
+document.getElementById("movil").value= '{{ client.movil }}';
+document.getElementById("fax").value= '{{ client.fax }}';
+document.getElementById("email").value= '{{ client.email }}';
+document.getElementById("texcontenido").value= '{{ client.descripcion|safe }}';
+document.getElementById("nombre_contacto").value= '{{ client.contacto_nombre }}';
+document.getElementById("direccion_contacto").value= '{{ client.contacto_nombre }}';
 document.getElementById("cp_contacto").value= '{{ client. }}';
-document.getElementById("ciudad_contacto").value= '{{ client. }}';
+document.getElementById("ciudad_contacto").value= '{{ client.contacto_ciudad }}';
 document.getElementById("provincia_contacto").value= '{{ client. }}';
-document.getElementById("telefono_contacto").value= '{{ client. }}';
-document.getElementById("movil_contacto").value= '{{ client. }}';
-document.getElementById("fax_contacto").value= '{{ client. }}';
-document.getElementById("email_contacto").value= '{{ client. }}';
-document.getElementById("texcontenido_contacto").value= '{{ client. }}';
+document.getElementById("telefono_contacto").value= '{{ client.contacto_telefono }}';
+document.getElementById("movil_contacto").value= '{{ client.contacto_movil }}';
+document.getElementById("fax_contacto").value= '{{ client.contacto_fax }}';
+document.getElementById("email_contacto").value= '{{ client.contacto_email }}';
+document.getElementById("texcontenido_contacto").value= '{{ client.contacto_descripcion }}';
 document.getElementById("nombre_envio").value= '{{ client. }}';
 document.getElementById("direccion_envio").value= '{{ client. }}';
 document.getElementById("cp_envio").value= '{{ client. }}';
@@ -136,26 +136,8 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
           <div class="col-md-9">
 <h4>Alta nuevo cliente</h4>
               <!--empieza lo gordo que se muestra-->
-              <form id="add_client" action="/proveedor/{{ proveedor.id }}/add_cliente/" class="form-horizontal" method="post">
+              <form id="edit_client" action="/proveedor/{{ proveedor.id }}/edit_cliente/{{ client.id }}/" class="form-horizontal" method="post">
                   {% csrf_token %}
-
-                <fieldset>
-                <legend>Datos de Usuario</legend>
-                  <div class="form-group">
-                    <label for="Nombre de usuario" class="col-lg-2 control-label">Nombre de Usuario</label>
-                    <div class="col-lg-10">
-                      <input name="cliente" id="cliente" class="form-control required" placeholder="cliente" type="text">
-                    </div>
-                  <div class="form-group">
-                  </div>
-                    <label for="password" class="col-lg-2 control-label">Contraseña</label>
-                    <div class="col-lg-10">
-                      <input name="password" id="password" class="form-control required" placeholder="password" type="password">
-                    </div>
-
-                  </div>
-
-                </fieldset>
               <!--Datos del cliente-->
                 <fieldset>
                 <legend>Datos del cliente <sup>*Los datos con sombra roja son obligatorios</sup></legend>
@@ -528,8 +510,8 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
 
                   <div class="form-group">
                     <div class="col-lg-10 col-lg-offset-2">
-                      <button type="submit" onClick="submit_edit('create')" class="btn btn-primary">Crear</button>
-                      <button type="submit" onClick="submit_edit('edit')" class="btn btn-primary">Crear y editar</button>
+                      <button type="submit" onClick="submit_edit('save')" class="btn btn-primary">Guardar</button>
+                      <button type="submit" onClick="submit_edit('edit')" class="btn btn-primary">Guardar y continuar editando</button>
                       <button type="reset" class="btn btn-default">Cancelar</button>
                     </div>
                   </div>
