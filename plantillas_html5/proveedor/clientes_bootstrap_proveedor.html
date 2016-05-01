@@ -250,6 +250,10 @@ location.reload()
 
 }
 
+function deluser(client_id)
+{
+alert('hell yes')
+}
 
 $(document).ready(function() {
 var form = $('#send_lista_info');
@@ -342,6 +346,7 @@ populate_form();
                       <th>Provincia</th>
                       <th>C.P.</th>
                       <th>Ult. Pedido</th>
+                      <th>Baja</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -356,6 +361,8 @@ populate_form();
 {% endfor %}
 </td>
                       <td>{{ user.cliente.telefono }}</td>
+                      <td><a href="#" onclick="javascript: deluser('{{ user.cliente.id }}')" style="font-size:8" class="fa fa-trash-o">X</a></td>
+
                     </tr>
 {% endfor %}
                   </tbody>
