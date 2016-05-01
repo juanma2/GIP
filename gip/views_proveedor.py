@@ -489,7 +489,8 @@ def edit_cliente_proveedor(request, proveedor_id, client_id):
       client.nombre = edit_parameters['nombre']
       client.telefono = edit_parameters['telefono']
       client.email = edit_parameters['email']
-      client.movil_contacto = edit_parameters['movil_contacto']
+      client.contacto_movil = edit_parameters['movil_contacto']
+      client.contacto_fax = edit_parameters['fax_contacto']
       client.save()
       ##IS MISSING PROVINCIA, CP 
       print edit_parameters

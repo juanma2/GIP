@@ -42,8 +42,10 @@ function addHidden(theForm, key, value) {
 }
 
 function populate_tarifas(){
-  {% for tarifa in edit_producto %}
-    document.getElementById('tarifa_{{tarifa.tarifa.id}}').value='{{tarifa.precio }}'
+
+  {% for tarifa in client.tarifa.all %}
+    current_tarifa = document.getElementById('tarifa');
+    current_tarifa.value='tarifa_{{ tarifa.id }}'
   {% endfor %}
 }
 
@@ -250,7 +252,7 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
                   <div class="form-group">
                     <label class="col-lg-2 control-label" for="Tarifa">Tarifa</label>
                     <div class="col-lg-5">
-                      <select name="tarifa" class="form-control" id="select">
+                      <select name="tarifa" class="form-control" id="tarifa">
 {% for tarifa in tarifas_availables %}
 
                           <option value="tarifa_{{tarifa.id}}" name="tarifa_{{tarifa.id}}" id="tarifa_{{tarifa.id}}">{{ tarifa.nombre }}</option>
