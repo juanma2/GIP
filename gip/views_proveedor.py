@@ -442,11 +442,61 @@ def edit_cliente_proveedor(request, proveedor_id, client_id):
   if str(proveedor.id) == proveedor_id:
     tarifas_availables = Tarifas.objects.filter(elproveedor=proveedor.id)
     client = Cliente.objects.get(id=client_id) 
+    print "client data"
+    print client
+    print client_id
     print "destino reparto is not properly added"
-    #else:
-    #  #first time here... or someone is trying something... there is no add_parameters :/
-    #  print "looks like something is missing or is the first visit"
-    #  pass
+    print client.contacto_nombre
+    edit_parameters = request.POST.copy()
+    if edit_parameters:
+      tarifa_requested = Tarifas.objects.filter(elproveedor=proveedor.id,id = edit_parameters['tarifa'].split('_')[1])
+      print tarifa_requested
+      print "we are going to save it"
+      print edit_parameters
+      client.fax = edit_parameters['fax']
+      client.nombre_envio = edit_parameters['nombre_envio']
+      client.direccion_envio = edit_parameters['direccion_envio']
+      client.fax_contacto = edit_parameters['fax_contacto']
+      client.cif = edit_parameters['nif']
+      client.descripcion = edit_parameters['texcontenido']
+      client.contacto_ciudad = edit_parameters['ciudad_contacto']
+      client.ciudad_envio = edit_parameters['ciudad_envio']
+      client.ciudad = edit_parameters['ciudad']
+      client.direccion_contacto = edit_parameters['direccion_contacto']
+      client.texcontenido_envio = edit_parameters['texcontenido_envio']
+      client.fax_envio = edit_parameters['fax_envio']
+      client.cp = edit_parameters['cp']
+      client.movil = edit_parameters['movil']
+      #TODO: try catch a bit
+      print "before tarifa"
+      try:
+        print "we have tarifa"
+        client.tarifa.clear()
+        client.tarifa.add( tarifa_requested[0].id)
+        print "we did tarifa"
+      except:
+        pass
+      client.cp_contacto = edit_parameters['cp_contacto']
+      client.contacto_nombre = edit_parameters['nombre_contacto']
+      client.email_contacto = edit_parameters['email_contacto']
+      client.direccion = edit_parameters['direccion']
+      client.texcontenido = edit_parameters['texcontenido']
+      client.contacto_telefono = edit_parameters['telefono_contacto']
+      client.telefono_envio = edit_parameters['telefono_envio']
+      client.email_envio = edit_parameters['email_envio']
+      client.movil_envio = edit_parameters['movil_envio']
+      #client.cliente = edit_parameters['cliente']
+      client.nombre = edit_parameters['nombre']
+      client.telefono = edit_parameters['telefono']
+      client.email = edit_parameters['email']
+      client.movil_contacto = edit_parameters['movil_contacto']
+      client.save()
+      ##IS MISSING PROVINCIA, CP 
+      print edit_parameters
+    else:
+      #first time here... or someone is trying something... there is no add_parameters :/
+      print "looks like something is missing or is the first time!"
+      pass
   else:
     print "we should be redirected... this is not real provider"
     #someone is trying something... add logg to this, is looking for another proveedor
