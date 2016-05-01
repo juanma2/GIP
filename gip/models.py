@@ -166,6 +166,7 @@ class Cliente(models.Model):
     ##NOP contacto_CP = models.ManyToManyField(Destinos,blank=True)
     contacto_telefono = models.CharField(max_length=200,blank=True)
     contacto_email = models.CharField(max_length=200,blank=True)    
+    baja = models.NullBooleanField(null=True,default=False)
     #precomputed favorites
     def __unicode__(self):
         return u"%s" % (self.nombre)

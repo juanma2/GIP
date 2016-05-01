@@ -368,8 +368,6 @@ def clientes_proveedor(request):
               }
   return render(request, 'proveedor/clientes_bootstrap_proveedor.html', context)
 
-
-
 login_required(login_url='/mylogin/')
 @user_passes_test(is_proveedor)
 def add_cliente_proveedor(request, proveedor_id):
@@ -511,5 +509,4 @@ def edit_cliente_proveedor(request, proveedor_id, client_id):
              'client': client,
            }
   return render(request, 'proveedor/edit_cliente_bootstrap_proveedor.html', context)
-
 
