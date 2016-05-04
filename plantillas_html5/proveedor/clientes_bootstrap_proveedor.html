@@ -177,16 +177,16 @@ subcategoria = '{{ search_parameters.subcategoria }}';
 
 }
 
-function show_modal(product_id)
+function show_modal(client_id)
 {
 
-document.getElementById('product_to_delete').value=product_id;
-$('#advertenciaborrarproducto').modal('show'); 
+document.getElementById('client_to_delete').value=client_id;
+$('#advertenciaborrarcliente').modal('show'); 
 
 }
-function delprod(product_id){
-    var product_id = document.getElementById('product_to_delete').value
-    var form = $('#form_del_prod');
+function delclient(product_id){
+    var client_id = document.getElementById('client_to_delete').value
+    var form = $('#form_del_client');
 
 $.ajaxSetup({ 
      beforeSend: function(xhr, settings) {
@@ -214,7 +214,7 @@ $.ajaxSetup({
      url =
       $.ajax( {
         type: "POST",
-        url: '/proveedor/del_product/{{ proveedor.id }}/' + product_id,
+        url: '/proveedor/{{ proveedor.id }}/baja_cliente/' + client_id + '/',
         dataType: 'json' ,
         data: form.serialize(),
         error: function (xhr, status) {
@@ -224,25 +224,35 @@ $.ajaxSetup({
           //remove all the products!!, this will be an issue, with other searches already done in Database
           alert(response['msg']);
   myform = document.forms["search_cat"];
-  cat = document.getElementById('categoria').options;
-
-  cat_id = cat[cat.selectedIndex].id
   //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
   // cat_id == 0 //is the default choose a category
-  
-  if ( cat_id != 0 || document.getElementById('search').value != "")
+  //TODO: this should be my form.submit... to avoid nasty resend things
+   //location.reload()
+  myform = document.forms["search_text"];
+  myform.page = '{{ client_list.number }}';
+  page = '{{ client_list.number }}'
+  if (document.getElementById('search').value != "")
   {
-          submitform();
-  }else
-  {
-location.reload()
+    if (document.getElementById('search').value.length < 3)
+    {
+      alert('Por favor, introduce al menos 3 caracteres')
+      return;
+    }
+    addHidden(myform,'search', document.getElementById('search').value)
 
+    dirty = 1;
   }
+  if (page != 0 ){
+    addHidden(myform,'page', page)
+    dirty = 1
+  }
+  //paginate using the form 
+  myform.submit();
+  
+
   
   
         
-
-
          }
 
       } );
@@ -262,7 +272,7 @@ populate_form();
 });
 </script>
 <div class="container">
-        <div class="modal" id="advertenciaborrarproducto">
+        <div class="modal" id="advertenciaborrarcliente">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header modal-header-warning">
@@ -273,7 +283,7 @@ populate_form();
                         <p>Estas seguro que desea borrar el cliente?</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="delprod()">Borrar</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="delclient()">Borrar</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         <input type="hidden" id="client_to_delete">
 
@@ -361,7 +371,7 @@ populate_form();
 {% endfor %}
 </td>
                       <td>{{ user.cliente.telefono }}</td>
-                      <td><a href="#" onclick="javascript: deluser('{{ user.cliente.id }}')" style="font-size:8" class="fa fa-trash-o">X</a></td>
+                      <td><a href="#" onclick="javascript: show_modal('{{ user.cliente.id }}')" style="font-size:8" class="fa fa-trash-o">X</a></td>
 
                     </tr>
 {% endfor %}

@@ -313,11 +313,13 @@ def del_product(request,proveedor_id,product_id):
 @user_passes_test(is_proveedor)
 def clientes_proveedor(request):
   current_user = request.user
+  print current_user.id
   username = str(current_user.username)
   current_page = "Clientes"
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
   print proveedor
-  client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).order_by('-id')
+  print "we do this search when arrive to the page"
+  client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
   print client_list
   search_parameters = request.POST.copy()
   if search_parameters:
@@ -335,7 +337,7 @@ def clientes_proveedor(request):
       full_search = full_search & search_string
     full_search = full_search & proveedor_search
     print full_search
-    all_client_list = User.objects.filter(full_search).order_by('-id').exclude(groups__name=PROVEEDOR_ATTRIBUTE) #must add baja to Client
+    all_client_list = User.objects.filter(full_search).order_by('-id').exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True)
     paginator = Paginator(all_client_list, ELEMENTOS_POR_PAGINA_CLIENTE)
     print "the result is"
     print all_client_list
@@ -344,7 +346,7 @@ def clientes_proveedor(request):
     else:
       page = 1
   else:
-    all_client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).order_by('-id')
+    all_client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
     #this is he default search
     paginator = Paginator(all_client_list, ELEMENTOS_POR_PAGINA_CLIENTE)
     try:
@@ -367,6 +369,41 @@ def clientes_proveedor(request):
              'client_list': client_list,
               }
   return render(request, 'proveedor/clientes_bootstrap_proveedor.html', context)
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def baja_cliente_proveedor(request,proveedor_id,client_id):
+  current_user = request.user
+  username = str(current_user.username)
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).order_by('-id')
+  if request.is_ajax():
+    #check that the element belong to the list
+    client = Cliente.objects.get(id=client_id)
+    if str(proveedor.id) == proveedor_id: 
+      if client.baja == False:
+        client.baja = True
+        client.save()
+        #print e.id
+        data = {
+          'msg':'cliente eliminado!!' ,
+          '0':'reload'
+        }
+      else:
+        #dammm try catch!!
+        data = {
+          'msg':'el cliente ya estaba dado de baja!!, si el error persiste ponte en contacto con nosotros' ,
+          '1':'reset'
+        }
+      pay_load = json.dumps(data)
+      return HttpResponse(pay_load, content_type="application/json")
+    else:
+      print "Someone is playing bad.. proabbly"+str(proveedor_id)
+      return redirect('/proveedor/404/', request)
+  else:
+    return HttpResponseRedirect(reverse('cliente_proveedor'))
+
+
 
 login_required(login_url='/mylogin/')
 @user_passes_test(is_proveedor)
