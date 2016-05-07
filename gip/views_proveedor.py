@@ -547,3 +547,25 @@ def edit_cliente_proveedor(request, proveedor_id, client_id):
            }
   return render(request, 'proveedor/edit_cliente_bootstrap_proveedor.html', context)
 
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def masive_add_cliente_proveedor(request,proveedor_id):
+  print "we are in the right place to ad masive clients"
+  current_user = request.user
+  username = str(current_user.username)
+  current_page = "Productos"
+  status_answer = {}
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  categorias_list = Categoria.objects.all()
+  ##Check if the proveedor is the right one... avoid requests from another providers
+  ##TODO:Add a lot of logic... is not done!!
+  context= { 'username': username,
+             'current_page': current_page,
+             'status_answer': status_answer,
+             'proveedor': proveedor,
+             'categorias_list': categorias_list,
+              }
+  return render(request, 'proveedor/masive_client_bootstrap_proovedor.html', context)
+
+

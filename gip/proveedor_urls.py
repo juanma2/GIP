@@ -29,4 +29,6 @@ urlpatterns = [
     url(r'^(?P<proveedor_id>[0-9]+)/add_cliente/$', views_proveedor.add_cliente_proveedor, name='add_cliente_proveedor'),
     url(r'^(?P<proveedor_id>[0-9]+)/edit_cliente/(?P<client_id>[0-9]+)/$', views_proveedor.edit_cliente_proveedor, name='edit_cliente_proveedor'),
     url(r'^(?P<proveedor_id>[0-9]+)/baja_cliente/(?P<client_id>[0-9]+)/$', views_proveedor.baja_cliente_proveedor, name='baja_cliente_proveedor'),
+    url(r'^(?P<proveedor_id>[0-9]+)/masive_client/$', views_proveedor.masive_add_cliente_proveedor, name='masive_add_cliente_proveedor'),
+
 ]

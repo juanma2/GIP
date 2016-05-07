@@ -1,0 +1,89 @@
+{% extends "proveedor/base_bootstrap_proveedor.html" %}
+
+{% load staticfiles %}
+{% block purejavascript %}
+  
+{% endblock %}
+<div class="container">
+{% block left_menu_clientes %}
+{% include "proveedor/menu_cliente_bootstrap_proveedor.html" %}
+{% endblock %}
+
+{% block content %}
+
+{% block dataset %}
+
+          <!--empieza columna der-->
+          <div class="col-md-9">
+
+
+            <!--Lo que se está haciendo,actualizacionmasiva....-->
+            <h4>Actualizaciones masivas</h4>
+            <p>Aqui deberia haber un texto en el que diga como ha de ser el archivo y que pinchando se pueda bajar una plantilla de ese archivo</p>
+            <!--empieza lo gordo que se muestra-->
+            <hr>
+                        <div class="row">
+
+            <form>
+              <div class="form-group">
+
+                 <div class="col-lg-4"><label for="Actualización_masiva_declietes" class="control-label">Actualización declientes</label></div>
+                 <div class="col-lg-5"><input type="file"></div>
+                 <div class="col-lg-3 "><button type="submit" class="btn btn-primary">Enviar</button><span> </span><button type="reset" class="btn btn-default">Cancelar</button> </div>
+
+              </div>
+
+                        </form>
+
+
+            </div>
+
+                        <hr>
+
+                        <div class="row">
+
+            <form>
+              <div class="form-group">
+
+                 <div class="col-lg-4"><label for="Edicion_masiva_de_clientes" class="control-label">Edicion de clientes</label></div>
+                 <div class="col-lg-5"><input type="file"></div>
+                 <div class="col-lg-3 "><button type="submit" class="btn btn-primary">Enviar</button><span> </span><button type="reset" class="btn btn-default">Cancelar</button> </div>
+
+              </div>
+
+                        </form>
+
+
+            </div>
+
+                        <hr>
+
+
+                        <div class="row">
+
+            <form>
+              <div class="form-group">
+
+                 <div class="col-lg-4"><label for="Actualización_masiva_de_clientes" class="control-label">Actualización de clientes</label></div>
+                 <div class="col-lg-5"><input type="file"></div>
+                 <div class="col-lg-3 "><button type="submit" class="btn btn-primary">Enviar</button><span> </span><button type="reset" class="btn btn-default">Cancelar</button> </div>
+
+              </div>
+
+                        </form>
+
+
+            </div>
+
+
+
+
+                        </form>
+
+
+<p><br>
+            </div>
+            <!--acaba columna der-->
+{% endblock %}
+{% endblock %}
+
