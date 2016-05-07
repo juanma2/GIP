@@ -1,0 +1,407 @@
+{% extends "proveedor/base_bootstrap_proveedor.html" %}
+{% load staticfiles %}
+{% block purejavascript %}
+    <style>
+        .cortandodescripcion {
+            overflow:hidden; /* Escondemos la parte sobrante */
+
+
+            text-overflow:ellipsis;
+            height: 120px;
+        }
+        .cortandotextonombre {
+            overflow:hidden; /* Escondemos la parte sobrante */
+              text-overflow:clip;
+  /*  white-space:nowrap;  usar cuando sepamos */
+  white-space:nowrap;
+  height: 30px;
+
+
+        }
+        .cortandotextonombre:hover {
+                        width: auto;
+                        white-space: initial;
+                        overflow:visible;
+                        cursor: pointer;
+                }
+ /*  =========================
+ 		INTENTO CON FLEXBOX <script src="https://gist.github.com/aquistamos/79c1a3b512910b45ad26.js"></script>
+ 	 ========================= */ 
+.gallery {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 980px;
+}
+.gallery li {
+    box-sizing: border-box;
+    display: flex;
+    float: left;
+    padding: 0.625rem;
+    position: relative;
+    transition: width 0.3s ease-out 0s;
+    width: 25%;
+}
+.gallery li .box {
+    background-color: #fff;
+    overflow: hidden;
+    padding: 6px 6px 30px;
+    position: relative;
+}
+.gallery li figure {
+    display: block;
+    margin-bottom: 6px;
+    width: 100%;
+}
+.gallery li img {
+    height: auto;
+    width: 100%;
+}
+.gallery li h3 {
+    color: #000;
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 100%;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+.gallery li time {
+    bottom: 0;
+    box-sizing: border-box;
+    font-weight: 400;
+    left: 0;
+    padding: 6px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+/*  ==.gallery li:nth-child(2n) .box {
+    background: #eee none repeat scroll 0 0;
+}
+== */ 
+@media screen and (max-width: 992px) {
+.gallery {
+    width: auto;
+}
+}
+@media screen and (max-width: 768px) {
+.gallery li {
+    width: 50%;
+}
+}
+@media screen and (max-width: 468px) {
+.gallery li {
+    width: 100%;
+}
+}
+    </style>
+
+<script>
+//combo_option[combo_option.selectedIndex].id
+
+//Javascript to collect info from form id = search_form
+function submitform(page) {
+  page = page || 0;
+  dirty = 0;
+  myform = document.forms["search_text"];
+  myform.page = '{{ client_list.number }}';
+
+  if (document.getElementById('search').value != "")
+  {
+    if (document.getElementById('search').value.length < 3)
+    {
+      alert('Por favor, introduce al menos 3 caracteres')
+      return;
+    }
+    addHidden(myform,'search', document.getElementById('search').value)
+
+    dirty = 1;
+  }
+  if (page != 0 ){
+    addHidden(myform,'page', page)
+    dirty = 1
+  }
+  if (dirty == 0 )
+  {
+    alert('Por favor, introduce algun filtro');
+    return;
+  }
+  //paginate using the form 
+  myform.submit();
+  
+}
+
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function populate_form() {
+search_string = '{{ search_parameters.search }}';
+  if ( search_string != ''){
+    document.getElementById('search').value = search_string;
+  }
+
+categoria = '{{ search_parameters.categoria }}';
+  if ( categoria != ''){
+    for (i = 0; i< document.getElementById('categoria').length; i++)
+      {
+        if (document.getElementById('categoria').options[i].id == categoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('categoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+subcategoria = '{{ search_parameters.subcategoria }}';
+  if ( subcategoria != ''){
+    for (i = 0; i< document.getElementById('subcategoria').length; i++)
+      {
+        if (document.getElementById('subcategoria').options[i].id == subcategoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('subcategoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+
+
+}
+
+function show_modal(client_id)
+{
+
+document.getElementById('client_to_delete').value=client_id;
+$('#advertenciaborrarcliente').modal('show'); 
+
+}
+function delclient(product_id){
+    var client_id = document.getElementById('client_to_delete').value
+    var form = $('#form_del_client');
+
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/proveedor/{{ proveedor.id }}/baja_cliente/' + client_id + '/',
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          //remove all the products!!, this will be an issue, with other searches already done in Database
+          alert(response['msg']);
+  myform = document.forms["search_cat"];
+  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
+  // cat_id == 0 //is the default choose a category
+  //TODO: this should be my form.submit... to avoid nasty resend things
+   //location.reload()
+  myform = document.forms["search_text"];
+  myform.page = '{{ client_list.number }}';
+  page = '{{ client_list.number }}'
+  if (document.getElementById('search').value != "")
+  {
+    if (document.getElementById('search').value.length < 3)
+    {
+      alert('Por favor, introduce al menos 3 caracteres')
+      return;
+    }
+    addHidden(myform,'search', document.getElementById('search').value)
+
+    dirty = 1;
+  }
+  if (page != 0 ){
+    addHidden(myform,'page', page)
+    dirty = 1
+  }
+  //paginate using the form 
+  myform.submit();
+  
+
+  
+  
+        
+         }
+
+      } );
+
+
+}
+
+function deluser(client_id)
+{
+alert('hell yes')
+}
+
+$(document).ready(function() {
+var form = $('#send_lista_info');
+populate_form();
+
+});
+</script>
+<div class="container">
+        <div class="modal" id="advertenciaborrarcliente">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-warning">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Advertencia, este producto ya existe</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Estas seguro que desea borrar el cliente?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="delclient()">Borrar</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <input type="hidden" id="client_to_delete">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+{% endblock %}
+
+
+
+<div class="container">
+<!-- no left menu 
+{% block left_menu_pedidos %}
+{% include "proveedor/menu_pedidos_bootstrap_proveedor.html" %}
+{% endblock %}
+-->
+
+{% block content %}
+
+  {% block searchbar %}
+          <!--empieza columna der-->
+          <div class="col-md-9">
+            <!--empieza menu buscador-->
+            <!--Localizador colapse !-->
+                        <nav class="navbar navbar-default" role="navigation">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#localizacolapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                  <a href="/proveedor/clientes/" class="navbar-brand"><span class="glyphicon glyphicon-search"></span> Nueva busqueda</a>
+                </div>
+                <div class="collapse navbar-collapse" id="localizacolapse">
+                  <ul class="nav navbar-nav">
+                    <li></li>
+                  </ul>
+                  <div>
+                    <form id="search_text" action="/proveedor/clientes/" method="post" class="navbar-form navbar-right">
+                      {% csrf_token %}
+                      <div class="formgroup">
+                        <input id="search" type="text" class="form-control" placeholder="Introduce texto">
+
+                        <button onclick="submitform();return false;" class="btn btn-default">Buscar</button>
+                      </div>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </nav>
+
+            <!--acaba menu buscador-->
+{% endblock %}
+{% block dataset %}
+            <!--Lo que se está haciendo, Alta producto, actualizacionmasiva....-->
+            <h4>Ultimos clientes con actividad lo que nos venga mejor mostrar en la entrada de clientes</h4>
+            <hr>
+            <div class="row">
+              <div class="col-md-12">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>C.I.F.</th>
+                      <th>Razon Social</th>
+                      <th>Provincia</th>
+                      <th>C.P.</th>
+                      <th>Ult. Pedido</th>
+                      <th>Baja</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+{% for user in client_list %}
+                    <tr>
+                      <td><a href="/proveedor/{{ proveedor.id }}/edit_cliente/{{ user.cliente.id }}/">{{ user.cliente.cif }}</td>
+                      <td>{{ user.cliente.nombre }}</td>
+                      <td>{{ user.cliente.ciudad }}</td>
+                      <td>
+{% for area in user.cliente.destino_reparto.all %}
+{{ area }},
+{% endfor %}
+</td>
+                      <td>{{ user.cliente.telefono }}</td>
+                      <td><a href="#" onclick="javascript: show_modal('{{ user.cliente.id }}')" style="font-size:8" class="fa fa-trash-o">X</a></td>
+
+                    </tr>
+{% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+{% endblock %}
+{% endblock %}
+
+{% block pagination %}
+
+                        <div class="row">
+            <div class="col-md-12">
+
+                            <ul class="pagination pagination-sm">
+              {% if client_list.has_previous %}
+                                <li>
+                                    <a href="#" onclick="submitform({{ client_list.previous_page_number }});return false;" >«</a>
+                                </li>
+              {% endif %}
+                                <li>
+                                    Pag. <a href="#">{{ client_list.number }}</a> de {{ client_list.paginator.num_pages }}
+                               </li>
+              {% if client_list.has_next %}
+                  <a href="#" onclick="submitform({{ client_list.next_page_number }});return false;">»</a>
+              {% endif %}
+           </div>
+                         </div>
+
+
+{% endblock %}

@@ -569,3 +569,24 @@ def masive_add_cliente_proveedor(request,proveedor_id):
   return render(request, 'proveedor/masive_client_bootstrap_proovedor.html', context)
 
 
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def pedidos_proveedor(request):
+  current_user = request.user
+  print current_user.id
+  username = str(current_user.username)
+  current_page = "Clientes"
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  print proveedor
+  print "we do this search when arrive to the page"
+  client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
+  print client_list
+  search_parameters = request.POST.copy()
+  #if search_parameters:
+  context= { 'username': username,
+             'current_page': current_page,
+             'proveedor': proveedor,
+             'pedido_list': client_list,
+              }
+  return render(request, 'proveedor/pedidos_clientes_bootstrap_proveedor.html', context)
+
