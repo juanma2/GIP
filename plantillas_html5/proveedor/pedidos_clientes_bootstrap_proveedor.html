@@ -307,79 +307,514 @@ populate_form();
 {% block content %}
 
   {% block searchbar %}
-          <!--empieza columna der-->
-          <div class="col-md-9">
-            <!--empieza menu buscador-->
-            <!--Localizador colapse !-->
-                        <nav class="navbar navbar-default" role="navigation">
-              <div class="container-fluid">
-                <div class="navbar-header">
-                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#localizacolapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                  </button>
-                  <a href="/proveedor/clientes/" class="navbar-brand"><span class="glyphicon glyphicon-search"></span> Nueva busqueda</a>
-                </div>
-                <div class="collapse navbar-collapse" id="localizacolapse">
-                  <ul class="nav navbar-nav">
-                    <li></li>
-                  </ul>
-                  <div>
-                    <form id="search_text" action="/proveedor/clientes/" method="post" class="navbar-form navbar-right">
-                      {% csrf_token %}
-                      <div class="formgroup">
-                        <input id="search" type="text" class="form-control" placeholder="Introduce texto">
-
-                        <button onclick="submitform();return false;" class="btn btn-default">Buscar</button>
-                      </div>
-                    </form>
-
-                  </div>
-                </div>
-              </div>
-            </nav>
-
-            <!--acaba menu buscador-->
-{% endblock %}
+  {% endblock %}
 {% block dataset %}
             <!--Lo que se está haciendo, Alta producto, actualizacionmasiva....-->
-            <h4>Ultimos clientes con actividad lo que nos venga mejor mostrar en la entrada de clientes</h4>
+            <h4>Estado de pedidos</h4>
             <hr>
             <div class="row">
-              <div class="col-md-12">
+<!--soluccion pilsss-->
+
+
+<ul class="nav nav-pills">
+    <li class="dropdown active">
+    <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="recibidos.html">
+      Sin validar <span class="badge">25</span> <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+
+      <li><a href="#">Recibidos <span class="badge">19</span></a></li>
+      <li><a href="#">En revision <span class="badge">5</span></a></li>
+
+
+      </ul>
+  </li>
+  <li class=""><a href="#">En preparacion <span class="badge">2</span></a></li>
+  <li><a href="#">En ruta</a></li>
+  <li><a href="#">Entregados</a></li>
+  <li><a href="#">Por cobrar</a></li>
+
+</ul>
+<!--segun pinches en pilllsss-->
+<!--Pinchando en Recibidos que es la entrada por defecto en pedidos-->
                 <table class="table">
                   <thead>
                     <tr>
-                      <th>C.I.F.</th>
-                      <th>Razon Social</th>
-                      <th>Provincia</th>
-                      <th>C.P.</th>
-                      <th>Ult. Pedido</th>
-                      <th>Baja</th>
+                      <th>Check</th>
+                      <th>ID. Pedido</th>
+                      <th>Fecha Pedido</th>
+                      <th>Cliente</th>
+                      <th>Destino</th>
+                      <th>Ver</th>
+                      <th>Validar</th>
+                      <th>Rechazar</th>
+                      <th>En Revision</th>
                     </tr>
                   </thead>
                   <tbody>
-{% for user in client_list %}
                     <tr>
-                      <td><a href="/proveedor/{{ proveedor.id }}/edit_cliente/{{ user.cliente.id }}/">{{ user.cliente.cif }}</td>
-                      <td>{{ user.cliente.nombre }}</td>
-                      <td>{{ user.cliente.ciudad }}</td>
-                      <td>
-{% for area in user.cliente.destino_reparto.all %}
-{{ area }},
-{% endfor %}
-</td>
-                      <td>{{ user.cliente.telefono }}</td>
-                      <td><a href="#" onclick="javascript: show_modal('{{ user.cliente.id }}')" style="font-size:8" class="fa fa-trash-o">X</a></td>
-
+                      <td><label><input type="checkbox"></label></td>
+                      <td>ped.18409243</td>
+                      <td>27-Agosto-1957</td>
+                      <td>Mark S.L.</td>
+                      <td> <a href="essoloejemplodenavegacion.html"> Siempre es el nombre que aparece en los datos de envio</a></td>
+                      <td><a  href="#modaldemostrarpedido1" class="btn btn-info btn-sm" data-toggle="modal">Ver 1</a></td>
+                      <td><button type="button" class="btn btn-success btn-sm">Validar</button></td>
+                      <td><a  href="#modalrechazarpedido" class="btn btn-danger btn-sm" data-toggle="modal">Rechazar</a></td>
+                      <td></td>
                     </tr>
-{% endfor %}
+                    <tr>
+                      <td><label><input type="checkbox" hidden></label></td>
+                      <td>ped.89464596163</td>
+                      <td>15-Sept-15</td>
+                      <td>Gutierrez y Hernandez S.L.</td>
+                      <td>Su local</td>
+                      <td><a  href="#modaldemostrarpedido2" class="btn btn-info btn-sm" data-toggle="modal">Ver 2</a></td>
+                      <td><button type="button" class="btn btn-success btn-sm hidden">Validar</button></td>
+                      <td><button type="button" class="btn btn-danger btn-sm hidden">Rechazar</button></td>
+                      <td><span class="label label-warning">En revisión</span></td>
+                    </tr>
+                    <tr>
+                      <td><label><input type="checkbox"></label></td>
+                      <td>ped.8318663</td>
+                      <td>27/06/2015</td>
+                      <td>La obeja negra</td>
+                      <td>El local de las chimbambas</td>
+                      <td><a  href="#modaldemostrarpedido" class="btn btn-info btn-sm" data-toggle="modal">Ver</a></td>
+                      <td><button type="button" class="btn btn-success btn-sm">Validar</button></td>
+                      <td><a  href="#modalrechazarpedido" class="btn btn-danger btn-sm" data-toggle="modal">Rechazar</a></td>
+                      <td></td>
+                    </tr>
+                     <tr>
+                      <td><label><input type="checkbox"></label></td>
+                      <td>ped.89465163</td>
+                      <td>24-Sept-15</td>
+                      <td>Freiduria erpescaito</td>
+                      <td>Erpescaito</td>
+                      <td><a  href="#modaldemostrarpedido" class="btn btn-info btn-sm" data-toggle="modal">Ver</a></td>
+                      <td><button type="button" class="btn btn-success btn-sm">Validar</button></td>
+                      <td><button type="button" class="btn btn-danger btn-sm">Rechazar</button></td>
+                      <td><span class="label label-success">Aceptada</span></td>
+                    </tr>
+                    <tr>
+                      <td><label><input type="checkbox" hidden></label></td>
+                      <td>ped.89465163</td>
+                      <td>24-Sept-15</td>
+                      <td>Freiduria erpescaito</td>
+                      <td>Erpescaito</td>
+                      <td><a  href="#modaldemostrarpedido" class="btn btn-info btn-sm" data-toggle="modal">Ver</a></td>
+                      <td><button type="button" class="btn btn-success btn-sm hidden" >Validar</button></td>
+                      <td><button type="button" class="btn btn-danger btn-sm hidden" >Rechazar</button></td>
+                      <td><span class="label label-danger">Rechazada</span></td>
+                    </tr>
                   </tbody>
                 </table>
-              </div>
+
+                <button type="button" class="btn btn-success">Validar seleccionados</button>
+        </div>
+      </div>
+
+
+
+        </div>
+      </div>
+
+
+      <!--empieza modal muestra pedido tipo 1-->
+        <div class="modal" id="modaldemostrarpedido1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-info">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Pedido: ped.18409243 de Mark S.L.</h4>
+                    </div>
+                    <div class="modal-body">
+                     <table class="table">
+                  <thead>
+                    <tr>
+
+                      <th>Referencia</th>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+                      <th>Reformular</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>GEV</td>
+                      <td>Gijarros en vinagre</td>
+                      <td>15</td>
+                      <td>5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>MTC</td>
+                      <td>Minitulipa de cacao to chula y to grande a ver que pasa con el nombre si es muy largo</td>
+                      <td>1</td>
+                      <td>80 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>GEV</td>
+                      <td>Gijarros en vinagre</td>
+                      <td>15</td>
+                      <td>5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>MTC</td>
+                      <td>Minitulipa de cacao to chula y to grande a ver que pasa con el nombre si es muy largo</td>
+                      <td>1</td>
+                      <td>80 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr><tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>GEV</td>
+                      <td>Gijarros en vinagre</td>
+                      <td>15</td>
+                      <td>5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>MTC</td>
+                      <td>Minitulipa de cacao to chula y to grande a ver que pasa con el nombre si es muy largo</td>
+                      <td>1</td>
+                      <td>80 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+
+                  </tbody>
+                </table>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Validar</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                    </div>
+                </div>
             </div>
+        </div>
+
+
+      <!--acaba modal muestra pedido-->
+ <!--Modal de formulario para reformular una linea de pedido -->
+        <div class="modal" id="formularioreformular">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-warning">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Usted va a cambiar un item de pedido</h4>
+                    </div>
+                    <div class="modal-body">
+                    <b>Item actual:</b>
+
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Referencia</th>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+
+                    </tr>
+                  </tbody>
+                </table>
+                  <b>Sustituir por:</b>
+<form class="form-inline">
+    <div class="form-group">
+        <label class="sr-only" for="Referencia">Referencia</label>
+        <input class="form-control" placeholder="Referencia">
+    </div>
+    <div class="form-group">
+       <label class="sr-only" for="Cantidad">cantidad</label>
+       <input  class="form-control"  placeholder="Cantidad">
+    </div>
+
+    <button type="submit" class="btn btn-warning btn-sm">Cambiar</button>
+</form>
+<br>
+
+                       <b> <p>Cuando pulse Cambiar los datos del pedido se modificarán</p> </b>
+
+                        <p>Compruebe que la referencia de su producto es la adecuada y no pertenece a otro producto.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+ <!-- acaba Modal de formulario para reformular una linea de pedido-->
+  <!--empieza modal muestra pedido tipo 2-->
+        <div class="modal" id="modaldemostrarpedido2">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-info">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Pedido: ped.18409243 de Mark S.L.</h4>
+                    </div>
+                    <div class="modal-body">
+                    <form class="form-inline">
+                     <table class="table">
+                  <thead>
+                    <tr>
+
+                      <th>Referencia</th>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+                      <th>Reformular</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <!--empieza una linea de pedido-->
+                    <tr data-toggle="collapse" data-target="#demo1" class="accordion-toggle">
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" >Reformular Item</a></td>
+                    </tr>
+
+                    <tr>
+                  <td colspan="12" class="hiddenRow">
+                    <div class="accordian-body collapse" id="demo1">
+                          <b>Sustituir por:</b>
+
+                    <div class="form-group form-inline">
+                        <label class="sr-only" for="Referencia">Referencia</label>
+                        <input class="form-control" placeholder="Referencia">
+                    </div>
+                    <div class="form-group">
+                      <label class="sr-only" for="Cantidad">cantidad</label>
+                      <input  class="form-control"  placeholder="Cantidad">
+                    </div>
+
+
+
+                       <b> <p>Cuando pulse Guardar modificaciones los datos del pedido se modificarán</p> </b>
+
+                        <p>Compruebe que la referencia de su producto es la adecuada y no pertenece a otro producto.</p>
+
+                    </div> </td>
+              </tr>
+              <!--acaba una linea de pedido-->
+              <!--empieza una linea de pedido-->
+                    <tr data-toggle="collapse" data-target="#demo2" class="accordion-toggle">
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+
+                    <tr>
+                  <td colspan="12" class="hiddenRow">
+                    <div class="accordian-body collapse" id="demo2">
+                          <b>Sustituir por:</b>
+                                    <div class="form-group">
+                        <label class="sr-only" for="Referencia">Referencia</label>
+                        <input class="form-control" placeholder="Referencia">
+                    </div>
+                    <div class="form-group">
+                      <label class="sr-only" for="Cantidad">cantidad</label>
+                      <input  class="form-control"  placeholder="Cantidad">
+                    </div>
+
+
+
+                       <b> <p>Cuando pulse Guardar modificaciones los datos del pedido se modificarán</p> </b>
+
+                        <p>Compruebe que la referencia de su producto es la adecuada y no pertenece a otro producto.</p>
+
+                    </div> </td>
+              </tr>
+              <!--acaba una linea de pedido-->
+              <!--empieza una linea de pedido-->
+                    <tr data-toggle="collapse" data-target="#demo2" class="accordion-toggle">
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+
+                    <tr>
+                  <td colspan="12" class="hiddenRow">
+                    <div class="accordian-body collapse" id="demo2">
+                          <b>Sustituir por:</b>
+                                    <div class="form-group">
+                        <label class="sr-only" for="Referencia">Referencia</label>
+                        <input class="form-control" placeholder="Referencia">
+                    </div>
+                    <div class="form-group">
+                      <label class="sr-only" for="Cantidad">cantidad</label>
+                      <input  class="form-control"  placeholder="Cantidad">
+                    </div>
+
+
+
+                       <b> <p>Cuando pulse Guardar modificaciones los datos del pedido se modificarán</p> </b>
+
+                        <p>Compruebe que la referencia de su producto es la adecuada y no pertenece a otro producto.</p>
+
+                    </div> </td>
+              </tr>
+              <!--acaba una linea de pedido-->
+              <!--empieza una linea de pedido-->
+                    <tr data-toggle="collapse" data-target="#demo2" class="accordion-toggle">
+                      <td>AJOP</td>
+                      <td>Ajo en polvo</td>
+                      <td>3</td>
+                      <td>2.5 ~B�</td>
+                      <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" data-toggle="modal">Reformular Item</a></td>
+                    </tr>
+
+                    <tr>
+                  <td colspan="12" class="hiddenRow">
+                    <div class="accordian-body collapse" id="demo2">
+                          <b>Sustituir por:</b>
+                                    <div class="form-group">
+                        <label class="sr-only" for="Referencia">Referencia</label>
+                        <input class="form-control" placeholder="Referencia">
+                    </div>
+                    <div class="form-group">
+                      <label class="sr-only" for="Cantidad">cantidad</label>
+                      <input  class="form-control"  placeholder="Cantidad">
+                    </div>
+
+
+
+                       <b> <p>Cuando pulse Guardar modificaciones los datos del pedido se modificarán</p> </b>
+
+                        <p>Compruebe que la referencia de su producto es la adecuada y no pertenece a otro producto.</p>
+
+                    </div> </td>
+              </tr>
+              <!--acaba una linea de pedido-->
+                  </tbody>
+                </table>
+                </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Validar</button>
+                        <button type="submit" class="btn btn-warning btn-sm">Guardar modificaciones</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+      <!--acaba modal muestra pedido tipo 2-->
+  <!--modal advertencia rechazar pedido-->
+        <div class="modal" id="modalrechazarpedido">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-header-danger">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Advertencia, va a eliminar un pedido.</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h4><b>Eliminar el pedido ID:ped.89464596163 de Mark S.L. con fecha 15-Sept-15 </b></h4>
+                           <form>
+                           <div class="form-group">
+                  <label for="Causa_del_rechazo">Explicacion Interna del rechazo</label>
+                    <textarea class="form-control" rows="5" id="Causa_del_rechazo"></textarea>
+               </div>
+                <div class="form-group">
+                  <label for="rechazo_explicacion_al_cliente">Mensaje de rechazo que le llegará a su cliente:</label>
+                    <textarea class="form-control required" rows="5" id="rechazo_explicacion_al_cliente" required></textarea>
+               </div>
+               </form>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Rechazar pedido</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+ <!--acaba modal advertencia rechazar pedido-->
+
+
 {% endblock %}
 {% endblock %}
 
