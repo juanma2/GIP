@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gip',
+    'django_fsm',
 )
 
 MIDDLEWARE_CLASSES = (

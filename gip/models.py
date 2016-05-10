@@ -3,6 +3,8 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import Group, User
 from django.utils.timezone import now
+from django_fsm import FSMField, transition
+
 
 #I wish to place it out of here, but... is not working in helpers :(
 def number_invoice():
@@ -113,6 +115,7 @@ class Promo(models.Model):
 
 class Pedidos(models.Model):
     id = models.AutoField(primary_key=True)
+    state = FSMField(default='Nuevo')
     codigo = models.CharField(max_length=16, default=number_invoice) #TODO: multithread issue requesting invoices numbers... wait for it
     producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
     total = models.DecimalField(max_digits=25, decimal_places=4)
