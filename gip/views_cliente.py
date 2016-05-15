@@ -445,10 +445,15 @@ def historico(request):
     username = str(current_user.username)
     current_page = "Historico"
     pedidos = Pedidos.objects.filter(cliente=current_user.id)
+    pedidos_estados = {}
+    #is ugly, but should make jinja easier
+    for k in Pedidos.STATE_CHOICES:
+      pedidos_estados[str(k[0])]=k[1] 
     #sort by lista.. and add the staff there 
     context = {'username': username,
                'current_page': current_page,
                'pedidos': pedidos,
+               'pedidos_estados': pedidos_estados,
                }
     return render(request, 'cliente/historico_pedidos.html', context)
 
