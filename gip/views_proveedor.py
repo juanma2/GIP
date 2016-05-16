@@ -25,6 +25,8 @@ from gip.models import *
 
 from gip.utils import is_proveedor
 
+##FFS add all this in one file settings??
+
 ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
 ELEMENTOS_POR_PAGINA_CLIENTE = 5
 PROVEEDOR_ATTRIBUTE = 'proveedor'
@@ -577,10 +579,10 @@ def pedidos_proveedor(request):
   username = str(current_user.username)
   current_page = "Clientes"
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
-  print proveedor
-  print "we do this search when arrive to the page"
+  print proveedor, proveedor.id
   client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
   print client_list
+  #so, sadly, our model, do not keep track of the proveedor, only of the client... which is awkward at this point.
   search_parameters = request.POST.copy()
   #if search_parameters:
   context= { 'username': username,

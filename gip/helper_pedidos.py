@@ -14,7 +14,7 @@ PEDIDOS_ESTADOS = (
     ('1000', 'Finalizado'),
 )
 
-def send_order(pedido): 
+def send_order(pedido,proveedor): 
   print "implement email, or, whatever needed in gip/helper_pedidos.py"
   print "Once the order is proccesed, should go to pending of validation or something like that"
   cliente = pedido['cliente']
@@ -30,7 +30,7 @@ def send_order(pedido):
   for i in pedido['orden']:
     total += orden[i]*precio[i]
   print total 
-  p = Pedidos(producto_serializado=pedido, total = total , fecha_creacion = datetime.datetime.now())
+  p = Pedidos(producto_serializado=pedido, proveedor_id = proveedor.id, total = total , fecha_creacion = datetime.datetime.now())
   p.save()
   p.cliente.add(pedido['cliente']['user_id'])
   return True

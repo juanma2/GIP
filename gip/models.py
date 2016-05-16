@@ -163,6 +163,7 @@ class Pedidos(models.Model):
     total = models.DecimalField(max_digits=25, decimal_places=4)
     cliente = models.ManyToManyField(User)
     fecha_creacion = models.DateTimeField('fecha creacion')
+    proveedor = models.ForeignKey(Group)
 
     #django-fsm transitions... here comes the fun
     #this one, should be State.NUEVO... but it does not work, so I used "*" .... TODO:Fix it!!
