@@ -130,25 +130,45 @@ class Pedidos(models.Model):
         ENTREGADO                     = 50000
         COBRADO                       = 60000
         HISTORICO                     = 90000
-        CANCELADO		      = -1
+        CANCELADO		      =    -1
     STATE_CHOICES = (
-                     (STATE.NUEVO                          ,  'Nuevo'),
-                     (STATE.RECEPCION                      , 'Recepcion'),
+                     (STATE.NUEVO                          ,'Nuevo'),
+                     (STATE.RECEPCION                      ,'Recepcion'),
                      (STATE.RECHAZADO                      ,'Rechazado'),
                      (STATE.COMUNICACION_RECHAZO_CLIENTE   ,'Comunicacion Rechazado Cliente'),
-                     (STATE.RECEPCION_RECHAZADO            , 'Recepcion Rechazado'),
-                     (STATE.PACTAR_ALTERNATIVA             ,  'Pactar Alternativa'),
-                     (STATE.REFORMULAR_PEDIDO              , 'Reformular Pedido'),
-                     (STATE.NO_ACEPTADO                    , 'No Aceptado Cliente'),
-                     (STATE.ACEPTADO_CLIENTE               , 'Aceptado Cliente'),
-                     (STATE.RECEPCION_RECHAZADO_PROVEEDOR  , 'Recepcion Rechazo Proveedor'),
-                     (STATE.CURSAR_PEDIDO                  ,  'Cursar Pedido'),
-                     (STATE.EN_PREPARACION                 , 'En preparacion'),
-                     (STATE.EN_CAMINO                      , 'En camino'),
-                     (STATE.ENTREGADO                      , 'Entregado'),
-                     (STATE.COBRADO                        , 'Cobrado'),
-                     (STATE.HISTORICO                      , 'Historico'),
-                     (STATE.CANCELADO                      , 'Cancelado'),
+                     (STATE.RECEPCION_RECHAZADO            ,'Recepcion Rechazado'),
+                     (STATE.PACTAR_ALTERNATIVA             ,'Pactar Alternativa'),
+                     (STATE.REFORMULAR_PEDIDO              ,'Reformular Pedido'),
+                     (STATE.NO_ACEPTADO                    ,'No Aceptado Cliente'),
+                     (STATE.ACEPTADO_CLIENTE               ,'Aceptado Cliente'),
+                     (STATE.RECEPCION_RECHAZADO_PROVEEDOR  ,'Recepcion Rechazo Proveedor'),
+                     (STATE.CURSAR_PEDIDO                  ,'Cursar Pedido'),
+                     (STATE.EN_PREPARACION                 ,'En preparacion'),
+                     (STATE.EN_CAMINO                      ,'En camino'),
+                     (STATE.ENTREGADO                      ,'Entregado'),
+                     (STATE.COBRADO                        ,'Cobrado'),
+                     (STATE.HISTORICO                      ,'Historico'),
+                     (STATE.CANCELADO                      ,'Cancelado'),
+
+                   #  (STATE.NUEVO                          ,'Nuevo'				,'Nuevo'				),
+                   #  (STATE.RECEPCION                      ,'Recepcion'				,'Recepcion'				),
+                   #  (STATE.RECHAZADO                      ,'Rechazado'				,'Rechazado'				),
+                   #  (STATE.COMUNICACION_RECHAZO_CLIENTE   ,'Comunicacion Rechazado Cliente'	,'Comunicacion Rechazado Cliente'	),
+                   #  (STATE.RECEPCION_RECHAZADO            ,'Recepcion Rechazado'		,'Recepcion Rechazado'			),
+                   #  (STATE.PACTAR_ALTERNATIVA             ,'Pactar Alternativa'		,'Pactar Alternativa'			),
+                   #  (STATE.REFORMULAR_PEDIDO              ,'Reformular Pedido'			,'Reformular Pedido'			),
+                   #  (STATE.NO_ACEPTADO                    ,'No Aceptado Cliente'		,'No Aceptado Cliente'			),
+                   #  (STATE.ACEPTADO_CLIENTE               ,'Aceptado Cliente'			,'Aceptado Cliente'			),
+                   #  (STATE.RECEPCION_RECHAZADO_PROVEEDOR  ,'Recepcion Rechazo Proveedor'	,'Recepcion Rechazo Proveedor'		),
+                   #  (STATE.CURSAR_PEDIDO                  ,'Cursar Pedido'			,'Cursar Pedido'			),
+                   #  (STATE.EN_PREPARACION                 ,'En preparacion'			,'En preparacion'			),
+                   #  (STATE.EN_CAMINO                      ,'En camino'				,'En camino'				),
+                   #  (STATE.ENTREGADO                      ,'Entregado'				,'Entregado'				),
+                   #  (STATE.COBRADO                        ,'Cobrado'				,'Cobrado'				),
+                   #  (STATE.HISTORICO                      ,'Historico'				,'Historico'				),
+                   #  (STATE.CANCELADO                      ,'Cancelado'				,'Cancelado'				),
+
+
     )
 
     id = models.AutoField(primary_key=True)
@@ -156,7 +176,7 @@ class Pedidos(models.Model):
       default=STATE.NUEVO,
       verbose_name='Estado Pedido',
       choices=STATE_CHOICES,
-      protected=True,
+      #protected=True,
       )
     codigo = models.CharField(max_length=16, default=number_invoice) #TODO: multithread issue requesting invoices numbers... wait for it
     producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 

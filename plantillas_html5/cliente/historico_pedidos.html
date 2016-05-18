@@ -58,7 +58,8 @@ document.getElementById('pedido_content_{{pedido.codigo}}').style.display='none'
               </td><td>
          total: {{ pedido.total }}
               </td><td>
-          <!-- TODO look for something better that iterate over the template FGS --> 
+          <!-- TODO look for something better that iterate over the template FGS  and should workaccessiiiiing the key, but does not ./--> 
+
    {% for key, value in pedidos_estados.items %}
       {% if key == pedido.pedido_state %}
       {{ value  }}

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from django.db.models import Count
 from django.shortcuts import redirect
 
 from django.http import HttpResponseRedirect
@@ -582,13 +583,27 @@ def pedidos_proveedor(request):
   print proveedor, proveedor.id
   client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
   print client_list
-  #so, sadly, our model, do not keep track of the proveedor, only of the client... which is awkward at this point.
+  #Count all of them, TODO:check how expensive if this query and think about options, fix the format, kills me :/
+  counter_pedidos = Pedidos.objects.filter(proveedor_id = proveedor.id).values('pedido_state').annotate(total=Count('pedido_state'))
+  pedidos_estados = {}
+  #is ugly, but should make jinja easier
+  for k in Pedidos.STATE_CHOICES:
+    pedidos_estados[str(k[0])]=k[1]
+  #don't wanna work with cancelled in this view
+  pedidos_estados.pop('-1') 
+  pedidos_estados = sorted(pedidos_estados.items())
+  lista_estados = {}
+  for i in pedidos_estados:
+    #first character starts with
+    if i[0][0] == 1:
+      pass#lista_estados(' ')
   search_parameters = request.POST.copy()
   #if search_parameters:
   context= { 'username': username,
              'current_page': current_page,
              'proveedor': proveedor,
-             'pedido_list': client_list,
+             'counter_pedidos': counter_pedidos,
+             'pedidos_estados': pedidos_estados,
               }
   return render(request, 'proveedor/pedidos_clientes_bootstrap_proveedor.html', context)
 
