@@ -8,6 +8,8 @@ from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
+from gip.helper_proveedor import list_grouper
+
 
 
 from gip.models import Producto, Cliente
@@ -580,30 +582,23 @@ def pedidos_proveedor(request):
   username = str(current_user.username)
   current_page = "Clientes"
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
-  print proveedor, proveedor.id
   client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
-  print client_list
   #Count all of them, TODO:check how expensive if this query and think about options, fix the format, kills me :/
-  counter_pedidos = Pedidos.objects.filter(proveedor_id = proveedor.id).values('pedido_state').annotate(total=Count('pedido_state'))
+  list_pedidos = Pedidos.objects.filter(proveedor_id = proveedor.id)
   pedidos_estados = {}
   #is ugly, but should make jinja easier
-  for k in Pedidos.STATE_CHOICES:
-    pedidos_estados[str(k[0])]=k[1]
-  #don't wanna work with cancelled in this view
-  pedidos_estados.pop('-1') 
-  pedidos_estados = sorted(pedidos_estados.items())
-  lista_estados = {}
-  for i in pedidos_estados:
-    #first character starts with
-    if i[0][0] == 1:
-      pass#lista_estados(' ')
   search_parameters = request.POST.copy()
+  lista_pedidos , tabs = list_grouper(list_pedidos)
+  print "lista_pedidos"
+  print lista_pedidos
+  print "pedidos_estados"
+  print pedidos_estados
   #if search_parameters:
   context= { 'username': username,
              'current_page': current_page,
              'proveedor': proveedor,
-             'counter_pedidos': counter_pedidos,
-             'pedidos_estados': pedidos_estados,
+             'tabs': tabs,
+             'lista_pedidos' : lista_pedidos,
               }
   return render(request, 'proveedor/pedidos_clientes_bootstrap_proveedor.html', context)
 
