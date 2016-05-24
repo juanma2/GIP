@@ -117,7 +117,6 @@ class Pedidos(models.Model):
         NUEVO                         =   100
         RECEPCION                     = 10000
         RECHAZADO                     = 11000
-        COMUNICACION_RECHAZO_CLIENTE  = 11100
         RECEPCION_RECHAZADO           = 11200
         PACTAR_ALTERNATIVA            = 12000
         REFORMULAR_PEDIDO             = 12100
@@ -135,7 +134,6 @@ class Pedidos(models.Model):
                      (STATE.NUEVO                          ,'Nuevo'),
                      (STATE.RECEPCION                      ,'Recepcion'),
                      (STATE.RECHAZADO                      ,'Rechazado'),
-                     (STATE.COMUNICACION_RECHAZO_CLIENTE   ,'Comunicacion Rechazado Cliente'),
                      (STATE.RECEPCION_RECHAZADO            ,'Recepcion Rechazado'),
                      (STATE.PACTAR_ALTERNATIVA             ,'Pactar Alternativa'),
                      (STATE.REFORMULAR_PEDIDO              ,'Reformular Pedido'),
@@ -181,42 +179,47 @@ class Pedidos(models.Model):
     codigo = models.CharField(max_length=16, default=number_invoice) #TODO: multithread issue requesting invoices numbers... wait for it
     producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
     total = models.DecimalField(max_digits=25, decimal_places=4)
+    #You, My friend, were stupid enough to relay a pedido in a User, instead of a cliente, fix: views_cliente.py:459 , this model...
     cliente = models.ManyToManyField(User)
     fecha_creacion = models.DateTimeField('fecha creacion')
     proveedor = models.ForeignKey(Group)
 
     #django-fsm transitions... here comes the fun
     #this one, should be State.NUEVO... but it does not work, so I used "*" .... TODO:Fix it!!
-    #@transition(field=pedido_state, source=STATE.NUEVO, target=STATE.RECEPCION)
-    @transition(field=pedido_state, source="*", target=STATE.RECEPCION)
+    @transition(field=pedido_state, source=STATE.NUEVO, target=STATE.RECEPCION)
+    #@transition(field=pedido_state, source="*", target=STATE.RECEPCION)
     def getting(self):
       """
       Order requested, the user click in "pedir"
+      Llega a la pestan sin validar, puedes validar, ver o rechazar.
       """
+      
       return True
 
     @transition(field=pedido_state, source=STATE.RECEPCION, target=STATE.RECHAZADO)
     def rejecting(self):
       """
       Order rejected
+      el proveedor click en "rechazar"
+      add reason internaly and add reason for the customer.
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.RECHAZADO, target=STATE.COMUNICACION_RECHAZO_CLIENTE)
+#    @transition(field=pedido_state, source=STATE.RECHAZADO, target=STATE.CANCELADO)
+#    def notify_rejecting(self):
+#      """
+#      Order notify the cliente that order were rejected, and there is nothing else to do
+#      """
+#      return True
+
+    @transition(field=pedido_state, source=STATE.RECHAZADO, target=STATE.PACTAR_ALTERNATIVA)
     def notify_rejecting(self):
       """
-      Order notify the cliente that order were rejected
+      Order notify the cliente that order were rejected, and he have an alternative
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.COMUNICACION_RECHAZO_CLIENTE, target=STATE.PACTAR_ALTERNATIVA)
-    def re_do_pedido(self):
-      """
-      Order we can try to fix the pedido
-      """
-      return True
-
-    @transition(field=pedido_state, source=STATE.COMUNICACION_RECHAZO_CLIENTE, target=STATE.CANCELADO)
+    @transition(field=pedido_state, source=STATE.RECHAZADO, target=STATE.CANCELADO)
     def re_cancel_pedido(self):
       """
       Order we can try to fix the pedido
