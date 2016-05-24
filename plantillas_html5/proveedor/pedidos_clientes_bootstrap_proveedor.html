@@ -313,31 +313,28 @@ populate_form();
             <h4>Estado de pedidos</h4>
             <hr>
             <div class="row">
-<!--soluccion pilsss-->
-
 
 <ul class="nav nav-pills">
-    <li class="dropdown active">
-    <a aria-expanded="false" class="dropdown-toggle" data-toggle="dropdown" href="recibidos.html">
-      Sin validar <span class="badge">25</span> <span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu">
+     {% for tab, pedidos in lista_pedidos.items  %}
+        <li class="{{ tab.split|join:"-" }}"><a href="#">
+            {{ tab }}
+              <span class="badge">{{ pedidos|length }}</span>
+        </a></li>
+     {% endfor %}
+
+    <!-- <ul class="dropdown-menu">
 
       <li><a href="#">Recibidos <span class="badge">19</span></a></li>
       <li><a href="#">En revision <span class="badge">5</span></a></li>
 
 
       </ul>
-  </li>
-  <li class=""><a href="#">En preparacion <span class="badge">2</span></a></li>
-  <li><a href="#">En ruta</a></li>
-  <li><a href="#">Entregados</a></li>
-  <li><a href="#">Por cobrar</a></li>
-
+  </li>-->
 </ul>
 <!--segun pinches en pilllsss-->
 <!--Pinchando en Recibidos que es la entrada por defecto en pedidos-->
-                <table class="table">
+     {% for tab, pedidos in lista_pedidos.items  %}
+                <table class="table {{ tab.split|join:"-"}} ">
                   <thead>
                     <tr>
                       <th>Check</th>
@@ -352,65 +349,36 @@ populate_form();
                     </tr>
                   </thead>
                   <tbody>
+                    {% for pedido in pedidos %} 
                     <tr>
                       <td><label><input type="checkbox"></label></td>
-                      <td>ped.18409243</td>
-                      <td>27-Agosto-1957</td>
-                      <td>Mark S.L.</td>
-                      <td> <a href="essoloejemplodenavegacion.html"> Siempre es el nombre que aparece en los datos de envio</a></td>
+                      <td>{{ pedido.codigo }}</td>
+                      <td>{{ pedido.fecha_creacion }}</td>
+                      <td>
+{% for cliente in pedido.cliente.all %} 
+{{ cliente }}
+{% endfor %}
+</td>
+                      <td> <a href="essoloejemplodenavegacion.html">
+{% for cliente in pedido.cliente.all %}
+{{ cliente.destino_reparto.all }}
+{% for direccion in cliente.destino_reparto.all %}
+{{ direccion }}
+{% endfor %}
+{% endfor %}
+
+</a></td>
                       <td><a  href="#modaldemostrarpedido1" class="btn btn-info btn-sm" data-toggle="modal">Ver 1</a></td>
                       <td><button type="button" class="btn btn-success btn-sm">Validar</button></td>
                       <td><a  href="#modalrechazarpedido" class="btn btn-danger btn-sm" data-toggle="modal">Rechazar</a></td>
                       <td></td>
                     </tr>
-                    <tr>
-                      <td><label><input type="checkbox" hidden></label></td>
-                      <td>ped.89464596163</td>
-                      <td>15-Sept-15</td>
-                      <td>Gutierrez y Hernandez S.L.</td>
-                      <td>Su local</td>
-                      <td><a  href="#modaldemostrarpedido2" class="btn btn-info btn-sm" data-toggle="modal">Ver 2</a></td>
-                      <td><button type="button" class="btn btn-success btn-sm hidden">Validar</button></td>
-                      <td><button type="button" class="btn btn-danger btn-sm hidden">Rechazar</button></td>
-                      <td><span class="label label-warning">En revisión</span></td>
-                    </tr>
-                    <tr>
-                      <td><label><input type="checkbox"></label></td>
-                      <td>ped.8318663</td>
-                      <td>27/06/2015</td>
-                      <td>La obeja negra</td>
-                      <td>El local de las chimbambas</td>
-                      <td><a  href="#modaldemostrarpedido" class="btn btn-info btn-sm" data-toggle="modal">Ver</a></td>
-                      <td><button type="button" class="btn btn-success btn-sm">Validar</button></td>
-                      <td><a  href="#modalrechazarpedido" class="btn btn-danger btn-sm" data-toggle="modal">Rechazar</a></td>
-                      <td></td>
-                    </tr>
-                     <tr>
-                      <td><label><input type="checkbox"></label></td>
-                      <td>ped.89465163</td>
-                      <td>24-Sept-15</td>
-                      <td>Freiduria erpescaito</td>
-                      <td>Erpescaito</td>
-                      <td><a  href="#modaldemostrarpedido" class="btn btn-info btn-sm" data-toggle="modal">Ver</a></td>
-                      <td><button type="button" class="btn btn-success btn-sm">Validar</button></td>
-                      <td><button type="button" class="btn btn-danger btn-sm">Rechazar</button></td>
-                      <td><span class="label label-success">Aceptada</span></td>
-                    </tr>
-                    <tr>
-                      <td><label><input type="checkbox" hidden></label></td>
-                      <td>ped.89465163</td>
-                      <td>24-Sept-15</td>
-                      <td>Freiduria erpescaito</td>
-                      <td>Erpescaito</td>
-                      <td><a  href="#modaldemostrarpedido" class="btn btn-info btn-sm" data-toggle="modal">Ver</a></td>
-                      <td><button type="button" class="btn btn-success btn-sm hidden" >Validar</button></td>
-                      <td><button type="button" class="btn btn-danger btn-sm hidden" >Rechazar</button></td>
-                      <td><span class="label label-danger">Rechazada</span></td>
-                    </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
 
                 <button type="button" class="btn btn-success">Validar seleccionados</button>
+         {% endfor %}
         </div>
       </div>
 
