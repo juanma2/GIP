@@ -585,14 +585,11 @@ def pedidos_proveedor(request):
   client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
   #Count all of them, TODO:check how expensive if this query and think about options, fix the format, kills me :/
   list_pedidos = Pedidos.objects.filter(proveedor_id = proveedor.id)
-  pedidos_estados = {}
   #is ugly, but should make jinja easier
   search_parameters = request.POST.copy()
   lista_pedidos , tabs = list_grouper(list_pedidos)
   print "lista_pedidos"
   print lista_pedidos
-  print "pedidos_estados"
-  print pedidos_estados
   #if search_parameters:
   context= { 'username': username,
              'current_page': current_page,
