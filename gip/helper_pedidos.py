@@ -32,7 +32,8 @@ def send_order(pedido,proveedor):
   print total 
   p = Pedidos(producto_serializado=pedido, proveedor_id = proveedor.id, total = total , fecha_creacion = datetime.datetime.now())
   p.save()
-  p.cliente.add(pedido['cliente']['user_id'])
+  print pedido
+  p.cliente.add(pedido['cliente']['id'])
   return True
 #    codigo = models.IntegerField(default=0) # db_index
 #    producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 

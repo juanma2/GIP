@@ -30,6 +30,14 @@ grupocliente.save()
 grupoproveedor = Group.objects.create(name='proveedor')
 grupoproveedor.save()
 
+##FFS add all this in one file settings??
+ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
+ELEMENTOS_POR_PAGINA_CLIENTE = 5
+PROVEEDOR_ATTRIBUTE = 'proveedor'
+CLIENTE_ATTRIBUTE = 'cliente'
+##END FFS add all this in one file settings??
+
+
 #I want ot create 20K products, 25 providers and 10K clients.
 MAX_DESTINOS = 25
 MAX_TARIFAS = 4
@@ -146,10 +154,17 @@ for i in data:
 print "Current time " + time.strftime("%X")
 print "creating clients... "
 for i in range(1,MAX_CLIENTES):
+  ##HERE, redo this, Will only work with one proveedor
+  proveedor = Group.objects.all().exclude(name=CLIENTE_ATTRIBUTE)[0]
   user = User.objects.create_user('CLIENTE'+str(i), 'p@p.com', 'password')
   user.groups.add(grupocliente)
-  ##HERE, redo this, You are missing the grupo de proveedor that belongs to each user....
   user.save()
+  grupo_cliente = Group.objects.get(name='cliente')
+  grupo_proveedor = Group.objects.get(id=proveedor.id)
+  user.groups.add(grupo_cliente)
+  user.groups.add(grupo_proveedor)
+  user.save()
+
   cliente = Cliente(user=user, nombre='Cliente'+str(i), descripcion='Descripcion'+str(i), cif='NIFNIFNIF'+str(i), direccion='calle direccion' ,ciudad='ciudadXX', telefono='telefono 123', contacto_nombre='Contact'+str(i) )
   #a client can has more than one CP
   cliente.save()

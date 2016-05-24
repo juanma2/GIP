@@ -408,6 +408,8 @@ def make_pedido(request):
     username = str(current_user.username)
     user_listas = Cliente.objects.get(user_id=current_user.id).listas.all()
     cliente = Cliente.objects.filter(user_id = current_user.id)
+    print "we are going to use the cliente"
+    print cliente
     proveedor = cliente[0].user.groups.exclude(name=CLIENTE_ATTRIBUTE)[0]
     pedido = {}
     cliente = cliente.values()[0]
@@ -456,7 +458,8 @@ def historico(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Historico"
-    pedidos = Pedidos.objects.filter(cliente=current_user.id)
+    #you will need to get current cliente
+    pedidos = Pedidos.objects.filter(cliente__user=current_user.id)
     pedidos_estados = {}
     #is ugly, but should make jinja easier
     for k in Pedidos.STATE_CHOICES:

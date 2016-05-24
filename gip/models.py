@@ -112,6 +112,39 @@ class Promo(models.Model):
     def __unicode__(self):
         return u"%s" % (self.nombre)
 
+class Lista(models.Model):
+    nombre = models.CharField(max_length=200)
+    def __unicode__(self):
+        return u"%s " % (self.nombre)
+
+class Cliente(models.Model):
+    user = models.OneToOneField(User)
+    nombre = models.CharField(max_length=200)
+    cif = models.CharField(max_length=200)# db_index
+    descripcion = models.CharField(max_length=200)
+    direccion = models.CharField(max_length=200)
+    ciudad = models.CharField(max_length=200)
+    telefono = models.CharField(max_length=200)
+    email = models.CharField(max_length=200,blank=True)
+    web = models.CharField(max_length=200,blank=True)
+    iae = models.CharField(max_length=200,blank=True)
+    destino_reparto = models.ManyToManyField(Destinos) # This is many to many, not  only one
+    #pedidos = models.ManyToManyField(Pedidos,blank=True) # This is many to many, not  only one
+    tarifa = models.ManyToManyField(Tarifas) # a client has many rates to be applied, one per provider
+    listas = models.ManyToManyField(Lista,blank=True) # if is not empty, need to create one, with the user creation TODO 
+    contacto_nombre = models.CharField(max_length=200)
+    contacto_dni = models.CharField(max_length=200,blank=True)
+    contacto_direccion = models.CharField(max_length=200,blank=True)
+    contacto_ciudad = models.CharField(max_length=200,blank=True)
+    ##NOP contacto_CP = models.ManyToManyField(Destinos,blank=True)
+    contacto_telefono = models.CharField(max_length=200,blank=True)
+    contacto_email = models.CharField(max_length=200,blank=True)
+    baja = models.NullBooleanField(null=True,default=False)
+    #precomputed favorites
+    def __unicode__(self):
+        return u"%s" % (self.nombre)
+
+
 class Pedidos(models.Model):
     class STATE:
         NUEVO                         =   100
@@ -180,7 +213,7 @@ class Pedidos(models.Model):
     producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
     total = models.DecimalField(max_digits=25, decimal_places=4)
     #You, My friend, were stupid enough to relay a pedido in a User, instead of a cliente, fix: views_cliente.py:459 , this model...
-    cliente = models.ManyToManyField(User)
+    cliente = models.ManyToManyField(Cliente)
     fecha_creacion = models.DateTimeField('fecha creacion')
     proveedor = models.ForeignKey(Group)
 
@@ -316,40 +349,6 @@ class Pedidos(models.Model):
 
     def __unicode__(self):
         return u"%s" % (self.codigo)
-
-
-
-class Lista(models.Model):
-    nombre = models.CharField(max_length=200)
-    def __unicode__(self):
-        return u"%s " % (self.nombre)
-
-class Cliente(models.Model):
-    user = models.OneToOneField(User)
-    nombre = models.CharField(max_length=200)
-    cif = models.CharField(max_length=200)# db_index
-    descripcion = models.CharField(max_length=200)
-    direccion = models.CharField(max_length=200)
-    ciudad = models.CharField(max_length=200)
-    telefono = models.CharField(max_length=200)
-    email = models.CharField(max_length=200,blank=True)
-    web = models.CharField(max_length=200,blank=True)
-    iae = models.CharField(max_length=200,blank=True)
-    destino_reparto = models.ManyToManyField(Destinos) # This is many to many, not  only one
-    #pedidos = models.ManyToManyField(Pedidos,blank=True) # This is many to many, not  only one
-    tarifa = models.ManyToManyField(Tarifas) # a client has many rates to be applied, one per provider
-    listas = models.ManyToManyField(Lista,blank=True) # if is not empty, need to create one, with the user creation TODO 
-    contacto_nombre = models.CharField(max_length=200)
-    contacto_dni = models.CharField(max_length=200,blank=True)
-    contacto_direccion = models.CharField(max_length=200,blank=True)
-    contacto_ciudad = models.CharField(max_length=200,blank=True)
-    ##NOP contacto_CP = models.ManyToManyField(Destinos,blank=True)
-    contacto_telefono = models.CharField(max_length=200,blank=True)
-    contacto_email = models.CharField(max_length=200,blank=True)    
-    baja = models.NullBooleanField(null=True,default=False)
-    #precomputed favorites
-    def __unicode__(self):
-        return u"%s" % (self.nombre)
 
 class Elemento(models.Model):
     nombre = models.CharField(max_length=200)
