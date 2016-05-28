@@ -15,9 +15,9 @@ def list_grouper(query_pedidos):
   }
   ##this is the generated transitions tabs shortcut list
   working_scheme = {}
-  for num, i in enumerate(grouped_by):
-    for k in grouped_by[i]:
-      working_scheme[str(k)] = num
+  for i in def_tabs:
+    for k in grouped_by[def_tabs[i]]:
+      working_scheme[str(k)] = i
 
   #bufff... if you have to modify this... you are allowed to do it from scratch
   sorted_pedidos = {}
