@@ -26,6 +26,7 @@ def list_grouper(query_pedidos):
      sorted_pedidos[t] = []
   for t in query_pedidos:
     #sorted_pedidos[def_tabs[working_scheme[t['pedido_state']]]] = counted_tabs.get(def_tabs[working_scheme[t['pedido_state']]],0) + 1
+    #TODO; if there is something unexpeted, like pediido_state = 101, will crash, FYI
     sorted_pedidos[def_tabs[working_scheme[t.pedido_state]]].append(t)
   #this is "slow", but.. will automate the way the tabs are counted and provided :)
   return sorted_pedidos, def_tabs
