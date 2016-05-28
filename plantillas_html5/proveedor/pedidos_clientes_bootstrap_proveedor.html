@@ -361,7 +361,6 @@ populate_form();
 </td>
                       <td> <a href="essoloejemplodenavegacion.html">
 {% for cliente in pedido.cliente.all %}
-{{ cliente.destino_reparto.all }}
 {% for direccion in cliente.destino_reparto.all %}
 {{ direccion }}
 {% endfor %}
