@@ -184,7 +184,8 @@ document.getElementById('client_to_delete').value=client_id;
 $('#advertenciaborrarcliente').modal('show'); 
 
 }
-function delclient(product_id){
+function gettab(tab_id){
+    alert('we are gonna hit a tab!!');
     var client_id = document.getElementById('client_to_delete').value
     var form = $('#form_del_client');
 
@@ -214,7 +215,7 @@ $.ajaxSetup({
      url =
       $.ajax( {
         type: "POST",
-        url: '/proveedor/{{ proveedor.id }}/baja_cliente/' + client_id + '/',
+        url: '/proveedor/{{ proveedor.id }}/pedidos_estados/' + tab_id + '/',
         dataType: 'json' ,
         data: form.serialize(),
         error: function (xhr, status) {
@@ -223,29 +224,13 @@ $.ajaxSetup({
         success: function( response ) {
           //remove all the products!!, this will be an issue, with other searches already done in Database
           alert(response['msg']);
-  myform = document.forms["search_cat"];
+  myform = document.forms["tabs"];
   //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
   // cat_id == 0 //is the default choose a category
   //TODO: this should be my form.submit... to avoid nasty resend things
    //location.reload()
-  myform = document.forms["search_text"];
-  myform.page = '{{ client_list.number }}';
-  page = '{{ client_list.number }}'
-  if (document.getElementById('search').value != "")
-  {
-    if (document.getElementById('search').value.length < 3)
-    {
-      alert('Por favor, introduce al menos 3 caracteres')
-      return;
-    }
-    addHidden(myform,'search', document.getElementById('search').value)
-
-    dirty = 1;
-  }
-  if (page != 0 ){
-    addHidden(myform,'page', page)
-    dirty = 1
-  }
+  myform.page = '{{ pedidos_list.number }}';
+  page = '{{ pedidos_list.number }}'
   //paginate using the form 
   myform.submit();
   
@@ -268,7 +253,6 @@ alert('hell yes')
 $(document).ready(function() {
 var form = $('#send_lista_info');
 populate_form();
-
 });
 </script>
 <div class="container">
@@ -316,7 +300,7 @@ populate_form();
 
 <ul class="nav nav-pills">
      {% for tab, pedidos in lista_pedidos.items  %}
-        <li class="{{ tab.split|join:"-" }}"><a href="#">
+        <li class="{{ tab.split|join:"-" }}"><a href="#" onclick="gettab('{{ tab.split|join:"_" }}')">
             {{ tab }}
               <span class="badge">{{ pedidos|length }}</span>
         </a></li>
@@ -333,6 +317,7 @@ populate_form();
 </ul>
 <!--segun pinches en pilllsss-->
 <!--Pinchando en Recibidos que es la entrada por defecto en pedidos-->
+<div id="tab_content">
      {% for tab, pedidos in lista_pedidos.items  %}
                 <table class="table {{ tab.split|join:"-"}} ">
                   <thead>
@@ -385,7 +370,8 @@ populate_form();
 
         </div>
       </div>
-
+<!-- tab content ends here-->
+</div>
 
 {% endblock %}
 {% endblock %}
