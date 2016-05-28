@@ -15,16 +15,14 @@ PEDIDOS_ESTADOS = (
 )
 
 def send_order(pedido,proveedor): 
-  print "implement email, or, whatever needed in gip/helper_pedidos.py"
-  print "Once the order is proccesed, should go to pending of validation or something like that"
   cliente = pedido['cliente']
-  print "******"
+  print "***************************************************************"
+  print "implement email, or, whatever needed in gip/helper_pedidos.py"
   print cliente 
   orden = pedido['orden']
   print orden
-  print "******"
-  precio = pedido['precio']
   print precio
+  precio = pedido['precio']
   total = 0.0
   u = User.objects.filter(id=pedido['cliente']['user_id'])
   for i in pedido['orden']:
@@ -34,6 +32,7 @@ def send_order(pedido,proveedor):
   p.save()
   print pedido
   p.cliente.add(pedido['cliente']['id'])
+  print "***************************************************************"
   return True
 #    codigo = models.IntegerField(default=0) # db_index
 #    producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
