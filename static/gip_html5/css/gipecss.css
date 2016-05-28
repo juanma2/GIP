@@ -1,0 +1,205 @@
+        .cortandodescripcion {
+            overflow:hidden; /* Escondemos la parte sobrante */ 
+
+
+            text-overflow:ellipsis; 
+            height: 100px;
+        }
+        .cortandotextonombre {
+            overflow:hidden; /* Escondemos la parte sobrante */  
+              text-overflow:clip;
+  /*  white-space:nowrap;  usar cuando sepamos */ 
+  white-space:nowrap;
+  height: 30px;
+
+
+        }
+        .cortandotextonombre:hover {
+      width: auto;
+      white-space: initial;
+      overflow:visible;
+      cursor: pointer;
+    }
+
+ /*  =========================
+ 		INTENTO CON FLEXBOX <script src="https://gist.github.com/aquistamos/79c1a3b512910b45ad26.js"></script>
+ 	 ========================= */ 
+.gallery {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 980px;
+}
+.gallery li {
+    box-sizing: border-box;
+    display: flex;
+    float: left;
+    padding: 0.625rem;
+    position: relative;
+    transition: width 0.3s ease-out 0s;
+    width: 33.333%;
+}
+.gallery li .box {
+    background-color: #fff;
+    overflow: hidden;
+    padding: 6px 6px 30px;
+    position: relative;
+}
+.gallery li figure {
+    display: block;
+    margin-bottom: 6px;
+    width: 100%;
+}
+.gallery li img {
+    height: auto;
+    width: 100%;
+}
+.gallery li h3 {
+    color: #000;
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 100%;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+.gallery li time {
+    bottom: 0;
+    box-sizing: border-box;
+    font-weight: 400;
+    left: 0;
+    padding: 6px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+.gallery li:nth-child(2n) .box {
+    background: #eee none repeat scroll 0 0;
+}
+@media screen and (max-width: 992px) {
+.gallery {
+    width: auto;
+}
+}
+@media screen and (max-width: 768px) {
+.gallery li {
+    width: 50%;
+}
+}
+@media screen and (max-width: 468px) {
+.gallery li {
+    width: 100%;
+}
+}
+
+ /*  =========================
+ 	Sale el recuadro de form en rojo si es required
+ 	========================= */ 
+ 	 .required:focus {
+  box-shadow: 0  0 8px rgba(255,0,0,0.5); 
+}
+/********************************************************************/
+/*** PANEL PRIMARY USADO Y QUITADO POR AHORA***/
+.with-nav-tabs.panel-primary .nav-tabs > li > a,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+    color: #fff;
+}
+.with-nav-tabs.panel-primary .nav-tabs > .open > a,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li > a:focus {
+	color: #fff;
+	background-color: #3071a9;
+	border-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.active > a:focus {
+	color: #428bca;
+	background-color: #fff;
+	border-color: #428bca;
+	border-bottom-color: transparent;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #428bca;
+    border-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #fff;   
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #3071a9;
+}
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    background-color: #4a9fe9;
+}
+
+ /*  =========================
+    COLORES DE LAS CABECERAS DE LOS MODALES
+    ========================= */ 
+.modal-header-success {
+    color:#fff;
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    background-color: #5cb85c;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+}
+.modal-header-warning {
+    color:#fff;
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    background-color: #f0ad4e;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+}
+.modal-header-danger {
+    color:#fff;
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    background-color: #d9534f;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+}
+.modal-header-info {
+    color:#fff;
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    background-color: #5bc0de;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+}
+.modal-header-primary {
+    color:#fff;
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    background-color: #428bca;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
+}
+

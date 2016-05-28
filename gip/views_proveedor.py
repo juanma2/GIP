@@ -2,11 +2,14 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from django.db.models import Count
 from django.shortcuts import redirect
 
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
+from gip.helper_proveedor import list_grouper
+
 
 
 from gip.models import Producto, Cliente
@@ -24,6 +27,8 @@ import json
 from gip.models import *
 
 from gip.utils import is_proveedor
+
+##FFS add all this in one file settings??
 
 ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
 ELEMENTOS_POR_PAGINA_CLIENTE = 5
@@ -577,16 +582,20 @@ def pedidos_proveedor(request):
   username = str(current_user.username)
   current_page = "Clientes"
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
-  print proveedor
-  print "we do this search when arrive to the page"
   client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
-  print client_list
+  #Count all of them, TODO:check how expensive if this query and think about options, fix the format, kills me :/
+  list_pedidos = Pedidos.objects.filter(proveedor_id = proveedor.id)
+  #is ugly, but should make jinja easier
   search_parameters = request.POST.copy()
+  lista_pedidos , tabs = list_grouper(list_pedidos)
+  print "lista_pedidos"
+  print lista_pedidos
   #if search_parameters:
   context= { 'username': username,
              'current_page': current_page,
              'proveedor': proveedor,
-             'pedido_list': client_list,
+             'tabs': tabs,
+             'lista_pedidos' : lista_pedidos,
               }
   return render(request, 'proveedor/pedidos_clientes_bootstrap_proveedor.html', context)
 

@@ -18,9 +18,12 @@ from gip.models import Producto
 from gip.models import Pedidos
 from gip.models import Cliente
 from gip.models import Carrito
+      
 from gip.models import Categoria
 from gip.models import Lista
 from gip.models import Elemento
+from gip.helper_pedidos import send_order
+
 
 from django.contrib.auth.models import User, Group
 
@@ -29,6 +32,14 @@ grupocliente = Group.objects.create(name='cliente')
 grupocliente.save()
 grupoproveedor = Group.objects.create(name='proveedor')
 grupoproveedor.save()
+
+##FFS add all this in one file settings??
+ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
+ELEMENTOS_POR_PAGINA_CLIENTE = 5
+PROVEEDOR_ATTRIBUTE = 'proveedor'
+CLIENTE_ATTRIBUTE = 'cliente'
+##END FFS add all this in one file settings??
+
 
 #I want ot create 20K products, 25 providers and 10K clients.
 MAX_DESTINOS = 25
@@ -146,10 +157,17 @@ for i in data:
 print "Current time " + time.strftime("%X")
 print "creating clients... "
 for i in range(1,MAX_CLIENTES):
+  ##HERE, redo this, Will only work with one proveedor
+  proveedor = Group.objects.all().exclude(name=CLIENTE_ATTRIBUTE)[0]
   user = User.objects.create_user('CLIENTE'+str(i), 'p@p.com', 'password')
   user.groups.add(grupocliente)
-  ##HERE, redo this, You are missing the grupo de proveedor that belongs to each user....
   user.save()
+  grupo_cliente = Group.objects.get(name='cliente')
+  grupo_proveedor = Group.objects.get(id=proveedor.id)
+  user.groups.add(grupo_cliente)
+  user.groups.add(grupo_proveedor)
+  user.save()
+
   cliente = Cliente(user=user, nombre='Cliente'+str(i), descripcion='Descripcion'+str(i), cif='NIFNIFNIF'+str(i), direccion='calle direccion' ,ciudad='ciudadXX', telefono='telefono 123', contacto_nombre='Contact'+str(i) )
   #a client can has more than one CP
   cliente.save()
@@ -184,5 +202,67 @@ for i in range(1,MAX_LISTAS*MAX_ELEMENTOS*MAX_CLIENTES):
 print "Current time " + time.strftime("%X")
 
 
+#Updateing user passowrds..
+print "Current time " + time.strftime("%X")
+print "Updating passwords"
+for i in User.objects.all().exclude(username='root'):
+  i.set_password('1')
+  i.save()
+print "Current time " + time.strftime("%X")
 
 ##HERE, redo this, You are missing the grupo de proveedor that belongs to each user....
+##Need to spend some time adding Pedidos, and Pedidos status... 
+
+#Lets do some orders...
+print "Current time " + time.strftime("%X")
+print "an order per user, at least"
+for i in User.objects.filter(username__contains='CLIENTE'):
+  print i
+  user_listas = Cliente.objects.get(user_id=i.id).listas.all()
+  cliente = Cliente.objects.filter(user_id = i.id)
+  proveedor = cliente[0].user.groups.exclude(name=CLIENTE_ATTRIBUTE)[0]
+  pedido = {}
+  cliente = cliente.values()[0]
+  orden = {}
+  descripcion = {}
+  precio = {}
+  for lista_i in user_listas:
+    current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False)
+    for ele in current_list:
+      descripcion[ele.producto.product_ref] = ele.producto.nombre
+      precio[ele.producto.product_ref] = float(ele.producto.precio)
+      if ele.producto.product_ref in orden:
+        orden[ele.producto.product_ref] += ele.cantidad
+      else:
+        orden[ele.producto.product_ref] = ele.cantidad
+    pedido['cliente'] = cliente
+    pedido['orden'] = orden
+    #we can send the price of the elements right now... not sure if is right
+    pedido['precio'] = precio
+    pedido['descripcion'] = descripcion
+    print "Add logic to send order here"
+    cliente = Cliente.objects.get(user_id = i.id)
+    try:
+      send_order(pedido,proveedor)
+    except:
+      print "Unexpected error:"
+  #now.. we shuld clean list.. but, will not do it
+  #for lista_i in user_listas:
+  #    current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
+  print "Done"
+
+print "Current time " + time.strftime("%X")
+
+
+#lets put in different status the pedidos
+print "Current time " + time.strftime("%X")
+print "set random status"
+for t in Pedidos.objects.all():
+  t.pedido_state = str(Pedidos.STATE_CHOICES[random.randrange(0,len(Pedidos.STATE_CHOICES))][0])
+  t.save()
+
+print "Current time " + time.strftime("%X")
+
+
+
+

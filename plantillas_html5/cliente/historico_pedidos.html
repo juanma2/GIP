@@ -58,7 +58,14 @@ document.getElementById('pedido_content_{{pedido.codigo}}').style.display='none'
               </td><td>
          total: {{ pedido.total }}
               </td><td>
-         estado: {{ pedido.get_estados_display }}
+          <!-- TODO look for something better that iterate over the template FGS  and should workaccessiiiiing the key, but does not ./--> 
+
+   {% for key, value in pedidos_estados.items %}
+      {% if key == pedido.pedido_state %}
+      {{ value  }}
+      {% endif %}
+   {% endfor %}
+
               </td><td>
            <a href="#" onclick="javascript: showhide('pedido_content_{{pedido.codigo}}')" style="font-size:6" class="fa fa-plus"></a>
               </td>

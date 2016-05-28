@@ -20,6 +20,12 @@ from django.shortcuts import redirect
 
 
 ELEMENTOS_POR_PAGINA = 6
+##FFS add all this in one file settings??
+ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
+ELEMENTOS_POR_PAGINA_CLIENTE = 5
+PROVEEDOR_ATTRIBUTE = 'proveedor'
+CLIENTE_ATTRIBUTE = 'cliente'
+
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
@@ -61,14 +67,17 @@ def productos_cliente(request):
     #get all the categories
     categorias_list = Categoria.objects.all()
     sub_categorias_list = []
+    cliente = Cliente.objects.filter(user_id = current_user.id)
+    proveedor = cliente[0].user.groups.exclude(name=CLIENTE_ATTRIBUTE)[0]
+
     #TODO:filter using disable and filtering by tarifa my friend
+
     search_parameters = request.POST.copy()
     print search_parameters
     if search_parameters:
       #wipe out the csrf:
       search_parameters.pop('csrfmiddlewaretoken')
-      #THE PAGINATION DO NOT WORK
-      full_search = Q()
+      full_search = Q( proveedor_id = proveedor.id)
       if 'search' in search_parameters:
         #Miss split words and do it smart
         search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search'])# ' %(search_parameters['search'],search_parameters['search'])
@@ -89,7 +98,7 @@ def productos_cliente(request):
       else:
         page = 1
     else:
-      all_product_list = Producto.objects.all()
+      all_product_list = Producto.objects.filter(proveedor_id = proveedor.id)
       #this is he default search
       paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA)
       try:
@@ -399,6 +408,9 @@ def make_pedido(request):
     username = str(current_user.username)
     user_listas = Cliente.objects.get(user_id=current_user.id).listas.all()
     cliente = Cliente.objects.filter(user_id = current_user.id)
+    print "we are going to use the cliente"
+    print cliente
+    proveedor = cliente[0].user.groups.exclude(name=CLIENTE_ATTRIBUTE)[0]
     pedido = {}
     cliente = cliente.values()[0]
     orden = {}
@@ -427,7 +439,9 @@ def make_pedido(request):
     pedido['precio'] = precio
     pedido['descripcion'] = descripcion
     print "Add logic to send order here"
-    send_order(pedido)
+    cliente = Cliente.objects.get(user_id = current_user.id)
+
+    send_order(pedido,proveedor)
     print "Update to pending to send or something like that"
     print "now, clean the remaining cantidades..."
     for lista_i in user_listas:
@@ -444,11 +458,17 @@ def historico(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Historico"
-    pedidos = Pedidos.objects.filter(cliente=current_user.id)
+    #you will need to get current cliente
+    pedidos = Pedidos.objects.filter(cliente__user=current_user.id)
+    pedidos_estados = {}
+    #is ugly, but should make jinja easier
+    for k in Pedidos.STATE_CHOICES:
+      pedidos_estados[str(k[0])]=k[1] 
     #sort by lista.. and add the staff there 
     context = {'username': username,
                'current_page': current_page,
                'pedidos': pedidos,
+               'pedidos_estados': pedidos_estados,
                }
     return render(request, 'cliente/historico_pedidos.html', context)
 
