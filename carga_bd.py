@@ -242,13 +242,19 @@ for i in User.objects.filter(username__contains='CLIENTE'):
     pedido['descripcion'] = descripcion
     print "Add logic to send order here"
     cliente = Cliente.objects.get(user_id = i.id)
-    try:
-      send_order(pedido,proveedor)
-    except:
-      print "Unexpected error:"
-  #now.. we shuld clean list.. but, will not do it
-  #for lista_i in user_listas:
-  #    current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
+    orden = pedido['orden']
+    precio = pedido['precio']
+    total = 0.0
+    pc =  pedido['cliente']
+    u = User.objects.filter(id=cliente.user_id)
+    print "NNNNN"
+    for s in pedido['orden']:
+      total += orden[s]*precio[s]
+    print total
+    p = Pedidos(producto_serializado=pedido, proveedor_id = proveedor.id, total = total , fecha_creacion = datetime.datetime.now())
+    p.save()
+    print pedido
+    p.cliente.add(cliente.id)
   print "Done"
 
 print "Current time " + time.strftime("%X")
@@ -258,7 +264,7 @@ print "Current time " + time.strftime("%X")
 print "Current time " + time.strftime("%X")
 print "set random status"
 for t in Pedidos.objects.all():
-  t.pedido_state = str(Pedidos.STATE_CHOICES[random.randrange(0,len(Pedidos.STATE_CHOICES))][0])
+  t.pedidostate = str(Pedidos.STATE_CHOICES[random.randrange(0,len(Pedidos.STATE_CHOICES))][0])
   t.save()
 
 print "Current time " + time.strftime("%X")
