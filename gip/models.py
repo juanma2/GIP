@@ -155,7 +155,6 @@ class Pedidos(models.Model):
         REFORMULAR_PEDIDO             = 12100
         NO_ACEPTADO                   = 12200
         ACEPTADO_CLIENTE              = 12300
-        RECEPCION_RECHAZADO_PROVEEDOR = 12110
         CURSAR_PEDIDO                 = 20000
         EN_PREPARACION                = 30000
         EN_CAMINO                     = 40000
@@ -172,7 +171,6 @@ class Pedidos(models.Model):
                      (STATE.REFORMULAR_PEDIDO              ,'Reformular Pedido'),
                      (STATE.NO_ACEPTADO                    ,'No Aceptado Cliente'),
                      (STATE.ACEPTADO_CLIENTE               ,'Aceptado Cliente'),
-                     (STATE.RECEPCION_RECHAZADO_PROVEEDOR  ,'Recepcion Rechazo Proveedor'),
                      (STATE.CURSAR_PEDIDO                  ,'Cursar Pedido'),
                      (STATE.EN_PREPARACION                 ,'En preparacion'),
                      (STATE.EN_CAMINO                      ,'En camino'),
@@ -203,7 +201,7 @@ class Pedidos(models.Model):
     )
 
     id = models.AutoField(primary_key=True)
-    pedido_state = FSMField(
+    pedidostate = FSMField(
       default=STATE.NUEVO,
       verbose_name='Estado Pedido',
       choices=STATE_CHOICES,
@@ -219,8 +217,8 @@ class Pedidos(models.Model):
 
     #django-fsm transitions... here comes the fun
     #this one, should be State.NUEVO... but it does not work, so I used "*" .... TODO:Fix it!!
-    @transition(field=pedido_state, source=STATE.NUEVO, target=STATE.RECEPCION)
-    #@transition(field=pedido_state, source="*", target=STATE.RECEPCION)
+    @transition(field=pedidostate, source=STATE.NUEVO, target=STATE.RECEPCION)
+    #@transition(field=pedidostate, source="*", target=STATE.RECEPCION)
     def getting(self):
       """
       Order requested, the user click in "pedir"
@@ -229,7 +227,7 @@ class Pedidos(models.Model):
       
       return True
 
-    @transition(field=pedido_state, source=STATE.RECEPCION, target=STATE.RECHAZADO)
+    @transition(field=pedidostate, source=STATE.RECEPCION, target=STATE.RECHAZADO)
     def rejecting(self):
       """
       Order rejected
@@ -238,21 +236,21 @@ class Pedidos(models.Model):
       """
       return True
 
-#    @transition(field=pedido_state, source=STATE.RECHAZADO, target=STATE.CANCELADO)
+#    @transition(field=pedidostate, source=STATE.RECHAZADO, target=STATE.CANCELADO)
 #    def notify_rejecting(self):
 #      """
 #      Order notify the cliente that order were rejected, and there is nothing else to do
 #      """
 #      return True
 
-    @transition(field=pedido_state, source=STATE.RECHAZADO, target=STATE.PACTAR_ALTERNATIVA)
+    @transition(field=pedidostate, source=STATE.RECHAZADO, target=STATE.PACTAR_ALTERNATIVA)
     def notify_rejecting(self):
       """
       Order notify the cliente that order were rejected, and he have an alternative
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.RECHAZADO, target=STATE.CANCELADO)
+    @transition(field=pedidostate, source=STATE.RECHAZADO, target=STATE.CANCELADO)
     def re_cancel_pedido(self):
       """
       Order we can try to fix the pedido
@@ -260,42 +258,42 @@ class Pedidos(models.Model):
       return True
 
 
-    @transition(field=pedido_state, source=STATE.PACTAR_ALTERNATIVA, target=STATE.ACEPTADO_CLIENTE)
+    @transition(field=pedidostate, source=STATE.PACTAR_ALTERNATIVA, target=STATE.ACEPTADO_CLIENTE)
     def re_accepting(self):
       """
       Order , was redone, and we are happy
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.PACTAR_ALTERNATIVA, target=STATE.NO_ACEPTADO)
+    @transition(field=pedidostate, source=STATE.PACTAR_ALTERNATIVA, target=STATE.NO_ACEPTADO)
     def re_rejecting(self):
       """
       Order , was redone, and we are not happy
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.ACEPTADO_CLIENTE, target=STATE.CURSAR_PEDIDO)
+    @transition(field=pedidostate, source=STATE.ACEPTADO_CLIENTE, target=STATE.CURSAR_PEDIDO)
     def re_sending(self):
       """
       Order , was redone, and we are sending it
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.NO_ACEPTADO, target=STATE.RECEPCION_RECHAZADO)
+    @transition(field=pedidostate, source=STATE.NO_ACEPTADO, target=STATE.RECEPCION_RECHAZADO)
     def notifiy_re_rejecting(self):
       """
       Order , notify the proveedor that fix was not good
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.RECEPCION_RECHAZADO, target=STATE.PACTAR_ALTERNATIVA)
+    @transition(field=pedidostate, source=STATE.RECEPCION_RECHAZADO, target=STATE.PACTAR_ALTERNATIVA)
     def re_do_again(self):
       """
       Order , notify the proveedor that fix was not good and we should try again
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.RECEPCION_RECHAZADO, target=STATE.RECHAZADO)
+    @transition(field=pedidostate, source=STATE.RECEPCION_RECHAZADO, target=STATE.RECHAZADO)
     def re_rejecting_done(self):
       """
       Order , notify the proveedor that fix was not good and we are done 
@@ -305,42 +303,42 @@ class Pedidos(models.Model):
 
 
 ##########HAPPY PATH STARTS HERE in CURSAR_PEDIDO
-    @transition(field=pedido_state, source=STATE.RECEPCION, target=STATE.CURSAR_PEDIDO)
+    @transition(field=pedidostate, source=STATE.RECEPCION, target=STATE.CURSAR_PEDIDO)
     def reception(self):
       """
       Order Accepted per proveedor
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.CURSAR_PEDIDO, target=STATE.EN_PREPARACION)
+    @transition(field=pedidostate, source=STATE.CURSAR_PEDIDO, target=STATE.EN_PREPARACION)
     def preparing(self):
       """
       Order in process in the proveedor side
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.EN_PREPARACION, target=STATE.EN_CAMINO)
+    @transition(field=pedidostate, source=STATE.EN_PREPARACION, target=STATE.EN_CAMINO)
     def sending(self):
       """
       Order OMW!!
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.EN_CAMINO, target=STATE.ENTREGADO)
+    @transition(field=pedidostate, source=STATE.EN_CAMINO, target=STATE.ENTREGADO)
     def delivering(self):
       """
       Order delivered
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.ENTREGADO, target=STATE.COBRADO)
+    @transition(field=pedidostate, source=STATE.ENTREGADO, target=STATE.COBRADO)
     def cashing(self):
       """
       Order payed
       """
       return True
 
-    @transition(field=pedido_state, source=STATE.COBRADO, target=STATE.HISTORICO)
+    @transition(field=pedidostate, source=STATE.COBRADO, target=STATE.HISTORICO)
     def historify(self):
       """
       Order archived

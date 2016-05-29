@@ -1,3 +1,4 @@
+from gip.models import Pedidos
 def list_grouper(query_pedidos):
   #TODO: add this tab definition to a Model or to settings
   def_tabs = {
@@ -24,10 +25,11 @@ def list_grouper(query_pedidos):
   for t in grouped_by:
      #this is shit, cause dict.keys() do not work as expected with default dict
      sorted_pedidos[t] = []
+  
   for t in query_pedidos:
-    #sorted_pedidos[def_tabs[working_scheme[t['pedido_state']]]] = counted_tabs.get(def_tabs[working_scheme[t['pedido_state']]],0) + 1
+    #sorted_pedidos[def_tabs[working_scheme[t['pedidostate']]]] = counted_tabs.get(def_tabs[working_scheme[t['pedidostate']]],0) + 1
     #TODO; if there is something unexpeted, like pediido_state = 101, will crash, FYI
-    sorted_pedidos[def_tabs[working_scheme[t.pedido_state]]].append(t)
+    sorted_pedidos[def_tabs[working_scheme[t.pedidostate]]].append(t)
   #this is "slow", but.. will automate the way the tabs are counted and provided :)
   return sorted_pedidos, def_tabs
 
@@ -44,6 +46,7 @@ def generator_pedidos_tabs(pedidos_list):
                       <th>Fecha Pedido</th>
                       <th>Cliente</th>
                       <th>Destino</th>
+                      <th>Estado</th>
                       <th>Acciones</th>
                     </tr>
                   </thead>
@@ -51,6 +54,15 @@ def generator_pedidos_tabs(pedidos_list):
   for pedido in pedidos_list:
     clientes = ''
     direccion_reparto = ''
+    acciones = ''
+    estado = [t[1] for t in pedido.STATE_CHOICES if t[0] == int(pedido.pedidostate)]
+    pedido.pedidostate=int(pedido.pedidostate)
+    for t in Pedidos.get_available_pedidostate_transitions(pedido):
+      print "for current pedidostate:" +str(pedido.pedidostate)+ " transistion: "+str(t.name)+" is available"
+      for i in Pedidos.STATE_CHOICES: 
+        if t.target in i:
+          print "we have a target:"+str(t.target)+", and we identifi as  "+str(i)
+          acciones += '<a href="send("{0}")" class="btn btn-info btn-sm" data-toggle="modal">{1}</a> '.format(t.name,i[1])
     for current_cliente in pedido.cliente.all():
       clientes += str(current_cliente.nombre)+" "
       #TODO: fix when you have a clear idea where to deliver
@@ -62,8 +74,9 @@ def generator_pedidos_tabs(pedidos_list):
                        <td>{1}</td> \
                        <td>{2}</td> \
                        <td>{3}</td> \
-                       <td> - </td> \
-  '.format(pedido.codigo, pedido.fecha_creacion, clientes,direccion_reparto)
+                       <td>{4}</td> \
+                       <td>{5}</td> \
+  '.format(pedido.codigo, pedido.fecha_creacion, clientes,direccion_reparto,estado, acciones)
   genetared_html += '    </tbody> \
                </table> \
                <button type="button" class="btn btn-success">Validar seleccionados</button> \

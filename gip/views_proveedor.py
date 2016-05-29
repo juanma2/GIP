@@ -627,7 +627,7 @@ def get_tab_content(request,proveedor_id,tab_str):
       state_list = grouped_by[tab_str.replace('_',' ')]
       print "we have a proveedor"+proveedor_id
       print "we have some ids.."+str(state_list)
-      pedidos_list = Pedidos.objects.filter(proveedor_id = proveedor.id,pedido_state__in=state_list)
+      pedidos_list = Pedidos.objects.filter(proveedor_id = proveedor.id,pedidostate__in=state_list)
       html = generator_pedidos_tabs(pedidos_list)
       #set a html string response (facepalm)
       return HttpResponse(html)
