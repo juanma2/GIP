@@ -21,8 +21,8 @@ def send_order(pedido,proveedor):
   print cliente 
   orden = pedido['orden']
   print orden
-  print precio
   precio = pedido['precio']
+  print precio
   total = 0.0
   u = User.objects.filter(id=pedido['cliente']['user_id'])
   for i in pedido['orden']:
