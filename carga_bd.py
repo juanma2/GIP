@@ -25,13 +25,8 @@ from gip.models import Elemento
 from gip.helper_pedidos import send_order
 
 
+from django_fsm import FSMField, transition
 from django.contrib.auth.models import User, Group
-
-#Roles definition
-grupocliente = Group.objects.create(name='cliente')
-grupocliente.save()
-grupoproveedor = Group.objects.create(name='proveedor')
-grupoproveedor.save()
 
 ##FFS add all this in one file settings??
 ELEMENTOS_POR_PAGINA_PROVEEDOR = 20
@@ -39,6 +34,14 @@ ELEMENTOS_POR_PAGINA_CLIENTE = 5
 PROVEEDOR_ATTRIBUTE = 'proveedor'
 CLIENTE_ATTRIBUTE = 'cliente'
 ##END FFS add all this in one file settings??
+
+#Roles definition
+grupocliente = Group.objects.create(name='cliente')
+grupocliente.save()
+grupoproveedor = Group.objects.create(name='proveedor')
+grupoproveedor.save()
+
+
 
 
 #I want ot create 20K products, 25 providers and 10K clients.
