@@ -60,6 +60,7 @@ def generator_pedidos_tabs(pedidos_list):
     for t in Pedidos.get_available_pedidostate_transitions(pedido):
       print "for current pedidostate:" +str(pedido.pedidostate)+ " transistion: "+str(t.name)+" is available"
       for i in Pedidos.STATE_CHOICES: 
+        #TODO: exclide the states that do not want to be seen be the proveedor
         if t.target in i:
           print "we have a target:"+str(t.target)+", and we identifi as  "+str(i)
           acciones += '<a href="send("{0}")" class="btn btn-info btn-sm" data-toggle="modal">{1}</a> '.format(t.name,i[1])
