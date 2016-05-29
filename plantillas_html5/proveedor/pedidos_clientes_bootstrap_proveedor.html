@@ -185,7 +185,7 @@ $('#advertenciaborrarcliente').modal('show');
 
 }
 function gettab(tab_id){
-    alert('we are gonna hit a tab!!');
+    alert('we are gonna hit a tab!! you should add a spinning wheel here');
     var client_id = document.getElementById('client_to_delete').value
     var form = $('#form_del_client');
 
@@ -216,14 +216,15 @@ $.ajaxSetup({
       $.ajax( {
         type: "POST",
         url: '/proveedor/{{ proveedor.id }}/pedidos_estados/' + tab_id + '/',
-        dataType: 'json' ,
+        dataType: '' ,
         data: form.serialize(),
         error: function (xhr, status) {
             alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
         },
         success: function( response ) {
           //remove all the products!!, this will be an issue, with other searches already done in Database
-          alert(response['msg']);
+          document.getElementById('tab_content').innerHTML='';
+          document.getElementById('tab_content').innerHTML=response;
   myform = document.forms["tabs"];
   //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
   // cat_id == 0 //is the default choose a category
@@ -317,58 +318,10 @@ populate_form();
 </ul>
 <!--segun pinches en pilllsss-->
 <!--Pinchando en Recibidos que es la entrada por defecto en pedidos-->
+
 <div id="tab_content">
-     {% for tab, pedidos in lista_pedidos.items  %}
-                <table class="table {{ tab.split|join:"-"}} ">
-                  <thead>
-                    <tr>
-                      <th>Check</th>
-                      <th>ID. Pedido</th>
-                      <th>Fecha Pedido</th>
-                      <th>Cliente</th>
-                      <th>Destino</th>
-                      <th>Ver</th>
-                      <th>Validar</th>
-                      <th>Rechazar</th>
-                      <th>En Revision</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for pedido in pedidos %} 
-                    <tr>
-                      <td><label><input type="checkbox"></label></td>
-                      <td>{{ pedido.codigo }}</td>
-                      <td>{{ pedido.fecha_creacion }}</td>
-                      <td>
-{% for cliente in pedido.cliente.all %} 
-{{ cliente }}
-{% endfor %}
-</td>
-                      <td> <a href="essoloejemplodenavegacion.html">
-{% for cliente in pedido.cliente.all %}
-{% for direccion in cliente.destino_reparto.all %}
-{{ direccion }}
-{% endfor %}
-{% endfor %}
+<div>
 
-</a></td>
-                      <td><a  href="#modaldemostrarpedido1" class="btn btn-info btn-sm" data-toggle="modal">Ver 1</a></td>
-                      <td><button type="button" class="btn btn-success btn-sm">Validar</button></td>
-                      <td><a  href="#modalrechazarpedido" class="btn btn-danger btn-sm" data-toggle="modal">Rechazar</a></td>
-                      <td></td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-
-                <button type="button" class="btn btn-success">Validar seleccionados</button>
-         {% endfor %}
-        </div>
-      </div>
-
-
-
-        </div>
       </div>
 <!-- tab content ends here-->
 </div>

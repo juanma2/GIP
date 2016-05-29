@@ -31,3 +31,45 @@ def list_grouper(query_pedidos):
   #this is "slow", but.. will automate the way the tabs are counted and provided :)
   return sorted_pedidos, def_tabs
 
+
+
+def generator_pedidos_tabs(pedidos_list):
+  genetared_html =''
+  genetared_html += """
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Check</th>
+                      <th>ID. Pedido</th>
+                      <th>Fecha Pedido</th>
+                      <th>Cliente</th>
+                      <th>Destino</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>"""
+  for pedido in pedidos_list:
+    clientes = ''
+    direccion_reparto = ''
+    for current_cliente in pedido.cliente.all():
+      clientes += str(current_cliente.nombre)+" "
+      #TODO: fix when you have a clear idea where to deliver
+      direccion_reparto += str(current_cliente.direccion)+", "+str(current_cliente.ciudad)
+    genetared_html += ' \
+                     <tr> \
+                       <td><label><input type="checkbox"></label></td> \
+                       <td>{0}</td> \
+                       <td>{1}</td> \
+                       <td>{2}</td> \
+                       <td>{3}</td> \
+                       <td> - </td> \
+  '.format(pedido.codigo, pedido.fecha_creacion, clientes,direccion_reparto)
+  genetared_html += '    </tbody> \
+               </table> \
+               <button type="button" class="btn btn-success">Validar seleccionados</button> \
+       </div> \
+     </div> \
+       </div>  \
+'
+  return genetared_html
+

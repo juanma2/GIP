@@ -8,7 +8,8 @@ from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
-from gip.helper_proveedor import list_grouper
+from gip.helper_proveedor import list_grouper, generator_pedidos_tabs
+
 
 
 
@@ -584,6 +585,7 @@ def pedidos_proveedor(request):
   proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
   client_list = User.objects.filter(groups__id=proveedor.id).exclude(groups__name=PROVEEDOR_ATTRIBUTE).exclude(cliente__baja=True).order_by('-id')
   #Count all of them, TODO:check how expensive if this query and think about options, fix the format, kills me :/
+  #even better, think in cache the numbers in other place.. is not so accurate, but woudl work
   list_pedidos = Pedidos.objects.filter(proveedor_id = proveedor.id)
   #is ugly, but should make jinja easier
   search_parameters = request.POST.copy()
@@ -626,13 +628,9 @@ def get_tab_content(request,proveedor_id,tab_str):
       print "we have a proveedor"+proveedor_id
       print "we have some ids.."+str(state_list)
       pedidos_list = Pedidos.objects.filter(proveedor_id = proveedor.id,pedido_state__in=state_list)
-      print pedidos_list
-      data = {
-          'msg':'should be smart',
-          '0':'reload'
-        }
-      pay_load = json.dumps(data)
-      return HttpResponse(pay_load, content_type="application/json")
+      html = generator_pedidos_tabs(pedidos_list)
+      #set a html string response (facepalm)
+      return HttpResponse(html)
     else:
       print "Someone is playing bad.. proabbly"+str(proveedor_id)
       return redirect('/proveedor/404/', request)
