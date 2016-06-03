@@ -8,6 +8,8 @@ import time
 django.setup()
 
 
+from django.conf import settings
+
 import rlcompleter, readline
 readline.parse_and_bind('tab:complete')
 from django.db import models
@@ -23,6 +25,7 @@ from gip.models import Categoria
 from gip.models import Lista
 from gip.models import Elemento
 from gip.helper_pedidos import send_order
+from gip.helper_proveedor import list_grouper, generator_pedidos_tabs, generator_pedido_content
 
 
 from django_fsm import FSMField, transition
@@ -170,7 +173,6 @@ for i in range(1,MAX_CLIENTES):
   user.groups.add(grupo_cliente)
   user.groups.add(grupo_proveedor)
   user.save()
-
   cliente = Cliente(user=user, nombre='Cliente'+str(i), descripcion='Descripcion'+str(i), cif='NIFNIFNIF'+str(i), direccion='calle direccion' ,ciudad='ciudadXX', telefono='telefono 123', contacto_nombre='Contact'+str(i) )
   #a client can has more than one CP
   cliente.save()
@@ -211,21 +213,21 @@ print "Updating passwords"
 for i in User.objects.all().exclude(username='root'):
   i.set_password('1')
   i.save()
+
 print "Current time " + time.strftime("%X")
 
 ##HERE, redo this, You are missing the grupo de proveedor that belongs to each user....
 ##Need to spend some time adding Pedidos, and Pedidos status... 
 
-#Lets do some orders...
+#Lets do some pedidos...
 print "Current time " + time.strftime("%X")
 print "an order per user, at least"
-for i in User.objects.filter(username__contains='CLIENTE'):
-  print i
-  user_listas = Cliente.objects.get(user_id=i.id).listas.all()
-  cliente = Cliente.objects.filter(user_id = i.id)
+for user in User.objects.filter(username__contains='CLIENTE'):
+  user_listas = Cliente.objects.get(user_id=user.id).listas.all()
+  cliente = Cliente.objects.filter(user_id = user.id)
   proveedor = cliente[0].user.groups.exclude(name=CLIENTE_ATTRIBUTE)[0]
   pedido = {}
-  cliente = cliente.values()[0]
+  cliente_values = cliente.values()[0]
   orden = {}
   descripcion = {}
   precio = {}
@@ -238,26 +240,13 @@ for i in User.objects.filter(username__contains='CLIENTE'):
         orden[ele.producto.product_ref] += ele.cantidad
       else:
         orden[ele.producto.product_ref] = ele.cantidad
-    pedido['cliente'] = cliente
+    pedido['cliente'] = cliente_values
     pedido['orden'] = orden
     #we can send the price of the elements right now... not sure if is right
     pedido['precio'] = precio
     pedido['descripcion'] = descripcion
     print "Add logic to send order here"
-    cliente = Cliente.objects.get(user_id = i.id)
-    orden = pedido['orden']
-    precio = pedido['precio']
-    total = 0.0
-    pc =  pedido['cliente']
-    u = User.objects.filter(id=cliente.user_id)
-    print "NNNNN"
-    for s in pedido['orden']:
-      total += orden[s]*precio[s]
-    print total
-    p = Pedidos(producto_serializado=pedido, proveedor_id = proveedor.id, total = total , fecha_creacion = datetime.datetime.now())
-    p.save()
-    print pedido
-    p.cliente.add(cliente.id)
+    send_order(pedido,proveedor)
   print "Done"
 
 print "Current time " + time.strftime("%X")
