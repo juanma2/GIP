@@ -116,3 +116,17 @@ STATICFILES_DIRS = (
   BASE_DIR                                                                          
 )                                                                                                                                                                 
 
+##Settings for app
+DEF_TABS = {
+    0:'Sin Validar',
+    1:'En Proceso',
+    2:'fuera de la empresa',
+    3:'Historico',
+  }
+GROUPED_BY = {
+    'Sin Validar':[100,10000,11100,11200,12000,12100,12200,12300,12110],
+    'En Proceso':[20000,30000,40000],
+    'fuera de la empresa':[50000,60000],
+    'Historico':[90000,11000,-1]
+  }
+
