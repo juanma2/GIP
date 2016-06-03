@@ -150,8 +150,6 @@ class Pedidos(models.Model):
         NUEVO                         =   100
         RECEPCION                     = 10000
         RECHAZADO                     = 11000
-        RECEPCION_RECHAZADO           = 11200
-        PACTAR_ALTERNATIVA            = 12000
         REFORMULAR_PEDIDO             = 12100
         NO_ACEPTADO                   = 12200
         ACEPTADO_CLIENTE              = 12300
@@ -166,8 +164,6 @@ class Pedidos(models.Model):
                      (STATE.NUEVO                          ,'Nuevo'),
                      (STATE.RECEPCION                      ,'Recepcion'),
                      (STATE.RECHAZADO                      ,'Rechazado'),
-                     (STATE.RECEPCION_RECHAZADO            ,'Recepcion Rechazado'),
-                     (STATE.PACTAR_ALTERNATIVA             ,'Pactar Alternativa'),
                      (STATE.REFORMULAR_PEDIDO              ,'Reformular Pedido'),
                      (STATE.NO_ACEPTADO                    ,'No Aceptado Cliente'),
                      (STATE.ACEPTADO_CLIENTE               ,'Aceptado Cliente'),
@@ -178,25 +174,6 @@ class Pedidos(models.Model):
                      (STATE.COBRADO                        ,'Cobrado'),
                      (STATE.HISTORICO                      ,'Historico'),
                      (STATE.CANCELADO                      ,'Cancelado'),
-
-                   #  (STATE.NUEVO                          ,'Nuevo'				,'Nuevo'				),
-                   #  (STATE.RECEPCION                      ,'Recepcion'				,'Recepcion'				),
-                   #  (STATE.RECHAZADO                      ,'Rechazado'				,'Rechazado'				),
-                   #  (STATE.COMUNICACION_RECHAZO_CLIENTE   ,'Comunicacion Rechazado Cliente'	,'Comunicacion Rechazado Cliente'	),
-                   #  (STATE.RECEPCION_RECHAZADO            ,'Recepcion Rechazado'		,'Recepcion Rechazado'			),
-                   #  (STATE.PACTAR_ALTERNATIVA             ,'Pactar Alternativa'		,'Pactar Alternativa'			),
-                   #  (STATE.REFORMULAR_PEDIDO              ,'Reformular Pedido'			,'Reformular Pedido'			),
-                   #  (STATE.NO_ACEPTADO                    ,'No Aceptado Cliente'		,'No Aceptado Cliente'			),
-                   #  (STATE.ACEPTADO_CLIENTE               ,'Aceptado Cliente'			,'Aceptado Cliente'			),
-                   #  (STATE.RECEPCION_RECHAZADO_PROVEEDOR  ,'Recepcion Rechazo Proveedor'	,'Recepcion Rechazo Proveedor'		),
-                   #  (STATE.CURSAR_PEDIDO                  ,'Cursar Pedido'			,'Cursar Pedido'			),
-                   #  (STATE.EN_PREPARACION                 ,'En preparacion'			,'En preparacion'			),
-                   #  (STATE.EN_CAMINO                      ,'En camino'				,'En camino'				),
-                   #  (STATE.ENTREGADO                      ,'Entregado'				,'Entregado'				),
-                   #  (STATE.COBRADO                        ,'Cobrado'				,'Cobrado'				),
-                   #  (STATE.HISTORICO                      ,'Historico'				,'Historico'				),
-                   #  (STATE.CANCELADO                      ,'Cancelado'				,'Cancelado'				),
-
 
     )
 
@@ -230,9 +207,50 @@ class Pedidos(models.Model):
     @transition(field=pedidostate, source=STATE.RECEPCION, target=STATE.RECHAZADO)
     def rejecting(self):
       """
-      Order rejected
-      el proveedor click en "rechazar"
-      add reason internaly and add reason for the customer.
+      """
+      return True
+
+    @transition(field=pedidostate, source=STATE.RECEPCION, target=STATE.CURSAR_PEDIDO)
+    def checking(self):
+      """
+      """
+      return True
+
+    @transition(field=pedidostate, source=STATE.RECEPCION, target=STATE.REFORMULAR_PEDIDO)
+    def reorder(self):
+      """
+      """
+      return True
+
+    @transition(field=pedidostate, source=STATE.REFORMULAR_PEDIDO, target=STATE.ACEPTADO_CLIENTE)
+    def re_acept(self):
+      """
+      """
+      return True
+
+    @transition(field=pedidostate, source=STATE.ACEPTADO_CLIENTE, target=STATE.REFORMULAR_PEDIDO)
+    def re_re_order(self):
+      """
+      """
+      return True
+
+
+    @transition(field=pedidostate, source=STATE.ACEPTADO_CLIENTE, target=STATE.CURSAR_PEDIDO)
+    def re_checking(self):
+      """
+      """
+      return True
+
+
+    @transition(field=pedidostate, source=STATE.NO_ACEPTADO, target=STATE.REFORMULAR_PEDIDO)
+    def re_reorder(self):
+      """
+      """
+      return True
+
+    @transition(field=pedidostate, source=STATE.NO_ACEPTADO, target=STATE.CANCELADO)
+    def re_rejecting(self):
+      """
       """
       return True
 
@@ -243,72 +261,10 @@ class Pedidos(models.Model):
 #      """
 #      return True
 
-    @transition(field=pedidostate, source=STATE.RECHAZADO, target=STATE.PACTAR_ALTERNATIVA)
-    def notify_rejecting(self):
-      """
-      Order notify the cliente that order were rejected, and he have an alternative
-      """
-      return True
-
-    @transition(field=pedidostate, source=STATE.RECHAZADO, target=STATE.CANCELADO)
-    def re_cancel_pedido(self):
-      """
-      Order we can try to fix the pedido
-      """
-      return True
-
-
-    @transition(field=pedidostate, source=STATE.PACTAR_ALTERNATIVA, target=STATE.ACEPTADO_CLIENTE)
-    def re_accepting(self):
-      """
-      Order , was redone, and we are happy
-      """
-      return True
-
-    @transition(field=pedidostate, source=STATE.PACTAR_ALTERNATIVA, target=STATE.NO_ACEPTADO)
-    def re_rejecting(self):
-      """
-      Order , was redone, and we are not happy
-      """
-      return True
-
-    @transition(field=pedidostate, source=STATE.ACEPTADO_CLIENTE, target=STATE.CURSAR_PEDIDO)
-    def re_sending(self):
-      """
-      Order , was redone, and we are sending it
-      """
-      return True
-
-    @transition(field=pedidostate, source=STATE.NO_ACEPTADO, target=STATE.RECEPCION_RECHAZADO)
-    def notifiy_re_rejecting(self):
-      """
-      Order , notify the proveedor that fix was not good
-      """
-      return True
-
-    @transition(field=pedidostate, source=STATE.RECEPCION_RECHAZADO, target=STATE.PACTAR_ALTERNATIVA)
-    def re_do_again(self):
-      """
-      Order , notify the proveedor that fix was not good and we should try again
-      """
-      return True
-
-    @transition(field=pedidostate, source=STATE.RECEPCION_RECHAZADO, target=STATE.RECHAZADO)
-    def re_rejecting_done(self):
-      """
-      Order , notify the proveedor that fix was not good and we are done 
-      """
-      return True
 
 
 
 ##########HAPPY PATH STARTS HERE in CURSAR_PEDIDO
-    @transition(field=pedidostate, source=STATE.RECEPCION, target=STATE.CURSAR_PEDIDO)
-    def reception(self):
-      """
-      Order Accepted per proveedor
-      """
-      return True
 
     @transition(field=pedidostate, source=STATE.CURSAR_PEDIDO, target=STATE.EN_PREPARACION)
     def preparing(self):
