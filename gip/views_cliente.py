@@ -407,6 +407,7 @@ def make_pedido(request):
     cliente = Cliente.objects.get(user_id = current_user.id)
     username = str(current_user.username)
     user_listas = Cliente.objects.get(user_id=current_user.id).listas.all()
+    #BUGGGGG!!!! TODO: nothing to say... 2 clients
     cliente = Cliente.objects.filter(user_id = current_user.id)
     print "we are going to use the cliente"
     print cliente
@@ -439,6 +440,7 @@ def make_pedido(request):
     pedido['precio'] = precio
     pedido['descripcion'] = descripcion
     print "Add logic to send order here"
+    #really?? again?? TODO: fix cliente
     cliente = Cliente.objects.get(user_id = current_user.id)
 
     send_order(pedido,proveedor)
