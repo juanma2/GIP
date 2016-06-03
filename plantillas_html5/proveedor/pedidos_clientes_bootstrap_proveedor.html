@@ -177,17 +177,16 @@ subcategoria = '{{ search_parameters.subcategoria }}';
 
 }
 
-function show_modal(client_id)
+function show_modal()
 {
-
-document.getElementById('client_to_delete').value=client_id;
-$('#advertenciaborrarcliente').modal('show'); 
+//document.getElementById('update_pedido').value=pedido_id;
+$('#modaldemostrarpedido').modal('show'); 
 
 }
 function gettab(tab_id){
     //alert('we are gonna hit a tab!! you should add a spinning wheel here');
-    var client_id = document.getElementById('client_to_delete').value
-    var form = $('#form_del_client');
+    //var client_id = document.getElementById('client_to_delete').value
+    //var form = $('#form_del_client');
 
 $.ajaxSetup({ 
      beforeSend: function(xhr, settings) {
@@ -217,7 +216,7 @@ $.ajaxSetup({
         type: "POST",
         url: '/proveedor/{{ proveedor.id }}/pedidos_estados/' + tab_id + '/',
         dataType: '' ,
-        data: form.serialize(),
+        data: "",
         error: function (xhr, status) {
             alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
         },
@@ -225,19 +224,6 @@ $.ajaxSetup({
           //remove all the products!!, this will be an issue, with other searches already done in Database
           document.getElementById('tab_content').innerHTML='';
           document.getElementById('tab_content').innerHTML=response;
-  myform = document.forms["tabs"];
-  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
-  // cat_id == 0 //is the default choose a category
-  //TODO: this should be my form.submit... to avoid nasty resend things
-   //location.reload()
-  myform.page = '{{ pedidos_list.number }}';
-  page = '{{ pedidos_list.number }}'
-  //paginate using the form 
-  myform.submit();
-  
-
-  
-  
         
          }
 
@@ -251,31 +237,102 @@ function deluser(client_id)
 alert('hell yes')
 }
 
+function send(pedido_id,dest_transition){
+    var form = $('#form_del_client');
+
+
+
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/proveedor/{{ proveedor.id }}/estado/' + pedido_id + '/'+dest_transition+'/',
+        dataType: '' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          //remove all the products!!, this will be an issue, with other searches already done in Database
+          alert('do an ugly reload');
+         }
+
+      } );
+
+}
+
+
+function show_pedido(pedido_id) {
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/proveedor/{{ proveedor.id }}/pedido/' + pedido_id + '/',
+        dataType: '' ,
+        data: "",
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          //remove all the products!!, this will be an issue, with other searches already done in Database
+          document.getElementById('containermostrarpedido').innerHTML = response;
+          show_modal();
+         }
+
+      } );
+}
+
 $(document).ready(function() {
 var form = $('#send_lista_info');
 populate_form();
 });
 </script>
-<div class="container">
-        <div class="modal" id="advertenciaborrarcliente">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header modal-header-warning">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
-                        <h4 class="modal-title">Advertencia, este producto ya existe</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Estas seguro que desea borrar el cliente?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="delclient()">Borrar</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <input type="hidden" id="client_to_delete">
+<div class="container" id="containermostrarpedido">
 
-                    </div>
-                </div>
-            </div>
-        </div>
 </div>
 
 {% endblock %}
@@ -299,7 +356,7 @@ populate_form();
             <hr>
             <div class="row">
 
-<ul class="nav nav-pills">
+<ul class="nav nav-pills" id="tabs_counter">
      {% for tab, pedidos in lista_pedidos.items  %}
         <li class="{{ tab.split|join:"-" }}"><a href="#" onclick="gettab('{{ tab.split|join:"_" }}')">
             {{ tab }}

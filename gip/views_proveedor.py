@@ -8,7 +8,10 @@ from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
-from gip.helper_proveedor import list_grouper, generator_pedidos_tabs
+from django.conf import settings
+
+
+from gip.helper_proveedor import list_grouper, generator_pedidos_tabs, generator_pedido_content
 
 
 
@@ -606,18 +609,8 @@ def pedidos_proveedor(request):
 def get_tab_content(request,proveedor_id,tab_str):
   #TODO: this is duplicated inside helpers_proveeedor, unify and add to settings
   #You cannot user characters like "-_" in here, cause you cannot afford ids MTF
-  def_tabs = {
-    0:'Sin Validar',
-    1:'En Proceso',
-    2:'fuera de la empresa',
-    3:'Historico',
-  }
-  grouped_by = {
-    'Sin Validar':[100,10000,11000,11100,11200,12000,12100,12200,12300,12110],
-    'En Proceso':[20000,30000,40000],
-    'fuera de la empresa':[50000,60000],
-    'Historico':[90000,-1]
-  }
+  def_tabs = settings.DEF_TABS
+  grouped_by = settings.GROUPED_BY
   current_user = request.user
   username = str(current_user.username)
   #how that can work iwth many providers??
@@ -629,6 +622,72 @@ def get_tab_content(request,proveedor_id,tab_str):
       print "we have some ids.."+str(state_list)
       pedidos_list = Pedidos.objects.filter(proveedor_id = proveedor.id,pedidostate__in=state_list)
       html = generator_pedidos_tabs(pedidos_list)
+      #set a html string response (facepalm)
+      return HttpResponse(html)
+    else:
+      print "Someone is playing bad.. proabbly"+str(proveedor_id)
+      return redirect('/proveedor/404/', request)
+  else:
+    return HttpResponseRedirect(reverse('pedidos_proveedor'))
+
+
+
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def update_pedidostate(request,proveedor_id,pedido_id,transition):
+  #TODO: this is duplicated inside helpers_proveeedor, unify and add to settings
+  #You cannot user characters like "-_" in here, cause you cannot afford ids MTF
+  def_tabs = settings.DEF_TABS
+  grouped_by = settings.GROUPED_BY
+  current_user = request.user
+  username = str(current_user.username)
+  #how that can work iwth many providers??
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  print "we have a proveedor"
+  if request.is_ajax():
+    if str(proveedor.id) == proveedor_id:
+      print "we have a proveedor"+proveedor_id
+      print "we want to move the pedido "+str(pedido_id)+ "using:"+str(transition)
+      pedido = Pedidos.objects.get(id=pedido_id)
+      #that is stupid, but works with, int, no with the str.. for reasons
+      pedido.pedidostate = int(pedido.pedidostate)
+      #till someone thinks in something better... this is like pedido.transition
+      result = getattr(pedido,transition)()
+      pedido.save()
+      print "and the winner is:"
+      print result
+      #restul = getattr(pedido, 'bar')()
+      data = {
+          'msg': result,
+          '1':'reset'
+        }
+      pay_load = json.dumps(data)
+      return HttpResponse(pay_load, content_type="application/json")
+    else:
+      print "Someone is playing bad.. proabbly"+str(proveedor_id)
+      return redirect('/proveedor/404/', request)
+  else:
+    return HttpResponseRedirect(reverse('pedidos_proveedor'))
+
+
+
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def get_pedido_content(request,proveedor_id,pedido_id):
+  #TODO: this is duplicated inside helpers_proveeedor, unify and add to settings
+  #You cannot user characters like "-_" in here, cause you cannot afford ids MTF
+  def_tabs = settings.DEF_TABS
+  grouped_by = settings.GROUPED_BY
+  current_user = request.user
+  username = str(current_user.username)
+  #how that can work iwth many providers??
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  if request.is_ajax():
+    if str(proveedor.id) == proveedor_id:
+      pedido = Pedidos.objects.get(id = pedido_id)
+      html = generator_pedido_content(pedido)
       #set a html string response (facepalm)
       return HttpResponse(html)
     else:
