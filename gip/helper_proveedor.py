@@ -119,19 +119,25 @@ def generator_pedido_content(pedido):
                     </thead>\
                     <tbody>\
                      '.format(pedido.codigo, pedido.cliente.all()[0])
+    print "WE HAVE PEDIOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+    print pedido.producto_serializado
     products = ast.literal_eval(pedido.producto_serializado)
     #pedido has 3 index, descripcion, orden, precio, cliente
     descripcion = 'descripcion'
     orden = 'orden' #contiene la cantidad que se ha pedido
     precio = 'precio' # precio al que se pidio
+    active = 'active'
     for ele in products[descripcion]:
+      strike = ''
+      if products[active][ele] == 0:
+        strike = '<strike>'
       html += '<tr data-toggle="collapse" data-target="#{0}_{1}" class="accordion-toggle"> \
-               <td>{1}</td> \
-               <td>{2}</td> \
-               <td>{3}</td> \
-               <td>{4}</td> \
+               <td>{5}{1}</td> \
+               <td>{5}{2}</td> \
+               <td>{5}{3}</td> \
+               <td>{5}{4}</td> \
                 <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" >Reformular Item</a></td>  \
-      '.format(pedido.codigo, ele,products[descripcion][ele], products[orden][ele], products[precio][ele])
+      '.format(pedido.codigo, ele,products[descripcion][ele], products[orden][ele], products[precio][ele],strike)
       html += '<tr> \
                     <td colspan="12" class="hiddenRow"> \
                       <div class="accordian-body collapse" id="{0}_{1}"> \
@@ -194,31 +200,17 @@ def generator_pedido_content(pedido):
     descripcion = 'descripcion'
     orden = 'orden' #contiene la cantidad que se ha pedido
     precio = 'precio' # precio al que se pidio
+    active = 'active'
     for ele in products[descripcion]:
+      strike = ''
+      if products[active][ele] == 0:
+        strike = '<strike>'
       html += '<tr data-toggle="collapse" data-target="#{0}_{1}" class="accordion-toggle"> \
-               <td>{1}</td> \
-               <td>{2}</td> \
-               <td>{3}</td> \
-               <td>{4}</td> \
-      '.format(pedido.codigo, ele,products[descripcion][ele], products[orden][ele], products[precio][ele])
-      html += '<tr> \
-                    <td colspan="12" class="hiddenRow"> \
-                      <div class="accordian-body collapse" id="{0}_{1}"> \
-                            <b>Sustituir por:</b> \
-                      <div class="form-group form-inline"> \
-                          <label class="sr-only" for="Referencia">Referencia</label> \
-                          <input class="form-control" placeholder="Referencia"> \
-                      </div> \
-                      <div class="form-group">\
-                        <label class="sr-only" for="Cantidad">cantidad</label> \
-                        <input  class="form-control"  placeholder="Cantidad"> \
-                      </div> \
-                         <b> <p>Cuando pulse Guardar modificaciones los datos del pedido se modificarn</p> </b> \
-                         <p>Compruebe que la referencia de su producto es la adecuada y no pertenece a otro producto.</p> \
-                      </div> </td> \
-                </tr>'.format(pedido.codigo, ele)
-
-
+               <td>{5}{1}</td> \
+               <td>{5}{2}</td> \
+               <td>{5}{3}</td> \
+               <td>{5}{4}</td> \
+      '.format(pedido.codigo, ele,products[descripcion][ele], products[orden][ele], products[precio][ele],strike)
     html += '</tbody> \
                   </table>\
                   </form>\
@@ -246,7 +238,7 @@ def build_botones(pedido,source):
         print "we have a target:"+str(t.target)+", and we identifi as  "+str(i)
         if t.target == 12100:
           acciones_tab += '<a href="#" onclick="show_pedido(\'{0}\')" class="btn btn-info btn-sm" data-toggle="modal">{1}</a> '.format(pedido.id,i[1])
-          acciones_modal +=  '<button type="submit" class="btn btn-warning btn-sm" onclick="submit_changes({0});send(\'{1}\',\'{2}\')"> Guardar modificaciones</button>'.format(pedido.codigo,pedido.id,t.name, i[1])
+          acciones_modal +=  '<button type="submit" class="btn btn-warning btn-sm" onclick="submit_changes(\'{0}\',\'{1}\')"> Guardar modificaciones</button>'.format(pedido.codigo,pedido.id)
         elif t.target == 12300:
           acciones_tab += 'Esperando confirmacion del cliente'
         else:
