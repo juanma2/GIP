@@ -21,6 +21,7 @@ from gip.models import Producto, Cliente
 import sys, time
 import datetime
 import json
+import ast
 
 
 
@@ -604,6 +605,8 @@ def pedidos_proveedor(request):
               }
   return render(request, 'proveedor/pedidos_clientes_bootstrap_proveedor.html', context)
 
+
+
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_proveedor)
 def get_tab_content(request,proveedor_id,tab_str):
@@ -629,6 +632,35 @@ def get_tab_content(request,proveedor_id,tab_str):
       return redirect('/proveedor/404/', request)
   else:
     return HttpResponseRedirect(reverse('pedidos_proveedor'))
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def ajax_tab_counters(request,proveedor_id):
+  current_user = request.user
+  print current_user.id
+  username = str(current_user.username)
+  def_tabs = settings.DEF_TABS
+  grouped_by = settings.GROUPED_BY
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  html = ''
+  if request.is_ajax():
+    if str(proveedor.id) == proveedor_id:
+      list_pedidos = Pedidos.objects.filter(proveedor_id = proveedor.id)
+      #is ugly, but should make jinja easier
+      lista_pedidos , tabs = list_grouper(list_pedidos)
+      #counter_pedidos = Pedidos.objects.filter(proveedor_id = proveedor.id).values('pedidostate').annotate(total=Count('pedidostate'))
+      print "lista_pedidos"
+      print lista_pedidos
+      print "tabs"
+      print tabs
+      for i in lista_pedidos:
+        html += '<li class="{0}"><a href="#" onclick="gettab(\'{1}\')">'.format(i.replace(' ','-'), i.replace(' ','_') )
+        html += i
+        html += '<span class="badge">{0}</span>'.format(len(lista_pedidos[i]))
+        html += ' </a></li>'
+  print html 
+  return HttpResponse(html)
+ 
 
 
 
@@ -695,4 +727,94 @@ def get_pedido_content(request,proveedor_id,pedido_id):
       return redirect('/proveedor/404/', request)
   else:
     return HttpResponseRedirect(reverse('pedidos_proveedor'))
+
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_proveedor)
+def retry_pedido(request,proveedor_id,pedido_id):
+  current_user = request.user
+  username = str(current_user.username)
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  print "requested proveedor"
+  print proveedor_id
+  msg = ''
+  status = 0
+  action = 'reload'
+  if str(proveedor.id) == proveedor_id:
+    if request.is_ajax():
+      update_parameters = request.POST.copy()
+      print update_parameters
+      if update_parameters:
+        pedido = Pedidos.objects.get(id= pedido_id)
+        print "pedido to update"
+        print pedido.id
+        #this works only because order is not multiprovider
+        cliente = pedido.cliente.all()[0]
+        print "cliente  to update"
+        print cliente.id 
+        #here, should be enough a get.. if there is only one tarifa per pair cliente-proveedor
+        tarifa = cliente.tarifa.filter(elproveedor = proveedor_id)[0]
+        #the information comes like:
+	# {u'DIS112_': [u''], u'DIS200_r1': [u'c1'], u'AJTH_': [u''], u'DIS171_r4': [u'c4']}
+        #{OLDREF_NEWREF:[amount],}
+        for i in update_parameters:
+          print "one by one:"+str(i)
+          if i.split('_')[1]:
+            new_ref = i.split('_')[1]
+            old_ref = i.split('_')[0] 
+            print pedido.producto_serializado
+            order = ast.literal_eval(pedido.producto_serializado)
+            #disable the product
+            print "diable old product from "+str(order['active'][old_ref])
+            order['active'][old_ref] = 0 
+            #we shuld look for the product
+            try:
+              producto = Producto.objects.get(product_ref = new_ref, tarifa__id = tarifa.id)
+              order['descripcion'][new_ref]= producto.descripcion
+              order['precio'][new_ref] = float(producto.precio)
+              try:
+                order['orden'][new_ref] = float(update_parameters[i])
+              except:
+                order['orden'][new_ref] = 1
+              order['active'][new_ref] = 1
+            except:
+              msg += 'Parece que la refencia: '+new_ref+'  No existe asociada a la tarifa '+str(tarifa)+'\n'
+        print "Our new order is ready:"
+        print order
+        if msg == '':
+          #everything was fine...
+          pedido.producto_serializado = order
+          pedido.pedidostate= int(pedido.pedidostate)
+          total = 0.0 
+          for i in order['orden']:
+            if order['active'][i] == 1:
+              total += order['orden'][i]*order['precio'][i]
+          pedido.total = total
+          #we want to move to 12100, reformular pedido, we need to know the good transisition for this task
+          for t in Pedidos.get_available_pedidostate_transitions(pedido):
+            if t.target == 12100:
+              result = getattr(pedido,t.name)()
+          pedido.save()
+          msg = 'Su propuesta ha sido tramitada'
+          action = 'close'
+          
+    data = {
+          'msg': msg,
+          'action':action
+    }
+    print "Job done!!"
+    pay_load = json.dumps(data)
+    return HttpResponse(pay_load, content_type="application/json")
+#      except:
+#         #dammm try catch!!
+#         data = {
+#           'msg':'No ha sido posible realizar su peticin' ,
+#           '0':'reload'
+#         }
+#      pay_load = json.dumps(data)
+#      return HttpResponse(pay_load, content_type="application/json")
+#    else:
+#      return HttpResponseRedirect(reverse('productos_cliente'))
+#  else:
+#      return HttpResponseRedirect(reverse('nopnopnopnpo'))
 
