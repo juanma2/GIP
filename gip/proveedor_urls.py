@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^(?P<proveedor_id>[0-9]+)/pedidos_estados/(?P<tab_str>\w+)/$', views_proveedor.get_tab_content, name='get_tab_content'),
     url(r'^(?P<proveedor_id>[0-9]+)/estado/(?P<pedido_id>[0-9]+)/(?P<transition>\w+)/$', views_proveedor.update_pedidostate, name='updte_pedidostate'),
     url(r'^(?P<proveedor_id>[0-9]+)/pedido/(?P<pedido_id>[0-9]+)/$', views_proveedor.get_pedido_content, name='get_pedido_content'),
+    url(r'^(?P<proveedor_id>[0-9]+)/retry_pedido/(?P<pedido_id>[0-9]+)/$', views_proveedor.retry_pedido, name='retry_pedido'),
+    url(r'^(?P<proveedor_id>[0-9]+)/pedidos/tab_counters/$',views_proveedor.ajax_tab_counters, name='ajax_tab_counters'),
 
     url(r'^pedidos/$', views_proveedor.pedidos_proveedor, name='pedidos_proveedor'),
 ]
