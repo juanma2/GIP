@@ -99,6 +99,7 @@
 
 <script>
 //combo_option[combo_option.selectedIndex].id
+current_tab = ''
 
 //Javascript to collect info from form id = search_form
 function submitform(page) {
@@ -187,6 +188,7 @@ function gettab(tab_id){
     //alert('we are gonna hit a tab!! you should add a spinning wheel here');
     //var client_id = document.getElementById('client_to_delete').value
     //var form = $('#form_del_client');
+    current_tab = tab_id
 
 $.ajaxSetup({ 
      beforeSend: function(xhr, settings) {
@@ -237,6 +239,72 @@ function deluser(client_id)
 alert('hell yes')
 }
 
+function submit_changes(codpedido, pedido_id)
+{
+  var form = document.getElementById('re_pedido')
+list_items =  $('[id^='+codpedido+'_]');
+  for (i = 0; i < list_items.length; i++) {
+  a = list_items[i]
+  old_ref = a.id.split('_')[1]
+  elem = a.getElementsByTagName('input')  
+  //this is the new reference
+  new_ref = elem[0].value
+  new_val = elem[1].value
+  addHidden(form,old_ref+'_'+new_ref,new_val)
+  }
+
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
+
+     //bad and hacky, you should use jquery and there would be no need to load the form twice
+     var form = $('#re_pedido');
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/proveedor/{{ proveedor.id }}/retry_pedido/' + pedido_id + '/',
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          //remove all the products!!, this will be an issue, with other searches already done in Database
+          alert(response['msg']);
+          var form = $('#re_pedido');
+          form.empty()
+          if (response['action'] == "close"){
+            $('#modaldemostrarpedido').modal('hide')
+
+          }
+         reload_tabs()
+         }
+
+      } );
+
+
+}
+
 function send(pedido_id,dest_transition){
     var form = $('#form_del_client');
 
@@ -276,13 +344,58 @@ $.ajaxSetup({
         },
         success: function( response ) {
           //remove all the products!!, this will be an issue, with other searches already done in Database
-          alert('do an ugly reload');
+          $('#modaldemostrarpedido').modal('hide')
+          reload_tabs();
+          alert('we should reload the tab '+current_tab);
+          gettab(current_tab);
          }
 
       } );
 
 }
 
+function reload_tabs() {
+$.ajaxSetup({ 
+     beforeSend: function(xhr, settings) {
+         function getCookie(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie != '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = jQuery.trim(cookies[i]);
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+             // Only send the token to relative URLs i.e. locally.
+             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+         }
+     } 
+});
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/proveedor/{{ proveedor.id }}/pedidos/tab_counters/',
+        dataType: '' ,
+        data: "",
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          //remove all the products!!, this will be an issue, with other searches already done in Database
+          document.getElementById('tabs_counter').innerHTML = '';
+          document.getElementById('tabs_counter').innerHTML = response;
+         }
+
+      } );
+
+}
 
 function show_pedido(pedido_id) {
 $.ajaxSetup({ 
@@ -318,7 +431,10 @@ $.ajaxSetup({
             alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
         },
         success: function( response ) {
+          var form = $('#re_pedido');
+          form.empty()
           //remove all the products!!, this will be an issue, with other searches already done in Database
+          document.getElementById('containermostrarpedido').innerHTML = '';
           document.getElementById('containermostrarpedido').innerHTML = response;
           show_modal();
          }
@@ -334,7 +450,8 @@ populate_form();
 <div class="container" id="containermostrarpedido">
 
 </div>
-
+<form id="re_pedido" action="/proveedor/{{ proveedor.id }}/re_pedido/" method="post" class="form-horizontal">
+</form>
 {% endblock %}
 
 
@@ -356,11 +473,10 @@ populate_form();
             <hr>
             <div class="row">
 
+<!-- TODO: REPLACE THIS FOR ajax from the beginig-->
 <ul class="nav nav-pills" id="tabs_counter">
      {% for tab, pedidos in lista_pedidos.items  %}
-        <li class="{{ tab.split|join:"-" }}"><a href="#" onclick="gettab('{{ tab.split|join:"_" }}')">
-            {{ tab }}
-              <span class="badge">{{ pedidos|length }}</span>
+        <li class="{{ tab.split|join:"-" }}"><a href="#" onclick="gettab('{{ tab.split|join:"_" }}')">{{ tab }}<span class="badge">{{ pedidos|length }}</span>
         </a></li>
      {% endfor %}
 
