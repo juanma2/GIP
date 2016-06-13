@@ -149,10 +149,11 @@ for i in data:
   ##Not tested, p may fail!!
   ##Not tested, p may fail!!
   for j in Group.objects.all().filter(name__icontains='proveedor').exclude(name='proveedor'):
-    for k in range(1,MAX_TARIFAS):
-      #May crash due to fechacreacion o fechaupdate... they has default, shoudl not happen
-      d = Producto(nombre = data[i][0].encode('utf-8'), descripcion = data[i][5].encode('utf-8'), formato = data[i][4].encode('utf-8'), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor_id=j.id,tarifa_id=k , categoria_id=random.randint(1,MAX_CATEGORIAS-1 ),image_url= data[i][7].encode('utf-8'), product_ref=data[i][3].encode('utf-8'), precio = random.randint(1,100) )
-    d.save()
+    tarifas_availables = Tarifas.objects.filter(elproveedor=j.id)
+    for t in tarifas_availables:
+    #May crash due to fechacreacion o fechaupdate... they has default, shoudl not happen
+      d = Producto(nombre = data[i][0].encode('utf-8'), descripcion = data[i][5].encode('utf-8'), formato = data[i][4].encode('utf-8'), caducidad_precio = datetime.datetime.now() + datetime.timedelta(days=1), proveedor_id=j.id,tarifa_id=t.id , categoria_id=random.randint(1,MAX_CATEGORIAS-1 ),image_url= data[i][7].encode('utf-8'), product_ref=data[i][3].encode('utf-8'), precio = random.randint(1,100) )
+      d.save()
 #
 #print "Current time " + time.strftime("%X")
 
@@ -177,8 +178,13 @@ for i in range(1,MAX_CLIENTES):
   #a client can has more than one CP
   cliente.save()
   for k in range(1,random.randint(2,5)):
-    cliente.tarifa.add(random.randint(1,MAX_TARIFAS-1))
+    for j in Group.objects.all().filter(name__icontains='proveedor').exclude(name='proveedor'):
+      #TODO: it does not work, only a tarif per client-provider pair
+      tarifas_availables = Tarifas.objects.filter(elproveedor=j.id)
+      tarif_per_proveedor = tarifas_availables[random.randint(0,len(tarifas_availables)-1)]
+      cliente.tarifa.add(tarif_per_proveedor.id)
   for k in range(1,random.randint(2,5)):
+    #probably there is something wrong here with listas and products per client...
     cliente.listas.add(random.randint(1,MAX_CATEGORIAS-1))
   for k in range(1,random.randint(2,5)):
     cliente.destino_reparto.add(random.randint(1,MAX_DESTINOS-1))
@@ -231,11 +237,13 @@ for user in User.objects.filter(username__contains='CLIENTE'):
   orden = {}
   descripcion = {}
   precio = {}
+  active = {}
   for lista_i in user_listas:
     current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False)
     for ele in current_list:
       descripcion[ele.producto.product_ref] = ele.producto.nombre
       precio[ele.producto.product_ref] = float(ele.producto.precio)
+      active[ele.producto.product_ref] = 1
       if ele.producto.product_ref in orden:
         orden[ele.producto.product_ref] += ele.cantidad
       else:
@@ -245,6 +253,7 @@ for user in User.objects.filter(username__contains='CLIENTE'):
     #we can send the price of the elements right now... not sure if is right
     pedido['precio'] = precio
     pedido['descripcion'] = descripcion
+    pedido['active'] = active
     print "Add logic to send order here"
     send_order(pedido,proveedor)
   print "Done"
