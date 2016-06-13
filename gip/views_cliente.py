@@ -417,11 +417,13 @@ def make_pedido(request):
     orden = {}
     descripcion = {}
     precio = {}
+    active = {}
     for lista_i in user_listas:
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False)
       for ele in current_list:
         descripcion[ele.producto.product_ref] = ele.producto.nombre
         precio[ele.producto.product_ref] = float(ele.producto.precio)
+        active[ele.producto.product_ref] = 1
         if ele.producto.product_ref in orden:
           orden[ele.producto.product_ref] += ele.cantidad
         else:
@@ -434,11 +436,13 @@ def make_pedido(request):
         ## pedido[1] = {'product_ref':'cantidad','CAJUL':'25','MNB':'34'} ....
         ## pedido[2] If more information is requested could do like:
         ## pedido[2] = {'product_ref':'whatever you need here, like comments','CAJUL':'comment',
+        ## [3] is the item is active, used by re_order system, desactive = 0 , desactivate = 1
     pedido['cliente'] = cliente
     pedido['orden'] = orden
     #we can send the price of the elements right now... not sure if is right
     pedido['precio'] = precio
     pedido['descripcion'] = descripcion
+    pedido['active'] = active 
     print "Add logic to send order here"
     #really?? again?? TODO: fix cliente
     cliente = Cliente.objects.get(user_id = current_user.id)
