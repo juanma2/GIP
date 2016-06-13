@@ -28,25 +28,10 @@ def send_order(pedido,proveedor):
   for i in pedido['orden']:
     total += orden[i]*precio[i]
   print total 
+  #once that your pedido is ready, you should set all the items as "active"
   p = Pedidos(producto_serializado=pedido, proveedor_id = proveedor.id, total = total , fecha_creacion = datetime.datetime.now())
   p.save()
   print pedido
   p.cliente.add(pedido['cliente']['id'])
   print "***************************************************************"
   return True
-#    codigo = models.IntegerField(default=0) # db_index
-#    producto_serializado = models.CharField(max_length=5000) # es el producto en ese momento del tiempo, es unico pedazo de dict o.. json. 
-#    total = models.DecimalField(max_digits=6, decimal_places=4)
-#    PEDIDOS_ESTADOS = (
-#        ('400', 'Pendiente Proveedor'),
-#        ('500', 'Pendiente Cliente'),
-#        ('600', 'Aceptado'),
-#        ('700', 'Rechazado'),
-#        ('800', 'Cancelado'),
-#        ('900', 'Enviado'),
-#        ('1000', 'Finalizado'),
-#    )
-#    estados = models.CharField(max_length=1, choices=PEDIDOS_ESTADOS)
-#    def __unicode__(self):
-#        return u"%s" % (self.codigo)
-
