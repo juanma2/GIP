@@ -71,6 +71,7 @@ class Tarifas(models.Model):
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
+    #Producto ref cannot contain '_'
     product_ref = models.CharField(max_length=200)
     descripcion = models.CharField(max_length=200)
     cantidad_minima = models.IntegerField(default=0)
