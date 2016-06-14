@@ -1,0 +1,17 @@
+{% block main_menu_proveedor %}
+            <li {% if active_mainmenu == 'productos' %} class="active" {% endif %} >
+              <a href="/proveedor/productos/">Productos</a>
+            </li>
+            <li{% if active_mainmenu == 'clientes' %} class="active" {% endif %}  >
+              <a href="/proveedor/clientes/">Clientes</a>
+            </li>
+            <li{% if active_mainmenu == 'pedidos' %} class="active" {% endif %} >
+              <a href="/proveedor/pedidos/">Pedidos</a>
+            </li>
+            <li {% if active_mainmenu == 'preferencias' %} class="active" {% endif %}  >
+              <a href="#"><span class="glyphicon glyphicon-cog"></span> Preferencias</a>
+            </li>
+            <li>
+              <a href="#">Salir <span class="glyphicon glyphicon-log-out"></span></a>
+            </li>
+{% endblock %}
