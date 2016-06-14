@@ -107,9 +107,15 @@ alert('Ha habido un error en el formulario.Debería de ser revisado en Javascrip
   {% endif %}
 {% endif %}
 {% endblock %}
+
+
+{% block main_menu_proveedor %}
+{% include "proveedor/main_menu_bootstrap.html" with active_mainmenu='productos' %}
+{% endblock %}
+
 <div class="container">
 {% block left_menu_productos %}
-{% include "proveedor/menu_producto_bootstrap_proveedor.html" %}
+{% include "proveedor/menu_producto_bootstrap_proveedor.html" with active_menu='alta' %}
 {% endblock %}
 
 {% block content %}

@@ -71,9 +71,14 @@ populate_categoria();
 </script>
 {% endblock %}
 
+{% block main_menu_proveedor %}
+{% include "proveedor/main_menu_bootstrap.html" with active_mainmenu='productos' %}
+{% endblock %}
+
+
 <div class="container">
 {% block left_menu_productos %}
-{% include "proveedor/menu_producto_bootstrap_proveedor.html" %}
+{% include "proveedor/menu_producto_bootstrap_proveedor.html" with active_menu='editar' %}
 {% endblock %}
 
 

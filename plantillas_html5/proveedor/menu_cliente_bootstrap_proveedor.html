@@ -2,10 +2,9 @@
         <div class="row">
           <div class="col-md-2">
             <div class="list-group table-of-contents">
-              <a class="list-group-item" href="/proveedor/{{ proveedor.id }}/add_cliente/">Nuevo Cliente</a>
-              <a class="list-group-item" href="/proveedor/clientes/">Modificar cliente</a>
-              <a class="list-group-item" href="/proveedor/clientes/">Vetar cliente</a>
-              <a class="list-group-item" href="/proveedor/{{ proveedor.id }}/masive_client/">Actualizacion Masiva</a>
+              <a class="list-group-item{% if active_menu == 'alta' %} active{% endif %}" href="/proveedor/{{ proveedor.id }}/add_cliente/">Nuevo Cliente</a>
+              <a class="list-group-item{% if active_menu == 'editar' %} active{% endif %}" href="/proveedor/clientes/">Modificar/vetar cliente</a>
+              <a class="list-group-item{% if active_menu == 'actmas' %} active{% endif %}" href="/proveedor/{{ proveedor.id }}/masive_client/">Actualizacion Masiva</a>
             </div>
           </div>
 

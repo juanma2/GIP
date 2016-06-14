@@ -303,7 +303,7 @@ populate_form();
 
 <div class="container">
 {% block left_menu_clientes %}
-{% include "proveedor/menu_cliente_bootstrap_proveedor.html" %}
+{% include "proveedor/menu_cliente_bootstrap_proveedor.html" with active_menu='editar' %}
 {% endblock %}
 
 

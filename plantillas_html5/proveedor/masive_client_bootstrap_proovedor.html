@@ -4,9 +4,13 @@
 {% block purejavascript %}
   
 {% endblock %}
+{% block main_menu_proveedor %}
+{% include "proveedor/main_menu_bootstrap.html" with active_mainmenu='clientes' %}
+{% endblock %}
+
 <div class="container">
 {% block left_menu_clientes %}
-{% include "proveedor/menu_cliente_bootstrap_proveedor.html" %}
+{% include "proveedor/menu_cliente_bootstrap_proveedor.html" with active_menu='actmas' %}
 {% endblock %}
 
 {% block content %}

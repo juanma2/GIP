@@ -313,7 +313,7 @@ populate_form();
 
 <div class="container">
 {% block left_menu_productos %}
-{% include "proveedor/menu_producto_bootstrap_proveedor.html" %}
+{% include "proveedor/menu_producto_bootstrap_proveedor.html" with active_menu='editar' %}
 {% endblock %}
 
 {% block content %}
