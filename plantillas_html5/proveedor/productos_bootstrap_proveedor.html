@@ -418,23 +418,25 @@ populate_form();
 
 {% block pagination %}
 
-                        <div class="row">
+            <div class="row">
             <div class="col-md-12">
 
                             <ul class="pagination pagination-sm">
               {% if product_list.has_previous %}
                                 <li>
-                                    <a href="#">«</a>
+                  <a href="#" onclick="submitform({{ product_list.previous_page_number }} );return false;">«</a>
                                 </li>
               {% endif %}
                                 <li>
-                                    Pag. <a href="#">{{ product_list.number }}</a> de {{ product_list.paginator.num_pages }}
-                               </li>
+                                  <a href="" style="pointer-events: none;cursor: default;">  Pag. {{ product_list.number }} de {{ product_list.paginator.num_pages }}</a>
+                                </li>
+                                <li>
               {% if product_list.has_next %}
                   <a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;">»</a>
               {% endif %}
+                               </li>
            </div>
-                         </div>
+           </div>
 
 
 {% endblock %}
