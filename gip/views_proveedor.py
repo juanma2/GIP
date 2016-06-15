@@ -62,11 +62,15 @@ def productos_proveedor(request):
   sub_categorias_list = []
   #TODO:filter using disable and filtering by tarifa my friend
   search_parameters = request.POST.copy()
+  tarifas_availables = Tarifas.objects.filter(elproveedor=proveedor.id).order_by('id')
   print search_parameters
   if search_parameters:
     #wipe out the csrf:
     search_parameters.pop('csrfmiddlewaretoken')
     full_search = Q()
+    #we filer using only one tarifa...
+    only_one_product = (Q(tarifa = tarifas_availables[0].id))
+    full_search = full_search & only_one_product
     #if we are searching, we are searching one proveedor
     proveedor_search = (Q(proveedor = proveedor.id))
     if 'search' in search_parameters:
@@ -92,7 +96,7 @@ def productos_proveedor(request):
     else:
       page = 1
   else:
-    all_product_list = Producto.objects.filter(proveedor= proveedor.id).order_by('-fecha_actualizacion').exclude(baja=True)
+    all_product_list = Producto.objects.filter(proveedor= proveedor.id, tarifa = tarifas_availables[0].id).order_by('-fecha_actualizacion').exclude(baja=True)
     #this is he default search
     paginator = Paginator(all_product_list, ELEMENTOS_POR_PAGINA_PROVEEDOR)
     try:
