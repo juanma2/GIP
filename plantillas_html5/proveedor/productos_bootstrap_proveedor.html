@@ -390,12 +390,13 @@ populate_form();
              
               <h4 class="text-center  cortandotextonombre">{{ producto.nombre }}</h4>
              
-              <img src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" class="img-responsive">
+              <img src="{{ producto.image_url|default:'http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png' }}" class="img-responsive">
+
               <!-- <h3 class="text-center">Precio: {{ producto.precio }}</h3> -->
                 <div class="cortandodescripcion">
                   <!-- <p class="contenido"><b>Tarifa: {{ producto.tarifa }}</b></p> -->
                   <p class="contenido"><b>Referencia: {{ producto.product_ref }}</b></p>
-                  <p class="contenido">{{ producto.descripcion }}</p>
+                  <p class="contenido">{{ producto.descripcion|safe }}</p>
                 </div>
                   <a href="/proveedor/{{ proveedor.id  }}/producto/{{ producto.id }}/" class="btn btn-primary">Editar</a>
                   <a href="#" onclick="javascript: show_modal('{{ producto.id }}')" class="btn btn-primary">Eliminar</a>
