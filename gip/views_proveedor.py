@@ -235,6 +235,7 @@ def add_producto_proveedor(request, proveedor_id):
               #check tarifas and precios...
               p.tarifa_id = i.id
               p.precio = add_parameters['tarifa_'+str(i.id)]
+              p.image_url = 'http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png'
               p.save()
               print "we have an id"
               print p.id
