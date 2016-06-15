@@ -136,7 +136,7 @@ def edit_producto_proveedor(request, proveedor_id, producto_id):
   ##Check if the proveedor is the right one... avoid requests from another providers
   if str(proveedor.id) == proveedor_id:
     producto = Producto.objects.get(id=producto_id)
-    edit_producto = Producto.objects.filter(product_ref=producto.product_ref)
+    edit_producto = Producto.objects.filter(product_ref=producto.product_ref,proveedor=proveedor.id)
     tarifas_availables = Tarifas.objects.filter(elproveedor=proveedor.id)
     ##We have something to save ....
     edit_parameters = request.POST.copy()

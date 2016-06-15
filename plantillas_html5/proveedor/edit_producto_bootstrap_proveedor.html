@@ -30,7 +30,9 @@ function addHidden(theForm, key, value) {
 
 function populate_tarifas(){
   {% for tarifa in edit_producto %}
+    if ( document.getElementById('tarifa_{{tarifa.tarifa.id}}') ){
     document.getElementById('tarifa_{{tarifa.tarifa.id}}').value='{{tarifa.precio }}'
+    }
   {% endfor %}
 }
 
