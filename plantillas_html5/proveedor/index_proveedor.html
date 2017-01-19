@@ -1,7 +1,7 @@
-{% extends "proveedor/base_proveedor.html" %}
+{% extends "proveedor/base_bootstrap_proveedor.html" %}
 {% load staticfiles %}
 {% block purejavascript %}
-
+<script>
 $(document).ready(function() {
 var form = $('#send_lista_info');
 
@@ -26,8 +26,20 @@ $('select').on('change', function() {
   });
 
 });
-
+</script>
 {% endblock %}
+{% block main_menu_proveedor %}
+{% include "proveedor/main_menu_bootstrap.html" with active_mainmenu='pedidos' %}
+{% endblock %}
+
+
+<div class="container">
+<!-- no left menu -->
+{% block left_menu_principal %}
+<!-- should create needed potionsi for this -->
+{% endblock %}
+<!-- -->
+
 
 {% block content %}
 <section class="content gallery pad1"><div class="ic">Add something smart here</div>
