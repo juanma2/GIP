@@ -17,7 +17,10 @@ function submit_edit(create) {
     myform = document.forms["edit_product"];
     addHidden(myform,'texcontenido', wyswygc)
     addHidden(myform,'create', create)
-    myform.submit();
+    if (check_form('edit_product'))
+    {
+      myform.submit(); 
+    }
 }
 function addHidden(theForm, key, value) {
     // Create a hidden input element, and append it to the form:
@@ -59,6 +62,21 @@ subcategoria = '{{ producto.subcategoria }}';
           break;
         }
       }
+  }
+
+}
+
+function check_form(form_id){
+  myform = document.forms[form_id]
+  for (i = 1; i< myform.length; i++)
+  {
+    if ( myform.elements[i].type == 'text' && myform.elements[i].tagName == 'INPUT' ) {
+      if ( myform.elements[i].value == '')
+        { 
+          alert('por favor, completa el formulario'+myform.elements[i].innerHTML)
+          return false
+        } 
+    }
   }
 
 }
