@@ -125,7 +125,7 @@ def productos_cliente(request):
                'search_parameters': search_parameters
 		}
                
-    return render(request, 'cliente/productos_cliente.html', context)
+    return render(request, 'cliente/productos_r_cliente.html', context)
 
 
 
