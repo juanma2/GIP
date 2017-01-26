@@ -1,0 +1,264 @@
+{% extends "cliente/base_r_cliente.html" %}
+
+{% load staticfiles %}
+{% block purejavascript %}
+
+//combo_option[combo_option.selectedIndex].id
+
+//Javascript to collect info from form id = search_form
+function submitform(page) {
+  page = page || 0;
+
+  dirty = 0;
+  myform = document.forms["search_form"];
+  myform.page = '{{ product_list.number }}';
+  cat = document.getElementById('categoria').options
+  cat_id = cat[cat.selectedIndex].id
+  //really hand made :( TODO: use jquery and handle the string from menus too, so they will always fit. Get the originals from jinja templates
+  // cat_id == 0 //is the default choose a category
+  
+  if ( cat_id != 0 )
+  {
+    addHidden(myform,'categoria', cat_id)
+    dirty = 1;
+  }
+
+  if (document.getElementById('subcategoria'))
+  {
+    subcat = document.getElementById('subcategoria').options
+    subcat_id = subcat[subcat.selectedIndex].id
+
+    if (subcat_id != 0 )
+    {
+      addHidden(myform,'subcategoria', subcat_id)
+      dirty = 1;
+    }
+  }
+
+  if (document.getElementById('search').value != "")
+  {
+    if (document.getElementById('search').value.length < 3)
+    {
+      alert('Por favor, introduce al menos 3 caracteres')
+      return;
+    }
+    addHidden(myform,'search', document.getElementById('search').value)
+
+    dirty = 1;
+  }
+  if (page != 0 ){
+    addHidden(myform,'page', page)
+    dirty = 1
+  }
+  if (dirty == 0 )
+  {
+    alert('Por favor, introduce algun filtro');
+    return;
+  }
+  //paginate using the form 
+  myform.submit();
+  
+}
+
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function populate_form() {
+search_string = '{{ search_parameters.search }}';
+  if ( search_string != ''){
+    document.getElementById('search').value = search_string;
+  }
+
+categoria = '{{ search_parameters.categoria }}';
+  if ( categoria != ''){
+    for (i = 0; i< document.getElementById('categoria').length; i++)
+      {
+        if (document.getElementById('categoria').options[i].id == categoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('categoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+subcategoria = '{{ search_parameters.subcategoria }}';
+  if ( subcategoria != ''){
+    for (i = 0; i< document.getElementById('subcategoria').length; i++)
+      {
+        if (document.getElementById('subcategoria').options[i].id == subcategoria )
+        {
+          // Item is found. Set its property and exit
+          document.getElementById('subcategoria').options[i].selected = true;
+          break;
+        }
+      }
+  }
+
+
+
+}
+
+$(document).ready(function() {
+var form = $('#send_lista_info');
+populate_form();
+
+  $('select').on('change', function() {
+   //ugly but id will help to identify category or something like that
+   if ($(this).attr('id') == 'categoria' || $(this).attr('id') == 'subcategoria' ) 
+   {
+     //nothing to do here, choose a categoria do not mean anything
+     cat_id = $(this).children(":selected").attr("id");
+   } 
+   else
+   {
+     list_id = $(this).val().split(',')[0];
+     product_id = $(this).val().split(',')[1];
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/cliente/add_tolist/'+ list_id +'/'+product_id ,
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          alert(response['msg']);
+          $('select').val('none');
+        }
+
+      } );
+    }
+  });
+
+});
+
+{% endblock %}
+
+{% block filtercategory %}
+<nav class="navbar navbar-default" role="search">
+  <div id="heading-azulito"class="heading-azulito" class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+  
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li></li>
+      </ul>
+      <div>
+    
+            <form id="search_form" action="/cliente/productos/" method="post" class="navbar-form navbar-right">
+       <!-- csrf-->
+        {% csrf_token %}
+                            <span class="fa fa-search"></span> Búsqueda de Productos <span>
+                            <span> </span><span> </span><span> </span>
+              <select name="Categoria" id="categoria" class="form-control" data-constraints="">
+                <option id='0' class=''> Elige una categoria </option>
+    	{% for categoria in categorias_list %}
+                <option id='cat_{{ categoria.id }}' value="{{categoria.id}}" class={{ categoria.id }}> {{ categoria.nombre }} </option>
+    	{% endfor %}
+              </select>
+            {% if sub_categorias_list %}
+              <select name="SubCategoria" id="subcategoria" class="form-control" data-constraints="">
+                <option id='0' class=''> Elige una sub-categoria </option>
+              {% for subcategoria in sub_categorias_list %}
+                        <option id='sub_cat_{{ subcategoria.id }}' class={{ subcategoria.id }}> {{ subcategoria.nombre }} </option>
+              {% endfor %}
+            {% endif %}
+                          <input type="search" class="form-control" placeholder="Buscar">
+                                <button type="submit" class="btn btn-default">Buscar</button>
+                        </form>
+    
+          </div>
+        </div>
+     </div>
+</nav>
+ 
+
+{% endblock %}
+
+
+{% block content %}
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <div class="row">
+{% for producto in product_list %}
+      <div class="grid_4">
+        <div class="gall_block">
+          <div class="maxheight">
+            <img src="{{ producto.image_url }}"  alt="">
+            <div class="gall_bot">
+            <div class="text1"><a href="#">{{ producto.nombre }}</a></div>
+                <br>{{ producto.descripcion }}
+                <h3>Precio: {{ producto.precio }}</h3>
+                      <select id="{{ producto.id }}">
+                        <option value="none">Añadir a Lista</option>
+                {% for lista in user_listas %}
+                        <option value="{{ lista.id }},{{ producto.id }}">{{ lista.nombre }}</option>
+
+                {% endfor %}
+                      </select>
+            <br>
+            <a href="#" class="btn">more</a></div>
+          </div>
+        </div>
+      </div>
+<!-- if %3  -->
+{% if forloop.counter|divisibleby:3 %}
+<div class="clear sep__1"></div>
+{% endif %}
+{% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<form method='post' id='send_lista_info' action="#">
+     <input type="hidden" value="" />
+     {% csrf_token %}
+</form>
+{% endblock %}
+
+{% block pagination %}
+<section class="content gallery pad1"><div class="ic">Add something smart here</div>
+  <div class="container">
+    <div class="row">
+      <div class="grid_4">
+
+
+      <div class="pagination">
+      <table>
+      <tr><td>
+              {% if product_list.has_previous %}
+                  <a href="#" onclick="submitform({{ product_list.previous_page_number }});return false;" class="boton" style="vertical-align: top"> < Ant </a>
+              {% endif %}
+     </td><td>
+                 <div  style="padding: 5px 32px 11px;" current_page="{{ product_list.number }}"> Pag. {{ product_list.number }} de {{ product_list.paginator.num_pages }}
+     </td><td>
+              {% if product_list.has_next %}
+                  <a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;"  class="boton" style="vertical-align: middle" > Sig > </a>
+              {% endif %}
+      </td></tr></table>
+      </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+

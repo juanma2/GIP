@@ -1,0 +1,268 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="all,follow">
+    <meta name="googlebot" content="index,follow,snippet,archive">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Gipe - Sistemas de compra integrados</title>
+
+    <meta name="keywords" content="">
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,500,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- Bootstrap and Font Awesome css -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <!-- Css animations  -->
+    <link href="{% static "gip_r_html5/css/animate.css" %} " rel="stylesheet">
+
+    <!-- Theme stylesheet, if possible do not edit this stylesheet -->
+    <link href="{% static "gip_r_html5/css/style.blue.css" %} " rel="stylesheet" id="theme-stylesheet">
+
+    <!-- Custom stylesheet - for your changes -->
+    <link href="{% static "gip_r_html5/css/gipe.css" %} " rel="stylesheet">
+
+    <!-- Responsivity for older IE -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+    <!-- Favicon and apple touch icons-->
+    
+
+</head>
+<!-- maybe we should clean this -->
+
+{% block imports %}
+{% endblock %}
+<script>
+ $(document).ready(function(){
+
+  $().UItoTop({ easingType: 'easeOutQuart' });
+  $('#stuck_container').tmStickUp({});
+
+  }); 
+{% block purejavascript %}
+{% endblock %}
+
+</script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+
+        window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')
+
+    </script>
+
+
+    <script src="{% static "gip_r_html5/js/jquery.cookie.js" %}"></script>
+    <script src="{% static "gip_r_html5/js/waypoints.min.js" %}"></script>
+    <script src="{% static "gip_r_html5/js/jquery.counterup.min.js" %}"></script>
+    <script src="{% static "gip_r_html5/js/jquery.parallax-1.1.3.js" %}"></script>
+    <script src="{% static "gip_r_html5/js/front.js" %}"></script>
+
+
+<!--[if lt IE 9]>
+ <div style=' clear: both; text-align:center; position: relative;'>
+   <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+     <img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." />
+   </a>
+</div>
+<script src="js/html5shiv.js"></script>
+<link rel="stylesheet" media="screen" href="css/ie.css">
+
+
+<![endif]-->
+</head>
+
+<body>
+{% block body %}
+{% endblock %}
+
+    <div id="all">
+
+        <header>
+
+            <!-- *** TOP ***
+_________________________________________________________ -->
+
+
+            <div id="top">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-5 contact">
+
+                        </div>
+                        <div class="col-xs-7">
+
+
+                            <div class="login">
+                                <a href="#"><i class="fa fa-cog"></i> <span class="hidden-xs text-uppercase">Preferencias</span></a>
+                                <a href="#"><i class="fa fa-user"></i> <span class="hidden-xs text-uppercase">Mis datos</span></a>
+                                <a href="#"><span class="hidden-xs text-uppercase">Salir</span> <i class="fa fa-sign-out"></i> </a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- *** TOP END *** -->
+
+
+            <div class="navbar-affixed-top" data-spy="affix" data-offset-top="200">
+
+                <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+                    <div class="container">
+                        <div class="navbar-header">
+
+                            <a class="navbar-brand home" href="index.html">
+                                <img src="{% static "gip_r_html5/img/logo.png" %}" alt="Universal logo" class="hidden-xs hidden-sm">
+                                <img src="{% static "gip_r_html5/img/logo-small.png" %}" alt="Universal logo" class="visible-xs visible-sm"><span class="sr-only">Universal - go to homepage</span>
+                            </a>
+                            <div class="navbar-buttons">
+                                <button type="button" class="navbar-toggle btn-template-main" data-toggle="collapse" data-target="#navigation">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <i class="fa fa-align-justify"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!--/.navbar-header -->
+
+                        <div class="navbar-collapse collapse" id="navigation">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="">
+                                    <a href="/cliente/" class="" data-toggle="">MIS OFERTAS<b class=""></b></a>
+                                </li>
+                                <li class="">
+                                    <a href="/cliente/productos/" class="" data-toggle="">PRODUCTOS<b class=""></b></a>
+                                </li>
+                                <li class="">
+                                    <a href="/cliente/listas/" class="" data-toggle="">LISTAS<b class=""></b></a>
+                                </li>
+                                <li class="">
+                                    <a href="/cliente/pedidos/" class="" data-toggle="">PEDIDOS<b class=""></b></a>
+                                </li>
+                                <li class="">
+                                    <a href="/cliente/historico/" class="" data-toggle="">HISTORICO<b class=""></b></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!--/.nav-collapse -->
+<!-- Filters should be in some place -->
+{% block filtercategory %}
+{% endblock %}
+
+                        <!--/.nav-collapse -->
+
+                    </div>
+
+
+                </div>
+                <!-- /#navbar -->
+
+
+
+
+            </div>
+
+            <!-- *** NAVBAR END *** -->
+
+        </header>
+
+<!--=====================
+          Content
+======================-->
+
+<!-- END Filters should be in some place -->
+<!-- Productos -->
+{% block content %}
+{% endblock %}
+<!-- END Productos-->
+<!-- PAGINATION -->
+{% block pagination %}
+{% endblock %}
+<!-- END PAGINATION -->
+        <!-- *** FOOTER ***
+_________________________________________________________ -->
+
+        <footer id="footer">
+            <div class="container">
+                <div class="col-md-3 col-sm-6">
+                    <h4>About us</h4>
+                    <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+                    <hr>
+                    <hr class="hidden-md hidden-lg hidden-sm">
+                </div>
+                <!-- /.col-md-3 -->
+                <div class="col-md-3 col-sm-6 pull-right">
+                    <h4>Contacto</h4>
+                    <p><strong>Gipe Unlimited Gmb.</strong>
+                        <br>Una Calle bonita
+                        <br>Sevilla
+                        <br>41004
+                        <br>Seville - Berlin
+                        <br>
+                        <strong>Spain - Deutschland</strong>
+                    </p>
+                    <a href="contact.html" class="btn btn-small btn-template-main">Ir a la pagina de contacto</a>
+                    <hr class="hidden-md hidden-lg hidden-sm">
+                </div>
+                <!-- /.col-md-3 -->
+            </div>
+            <!-- /.container -->
+        </footer>
+        <!-- /#footer -->
+
+        <!-- *** FOOTER END *** -->
+
+        <!-- *** COPYRIGHT ***
+_________________________________________________________ -->
+
+        <div id="copyright">
+            <div class="container">
+                <div class="col-md-12">
+                    <p class="pull-left">&copy; 2015. GIPE</p>
+                    <p class="pull-right">Powered by <a href="">Cuchipandas boys</a>
+
+                    </p>
+
+                </div>
+            </div>
+        </div>
+        <!-- /#copyright -->
+
+        <!-- *** COPYRIGHT END *** -->
+
+
+
+    </div>
+    <!-- /#all -->
+
+
+    <!-- #### JAVASCRIPT FILES ### -->
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')
+    </script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <script src="js/jquery.cookie.js"></script>
+    <script src="js/waypoints.min.js"></script>
+    <script src="js/jquery.counterup.min.js"></script>
+    <script src="js/jquery.parallax-1.1.3.js"></script>
+    <script src="js/front.js"></script>
+
+
+</body>
+</html>
+
