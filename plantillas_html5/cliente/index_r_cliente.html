@@ -1,0 +1,83 @@
+{% extends "cliente/base_r_cliente.html" %}
+{% load staticfiles %}
+{% block purejavascript %}
+
+$(document).ready(function() {
+var form = $('#send_lista_info');
+
+$('select').on('change', function() {
+   list_id = $(this).val().split(',')[0];
+   product_id = $(this).val().split(',')[1];
+   url =
+    $.ajax( {
+      type: "POST",
+      url: '/cliente/add_tolist/'+ list_id +'/'+product_id ,
+      dataType: 'json' ,
+      data: form.serialize(),
+      error: function (xhr, status) {
+          alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+      },
+      success: function( response ) {
+        alert(response['msg']);
+        $('select').val('none');
+      }
+
+    } );
+  });
+
+});
+
+{% endblock %}
+
+{% block content %}
+
+        <div id="content">
+            <div class="container">
+                <p class="text-muted lead text-center">Hoy tenemos para usted las siguientes ofertas.</p>
+
+
+{% for promo in promo_list %}
+                                    <!-- /.cOferta1 -->
+                                    <div class="banner">
+                        <a href="#">
+                           <img src="{{ promo.producto.image_url }}"  alt="" class="img-responsive">
+                        </a>
+                                    </div>
+
+            <!-- <div class="text1"><a href="#">{{ promo.nombre }}</a></div>
+                {{ promo.producto.descripcion }}
+            <br> -->
+
+        {% if promo.producto_id %}
+            <!--     <h3>Precio: {{ promo.producto.precio }}</h3>
+            <br>
+                      <select id="{{ promo.producto_id }}" onchange="submit_producto('{{ promo.producto_id }}');">
+                        <option value="none">Añadir a Lista</option>
+                {% for lista in user_listas %}
+                        <option value="{{ lista.id }},{{ promo.producto_id }}">{{ lista.nombre }}</option>
+
+                {% endfor %}
+                      </select>
+              -->
+        {% endif %}
+
+
+
+                  <!-- {% if forloop.counter|divisibleby:3 %}
+                  <div class="clear sep__1"></div>
+                  {% endif %}
+                  -->
+                  {% endfor %}
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /#content -->
+
+<form method='post' id='send_lista_info' action="#">
+     <input type="hidden" value="" />
+     {% csrf_token %}
+</form>
+
+
+{% endblock %}
+

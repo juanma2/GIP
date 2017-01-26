@@ -55,7 +55,7 @@ def index_cliente(request):
                'current_page': current_page,
                'user_listas': user_listas,
                'promo_list': promo_list}
-    return render(request, 'cliente/index_cliente.html', context)
+    return render(request, 'cliente/index_r_cliente.html', context)
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
