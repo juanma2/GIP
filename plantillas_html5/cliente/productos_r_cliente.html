@@ -193,40 +193,36 @@ populate_form();
 
 
 {% block content %}
-<section class="content gallery pad1"><div class="ic">Add something smart here</div>
-  <div class="container">
-    <div class="row">
+        <div id="content">
+            <div class="container">
+
 {% for producto in product_list %}
-      <div class="grid_4">
-        <div class="gall_block">
-          <div class="maxheight">
-            <img src="{{ producto.image_url }}"  alt="">
-            <div class="gall_bot">
-            <div class="text1"><a href="#">{{ producto.nombre }}</a></div>
-                <br>{{ producto.descripcion }}
-                <h3>Precio: {{ producto.precio }}</h3>
-                      <select id="{{ producto.id }}">
-                        <option value="none">Añadir a Lista</option>
-                {% for lista in user_listas %}
-                        <option value="{{ lista.id }},{{ producto.id }}">{{ lista.nombre }}</option>
-
-                {% endfor %}
-                      </select>
-            <br>
-            <a href="#" class="btn">more</a></div>
-          </div>
-        </div>
-      </div>
-<!-- if %3  -->
-{% if forloop.counter|divisibleby:3 %}
-<div class="clear sep__1"></div>
-{% endif %}
+                    <div class="col-md-3 col-sm-4">
+                        <div class="product">
+                            <div class="image">
+                                <a href="s#fichamodal" data-toggle="modal">
+                                                <img src="{{ producto.image_url }}" alt="" class="img-responsive image1">
+                                </a>
+                            </div>
+                            <!-- /.image -->
+                            <div class="text">
+                                <h3 class="cortandotextonombre text-uppercase"><a href="s#fichamodal" data-toggle="modal">{{ producto.nombre }}</h3>
+                                <p class="price">Precio: {{ producto.precio }}</p>
+                                <p class="">
+                                    <a href="s#fichamodal" class="btn btn-default" role="button"data-toggle="modal">Más info</a> 
+                                    <select class="btn btn-template-main selectpicker" id="{{ producto.id }}">
+                                      <option value="none">Añadir a Lista</option>
+                               {% for lista in user_listas %}
+                                      <option value="{{ lista.id }},{{ producto.id }}">{{ lista.nombre }}</option>
+                               {% endfor %}
+                                    </select>
+                                </p>
+                            </div>
+                            <!-- /.text -->
+                        </div>
+                        <!-- /.product -->
+                    </div>
 {% endfor %}
-    </div>
-  </div>
-</section>
-
-
 <form method='post' id='send_lista_info' action="#">
      <input type="hidden" value="" />
      {% csrf_token %}
@@ -234,31 +230,27 @@ populate_form();
 {% endblock %}
 
 {% block pagination %}
-<section class="content gallery pad1"><div class="ic">Add something smart here</div>
-  <div class="container">
-    <div class="row">
-      <div class="grid_4">
-
-
-      <div class="pagination">
-      <table>
-      <tr><td>
+                <!-- /.paginacion -->
+                <div class="col-sm-12">
+                    <div class="pages">
+                        <ul class="pagination">
               {% if product_list.has_previous %}
-                  <a href="#" onclick="submitform({{ product_list.previous_page_number }});return false;" class="boton" style="vertical-align: top"> < Ant </a>
+                  <li>
+                  <a href="#" onclick="submitform({{ product_list.previous_page_number }});return false;" class="boton" style="vertical-align: top">&laquo;</a>
+                  </li>
               {% endif %}
-     </td><td>
-                 <div  style="padding: 5px 32px 11px;" current_page="{{ product_list.number }}"> Pag. {{ product_list.number }} de {{ product_list.paginator.num_pages }}
-     </td><td>
+                 <li><a href="#">{{ product_list.number }}</a></li>
               {% if product_list.has_next %}
-                  <a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;"  class="boton" style="vertical-align: middle" > Sig > </a>
+                  <li><a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;"  class="boton" style="vertical-align: middle" >&raquo;</a></li>
               {% endif %}
-      </td></tr></table>
-      </div>
+                        </ul>
+                    </div>
 
-      </div>
-    </div>
-  </div>
-</section>
+                </div>
+                <!-- /.paginacion  -->
+	    </div>
+            <!-- /.content -->
+	</div>
+        <!-- /.container -->
 {% endblock %}
-
 
