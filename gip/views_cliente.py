@@ -156,7 +156,7 @@ def listas_cliente(request):
                'full_listas': full_listas,
                 }
 
-    return render(request, 'cliente/listas_cliente.html', context)
+    return render(request, 'cliente/listas_r_cliente.html', context)
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
