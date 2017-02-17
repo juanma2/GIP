@@ -1,0 +1,344 @@
+{% extends "cliente/base_r_cliente.html" %}
+{% load staticfiles %}
+
+{% block imports %}
+<script src="{% static "gip_html5/js/modal.js" %}" ></script>
+<script src="{% static "gip_html5/js/jquery.jeditable.mini.js" %}" ></script>
+<!-- http://www.appelsiini.net/projects/jeditable -->
+{% endblock %}
+
+
+{% block body %}
+{% endblock %}
+
+{% block purejavascript %}
+ $(document).ready(function(){
+        //add as edit the list_names
+        $('[class^="custom_elem_"]').editable('/cliente/listas/add_custom/', {
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}"},
+          name : 'custom_to_add',
+           callback : function(value, settings) {
+               var parsed_value = JSON.parse(value);
+               document.getElementById(this.id).textContent='Añade un Elemento';
+               if (parsed_value['msg'] == '0')
+               {
+                 ele_id = parsed_value['id'];
+                 // TODO: full fill the divs ids, when is clear the frontend 
+                 // Must get the id from the custom added... 
+                 var tableRef = document.getElementById('table_lista_'+this.id.split('_')[2]).getElementsByTagName('tbody')[0];
+
+                 // Insert a row in the table at the last row
+                 var newRow   = tableRef.insertRow(tableRef.rows.length);
+                 
+                 // Insert a cell in the row at index 0
+                 var newCell  = newRow.insertCell(0); // Product_name
+                 // Append a text node to the cell
+                 var nombre = document.createTextNode(parsed_value['name'])
+                 newCell.appendChild(nombre);
+                 var newCell  = newRow.insertCell(1); 
+                 var stockoptimo = document.createTextNode('0')
+                 newCell.appendChild(stockoptimo);
+                 var newCell  = newRow.insertCell(2); 
+                 var existencias = document.createTextNode('0')
+                 newCell.appendChild(existencias);
+                 var newCell  = newRow.insertCell(3); 
+                 var pedir = document.createTextNode('0')
+                 newCell.appendChild(pedir);
+
+               } else {
+                 alert('Algo ha ido mal, el elemento no se ha añadido');
+               }
+           }
+        });
+
+	$('[class^="lista_nombre_"]').editable('/cliente/listas/update/', {
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}"},
+          name : 'lista_to_update',
+           callback : function(value, settings) {
+               document.getElementById('lista_header_'+this.id).text=value;
+           }
+        });
+        //this should be a simple jquery regexp with elem_ stock_ and exis_ but it does not work 
+	$('[class^="elem_"]').editable('/cliente/elemento/update/',{
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}",
+          },
+          name : 'elem_to_update',
+           callback : function(value, settings) {
+               var parsed_value = JSON.parse(value);
+               if (parsed_value['msg'] == 'ERR!!!') {
+	  	 alert('there was an error Processing your request')
+                 document.getElementById(this.id).textContent=-1;
+               } else {
+                 //here we go!
+                 document.getElementById(this.id).textContent=parsed_value['msg'];
+	       }
+           }
+
+
+
+        });
+        $('[class^="stoc_"]').editable('/cliente/elemento/update/',{
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}",
+          },
+          name : 'elem_to_update',
+           callback : function(value, settings) {
+               var parsed_value = JSON.parse(value);
+               if (parsed_value['msg'] == 'ERR!!!') {
+                 alert('there was an error Processing your request')
+                 document.getElementById(this.id).textContent=-1;
+               } else {
+                 //here we go!
+                 document.getElementById(this.id).textContent=parsed_value['msg'];
+               }
+           }
+
+
+
+        });
+        $('[class^="exis_"]').editable('/cliente/elemento/update/',{
+          submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}",
+          },
+          name : 'elem_to_update',
+           callback : function(value, settings) {
+               var parsed_value = JSON.parse(value);
+               if (parsed_value['msg'] == 'ERR!!!') {
+                 alert('there was an error Processing your request')
+                 document.getElementById(this.id).textContent=-1;
+               } else {
+                 //here we go!
+                 document.getElementById(this.id).textContent=parsed_value['msg'];
+               }
+           }
+
+
+
+        });
+
+
+        //add all elements
+
+
+  }); 
+
+
+
+dirty = 0;
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function submitform()
+{
+  if (dirty == 0){
+    myform = document.forms["form"];
+    // add your favorite JS validators here
+    //TODO: check for duplicated names for instance or only white spaces
+    addHidden(myform,'lista_to_add', document.getElementById('nueva_lista').value)
+    myform.submit();
+  }
+  else
+  {
+    alert('Parece que has olvidado guardar los cambios en las listas');
+  }
+  
+}
+
+function delform(id)
+{
+  if (dirty == 0){
+    if(confirm('Estas seguro que quieres borrar la lista?'))
+    {
+        myform = document.forms["form_del"];
+        addHidden(myform,'lista_to_del', id)
+        myform.submit();
+    }
+  }
+  else
+  {
+    alert('Parece que has olvidado guardar los cambios en las listas');
+  }
+}
+
+function addcustomform(id)
+{
+    if (dirty == 0){
+    myform = document.forms["form_custom_ele"];
+    addHidden(myform,'elem_to_add', id)
+    myform.submit();
+  }
+  else
+  {
+    alert('Parece que has olvidado guardar algo');
+  }
+}
+
+
+function delelem(lista_id, elemento_id){
+    var form = $('#form_del');
+
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/cliente/del_fromlist/'+ lista_id +'/'+elemento_id ,
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          document.getElementById('row_elem_'+response['lista_id']+'_'+response['elemento_id']).remove()
+          alert(response['msg']);
+          
+        }
+
+      } );
+
+
+}
+
+function show(id){
+//learn js... 
+current_status = document.getElementById('lista_'+id).style.display;
+
+{% for lista, elementos in full_listas.iteritems %}
+document.getElementById('lista_{{ lista.id }}').style.display='none';
+{% endfor %}
+
+  if (current_status == 'none')
+  {
+    document.getElementById('lista_'+id).style.display='';
+  }else
+  {
+    document.getElementById('lista_'+id).style.display='none';
+  }
+}
+
+{% endblock %}
+
+
+{% block filtercategory %}
+            <nav class="navbar navbar-default" role="search">
+              <div id="heading-azulito"class="heading-azulito" class="container-fluid">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                  <ul class="nav navbar-nav">
+                    <li></li>
+                  </ul>
+                  <div>
+                    <form id="form" action="/cliente/listas/add/{{ current_user.id }}" method="post" class="navbar-form navbar-right">
+
+                      <input type="" class="form-control" placeholder="Nueva lista" name="lista" id="nueva_lista" >
+                            <button type="submit" onclick="javascript: submitform()" class="btn btn-default">Crear lista</button>
+                    {% csrf_token %}
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </nav>
+
+
+{% endblock %}
+{% block content %}
+        <div id="content">
+            <div class="container">
+                <div class="row">
+                    <div class="clearfix" id="customer-order">
+
+    {% for lista, elementos in full_listas.iteritems %}
+      <button type="" id="lista_header_{{lista.id}}" onclick="show({{ lista.id }});"  class="btn btn-default"> {{ lista.nombre }}</button>
+    {% endfor %}
+    
+                           <p></p>
+        <form id="form_del" action="/cliente/listas/del/{{ current_user.id }}" method="post">
+                {% csrf_token %}
+        </form>
+        <form id="form_custom_ele" action="/cliente/listas/custom/{{ current_user.id }}" method="post">
+                {% csrf_token %}
+        </form>
+
+        <form id="trickform">
+          {% for lista, elementos in full_listas.iteritems %}
+          	<div id="lista_{{ lista.id }}" style="display:none">
+                        <div class="box">
+    	                    <div><h3>Lista: {{ lista.nombre }}
+    	                    	<button class="btn btn-xs btn-success active" type="button">Añadir a pedido</button>
+    	                    	<button class="tn btn-xs btn-danger pull-right" type="button" onclick="javascript: delform('{{ lista.id }}')">Eliminar lista</button> 
+                                </h3>
+                            </div>
+
+                            <div>
+                                <form id="form" action="/cliente/listas/add/{{ current_user.id }}" method="post" class="navbar-form">  Añadir producto no en catalogo a esta lista
+                                    <input type="" name="lista" id="This ID is WRONG!!" class="form-control" placeholder="Nuevo producto">
+                                <button type="submit" class="btn btn-default" onclick="javascript: submitform()" >Añadir</button>
+       			     {% csrf_token %}
+                                </form>
+                            </div>
+  
+    <!-- Hidden lists -->
+          <!-- TODO: rovide nice center and style for numbers and so on-->
+                            <div class="table-responsive">
+                                <table class="table" id="table_lista_{{ lista.id }}">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2">Nombre del producto</th>
+                                            <th>Stock óptimo</th>
+                                            <th>Existencias</th>
+                                            <th>Pedir</th>
+                                            <th>Precio/ud</th>
+                                            <th>Total</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                         {% for i in elementos %}
+                                            <tr id=row_elem_{{lista.id}}_{{ i.id }}>
+                                                                        <td>
+                                                                            <a href="s#fichamodal" data-toggle="modal">
+                                                                                no hay requirements de thumbnail<img src="img/Ajos-secos1_product_image.jpg" alt="">
+                                                                            </a>
+                                                                        </td>
+
+                                              <td>{{ i.nombre }}</td>
+                                              <td><div id="stoc_{{lista.id}}_{{ i.id }}" class="stoc_{{lista.id}}_{{ i.id }}">{{ i.stock_optimo }}</div></td>
+                                              <td><div id="exis_{{lista.id}}_{{ i.id }}" class="exis_{{lista.id}}_{{ i.id }}">{{ i.existencias }}</div></td>
+                                              <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
+                                              <td>{{ i.producto.precio }}</td>
+                                              <td>total?</td>
+                                              <td><a href="#" onclick="javascript: delelem('{{ lista.id }}','{{ i.id }}')" style="font-size:8" class="fa fa-trash-o"></td>
+                                            </tr>
+                                        
+                                         {% endfor %}
+                                       </tbody>
+                                     </table>
+                               </div>
+                               <!-- /.table-responsive -->
+                         </div>
+                         <!-- /.box -->
+                    </div>
+          {% endfor %}
+          </form>
+    <!-- END Hidden lists -->
+
+        	</div>
+             <!-- /.container -->
+            </div>
+        <!-- /.content -->
+        </div>
+
+
+{% endblock %}
+
