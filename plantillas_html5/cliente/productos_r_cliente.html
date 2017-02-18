@@ -8,7 +8,6 @@
 //Javascript to collect info from form id = search_form
 function submitform(page) {
   page = page || 0;
-
   dirty = 0;
   myform = document.forms["search_form"];
   myform.page = '{{ product_list.number }}';
@@ -179,8 +178,8 @@ populate_form();
                         <option id='sub_cat_{{ subcategoria.id }}' class={{ subcategoria.id }}> {{ subcategoria.nombre }} </option>
               {% endfor %}
             {% endif %}
-                          <input type="search" class="form-control" placeholder="Buscar">
-                                <button type="submit" class="btn btn-default">Buscar</button>
+                          <input id="search" name="search" type="search" class="form-control" placeholder="Buscar">
+                                <button type="submit" class="btn btn-default" onclick="submitform();return false;">Buscar</button>
                         </form>
     
           </div>
