@@ -38,6 +38,13 @@
 
 {% block imports %}
 {% endblock %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')
+    </script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
     <script src="{% static "gip_r_html5/js/jquery.cookie.js" %}"></script>
     <script src="{% static "gip_r_html5/js/waypoints.min.js" %}"></script>
     <script src="{% static "gip_r_html5/js/jquery.counterup.min.js" %}"></script>
@@ -146,27 +153,19 @@ _________________________________________________________ -->
                             </ul>
                         </div>
                         <!--/.nav-collapse -->
+
+
 <!-- Filters should be in some place -->
 {% block filtercategory %}
 {% endblock %}
 
                         <!--/.nav-collapse -->
-
                     </div>
-
-
                 </div>
                 <!-- /#navbar -->
-
-
-
-
             </div>
-
             <!-- *** NAVBAR END *** -->
-
         </header>
-
 <!--=====================
           Content
 ======================-->
@@ -239,8 +238,6 @@ _________________________________________________________ -->
 
     <!-- #### JAVASCRIPT FILES ### -->
 
-        window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')
-    </script>
 
 
 </body>
