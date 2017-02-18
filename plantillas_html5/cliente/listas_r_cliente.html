@@ -281,16 +281,21 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
           {% for lista, elementos in full_listas.iteritems %}
           	<div id="lista_{{ lista.id }}" style="display:none">
                         <div class="box">
-    	                    <div><h3>Lista: {{ lista.nombre }}
+    	                    <div><h3>Lista: <div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div>
     	                    	<button class="btn btn-xs btn-success active" type="button">Añadir a pedido</button>
     	                    	<button class="tn btn-xs btn-danger pull-right" type="button" onclick="javascript: delform('{{ lista.id }}')">Eliminar lista</button> 
                                 </h3>
                             </div>
 
-                            <div>
-                                <form id="form" action="/cliente/listas/add/{{ current_user.id }}" method="post" class="navbar-form">  Añadir producto no en catalogo a esta lista
-                                    <input type="" name="lista" id="This ID is WRONG!!" class="form-control" placeholder="Nuevo producto">
-                                <button type="submit" class="btn btn-default" onclick="javascript: submitform()" >Añadir</button>
+                        <div>
+                            <form action="#" class="navbar-form">  Añadir prducto no en catalogo a esta lista
+                                <input type="" class="form-control" placeholder="Nuevo producto" class="custom_elem_{{ lista.id }}" id="custom_elem_{{ lista.id }}">
+                            <button onclick="javascript: addcustomform('{{ lista.id }}')"  type="submit" class="btn btn-default">Anadi</button>
+                            </form>
+                        </div>
+
+
+
        			     {% csrf_token %}
                                 </form>
                             </div>
