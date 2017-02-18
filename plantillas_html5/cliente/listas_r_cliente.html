@@ -272,6 +272,8 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
         </form>
 
         <form id="trickform">
+                {% csrf_token %}
+        </form>
           {% for lista, elementos in full_listas.iteritems %}
           	<div id="lista_{{ lista.id }}" style="display:none">
                         <div class="box">
@@ -285,15 +287,11 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                             <form action="#" class="navbar-form">  Añadir prducto no en catalogo a esta lista
                                 <input type="" class="form-control" placeholder="Nuevo producto" class="custom_elem_{{ lista.id }}" id="custom_elem_{{ lista.id }}">
                             <button onclick="javascript: addcustomform('{{ lista.id }}')"  type="submit" class="btn btn-default">Anadi</button>
+       			     {% csrf_token %}
                             </form>
                         </div>
 
 
-
-       			     {% csrf_token %}
-                                </form>
-                            </div>
-  
     <!-- Hidden lists -->
           <!-- TODO: rovide nice center and style for numbers and so on-->
                             <div class="table-responsive">
@@ -336,7 +334,6 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                          <!-- /.box -->
                     </div>
           {% endfor %}
-          </form>
     <!-- END Hidden lists -->
 
         	</div>
