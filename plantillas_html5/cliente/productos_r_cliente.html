@@ -238,7 +238,7 @@ populate_form();
                   <a href="#" onclick="submitform({{ product_list.previous_page_number }});return false;" class="boton" style="vertical-align: top">&laquo;</a>
                   </li>
               {% endif %}
-                 <li><a href="#">{{ product_list.number }}</a></li>
+                 <li><a href="#">{{ product_list.number }} de {{ product_list.paginator.num_pages }}</a></li>
               {% if product_list.has_next %}
                   <li><a href="#" onclick="submitform({{ product_list.next_page_number }} );return false;"  class="boton" style="vertical-align: middle" >&raquo;</a></li>
               {% endif %}
