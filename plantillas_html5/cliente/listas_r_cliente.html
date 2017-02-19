@@ -30,21 +30,35 @@
 
                  // Insert a row in the table at the last row
                  var newRow   = tableRef.insertRow(tableRef.rows.length);
+
+                 var newCell  = newRow.insertCell(0); // Product_thunbnail
+                 // Append a text node to the cell
+
                  
-                 // Insert a cell in the row at index 0
-                 var newCell  = newRow.insertCell(0); // Product_name
+                 // Insert a cell in the row at index 1
+                 var newCell  = newRow.insertCell(1); // Product_name
                  // Append a text node to the cell
                  var nombre = document.createTextNode(parsed_value['name'])
                  newCell.appendChild(nombre);
-                 var newCell  = newRow.insertCell(1); 
+                 var newCell  = newRow.insertCell(2); 
                  var stockoptimo = document.createTextNode('0')
                  newCell.appendChild(stockoptimo);
-                 var newCell  = newRow.insertCell(2); 
+                 var newCell  = newRow.insertCell(3); 
                  var existencias = document.createTextNode('0')
                  newCell.appendChild(existencias);
-                 var newCell  = newRow.insertCell(3); 
+                 var newCell  = newRow.insertCell(4); 
                  var pedir = document.createTextNode('0')
                  newCell.appendChild(pedir);
+
+                 var newCell  = newRow.insertCell(5);
+
+
+                 var newCell  = newRow.insertCell(6);
+                 var total = document.createTextNode('total?')
+                 newCell.appendChild(total);
+
+                 var newCell  = newRow.insertCell(7);
+
 
                } else {
                  alert('Algo ha ido mal, el elemento no se ha añadido');
