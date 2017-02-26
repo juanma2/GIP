@@ -476,5 +476,5 @@ def historico(request):
                'pedidos': pedidos,
                'pedidos_estados': pedidos_estados,
                }
-    return render(request, 'cliente/historico_pedidos.html', context)
+    return render(request, 'cliente/historico_r_pedidos.html', context)
 
