@@ -397,7 +397,7 @@ def pedidos(request):
                'user_listas': user_listas,
                'full_listas': full_listas,
                'lista_compra': lista_compra}
-    return render(request, 'cliente/pedidos_cliente.html', context)
+    return render(request, 'cliente/pedidos_r_cliente.html', context)
 
 @login_required(login_url='/mylogin/')
 @user_passes_test(is_cliente)
