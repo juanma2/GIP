@@ -1,0 +1,210 @@
+{% extends "cliente/base_r_cliente.html" %}
+{% load staticfiles %}
+
+{% block imports %}
+{% endblock %}
+
+
+{% block body %}
+{% endblock %}
+
+{% block purejavascript %}
+ $(document).ready(function(){
+        //add as edit the list_names
+        //this should be a simple jquery regexp with elem_ stock_ and exis_ but it does not work 
+{% for lista, elementos in full_listas.iteritems %}
+calculate_totals('{{ lista.id }}');
+{% endfor %}
+
+totals();
+
+
+  }); 
+
+
+
+dirty = 0;
+function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;'name-as-seen-at-the-server';
+    input.value = value;
+    theForm.appendChild(input);
+}
+
+function submitform()
+{
+  if (dirty == 0){
+    myform = document.forms["form"];
+    // add your favorite JS validators here
+    //TODO: check for duplicated names for instance or only white spaces
+    addHidden(myform,'lista_to_add', document.getElementById('nueva_lista').value)
+    myform.submit();
+  }
+  else
+  {
+    alert('Parece que has olvidado guardar los cambios en las listas');
+  }
+  
+}
+
+function calculate_totals(list_id){
+  //learn js... 
+  list_items =  $('[class^=elem_'+list_id+']');
+  total = 0
+  for (i = 0; i < list_items.length; i++) {
+    item_id = list_items[i].id.split('_')[2]
+    precio = document.getElementById('precio_'+list_id+'_'+item_id).textContent
+    if (precio != '' && precio !=  0 ) {
+      cantidad = list_items[i].textContent;
+      precio = document.getElementById('precio_'+list_id+'_'+item_id).textContent
+      total = total + cantidad * precio 
+    }
+  }
+
+  document.getElementById('total_'+list_id).innerHTML ='<div class="text-right"> '+ total +'</div>'
+  return(total)
+}
+
+function totals(){
+sum = 0
+{% for lista, elementos in full_listas.iteritems %}
+sum = sum + calculate_totals('{{ lista.id }}')
+{% endfor %}
+
+document.getElementById('totales').innerHTML = '<font size="+1">TOTAL: '+ sum + '</font>'
+}
+
+{% endblock %}
+
+
+{% block filtercategory %}
+
+{% endblock %}
+{% block content %}
+        <div id="content">
+            <div class="container">
+
+                <div class="row">
+                    <div class="clearfix" id="customer-order">
+                        <div class="box no-border">
+<div><h3>Pedido por cursar </h3> Si no hay pedidos por cursar, aparecerá el texto "no hay pedidos pendientes de cursar" oo
+ algo asin.... pero... como si no hay pedido por cursar? tus elementos personales, siempre están ahi, no puedo adivinarlo</div>
+
+
+        <form id="trickform">
+        <div>
+
+          {% for lista, elementos in full_listas.iteritems %}
+          <div id="lista_{{ lista.id }}">
+          <table id="table_lista_{{ lista.id }}" border="1" class="table">
+            <thead> <h4><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" ><div class="totales">{{ lista.nombre }}</div></div></h4>
+            <tr>
+            
+                  <th>Referencia</th>
+                  <th>Nombre del producto</th>
+                  <th>Pedir</th>
+                  <th>Precio/ud</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+            
+              <tbody>
+             {% for i in elementos %}
+                <tr id=row_elem_{{lista.id}}_{{ i.id }}>
+                  <td>{{ i.producto.product_ref }}</td>
+                  <td><a href="s#fichamodal" data-toggle="modal">{{ i.nombre }}</a></td>
+                  <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
+                  <td><div id="precio_{{lista.id}}_{{ i.id }}">{{ i.producto.precio }}<div></td>
+                  <td><div id="precio_{{lista.id}}_{{ i.id }}"> to be calculated <div></td>
+                </tr>
+             {% endfor %}
+             </tbody>
+             <tfoot>
+                <tr>
+                  <th colspan="4" class="text-right">SubTotal</th>
+                  <th id="total_{{lista.id}}" style="text-align:right;text:bold;padding:0px 100px" colspan=4><div class="totales"></div></th>
+                </tr>
+              </tbody>
+            </table>
+
+
+          </div>
+    <div class="row">
+      <p><br>
+      <!-- TODO: create a proper space between pedidos -->
+    </div>
+          {% endfor %}
+
+
+            <table id="table_totales" class="table">
+              <tbody>
+                <tr>
+                  <th id="order_now"><a href="/cliente/make/pedido/" class="btn btn-xs btn-info" type="button" >Pedir</a></td>
+                  <th id="print"><a href="javascript:window.print()" class="btn btn-xs btn-info" type="button">Imprimir</a></td>
+                  <th id="totales" class="text-right" colspan=4>TOTAL: </td>
+                </tr>
+              </tbody>
+            </table>
+
+
+          </div>
+          </form>
+          
+
+<!-- BEGIN THE MERCADO-->
+    <div class="row">
+      <p><br>
+      <hr>
+      <!-- TODO: create a style for this-->
+      <div class="totales"><center>Lista de la compra:</center></div>
+      <hr>
+      <!-- TODO: create a proper space between pedidos -->
+    </div>
+
+          {% for lista, elementos in lista_compra.iteritems %}
+          <div id="compra_lista_{{ lista.id }}">
+
+          <table id="compra_lista_nombre_{{ lista.id }}" border="1" class="table">
+            <thead> <h4><div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" ><div class="totales">{{ lista.nombre }}</div></div></h4>
+            <tr>
+
+                  <th colspan="2">Nombre del producto</th>
+                  <th>Pedir</th>
+            </tr>
+            </thead>
+
+            <tbody>
+             {% for i in elementos %}
+                <tr id=compra_row_elem_{{lista.id}}_{{ i.id }}>
+                  <td colspan="2">{{ i.nombre }}</td>
+                  <td><div id="compra_elem_{{lista.id}}_{{ i.id }}" class="compra_elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
+                </tr>
+             {% endfor %}
+          </table>
+          </div>
+    <div class="row">
+      <p><br>
+      <p><br>
+      <!-- TODO: create a proper space between pedidos -->
+    </div>
+          {% endfor %}
+
+            <table id="table_totales">
+              <tbody>
+                <tr>
+                  <th colspan="5" class="text-right"> </th>
+                  <th><button class="btn btn-xs btn-info" type="button">Imprimir lista</button></th>
+                </tr>
+              </tbody>
+            </table>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- END Hidden lists -->
+
+
+{% endblock %}
+
