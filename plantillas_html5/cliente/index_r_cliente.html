@@ -38,18 +38,13 @@ $('select').on('change', function() {
 
 {% for promo in promo_list %}
                                     <!-- /.cOferta1 -->
-                                    <div class="banner">
-                        <a href="#">
-                           <img src="{{ promo.producto.image_url }}"  alt="" class="img-responsive">
-                        </a>
-                                    </div>
-
-            <!-- <div class="text1"><a href="#">{{ promo.nombre }}</a></div>
+<div class="banner">
+            <div class="text1"><a href="#"><h3>{{ promo.nombre }}</h3></a></div>
                 {{ promo.producto.descripcion }}
-            <br> -->
+            <br> 
 
         {% if promo.producto_id %}
-            <!--     <h3>Precio: {{ promo.producto.precio }}</h3>
+            <h3>Precio: {{ promo.producto.precio }}</h3>
             <br>
                       <select id="{{ promo.producto_id }}" onchange="submit_producto('{{ promo.producto_id }}');">
                         <option value="none">Añadir a Lista</option>
@@ -58,16 +53,12 @@ $('select').on('change', function() {
 
                 {% endfor %}
                       </select>
-              -->
         {% endif %}
 
 
-
-                  <!-- {% if forloop.counter|divisibleby:3 %}
-                  <div class="clear sep__1"></div>
-                  {% endif %}
-                  -->
-                  {% endfor %}
+</div>
+<hr>
+{% endfor %}
             </div>
             <!-- /.container -->
         </div>
