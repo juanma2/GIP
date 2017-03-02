@@ -208,7 +208,7 @@ populate_form();
                                 <h3 class="cortandotextonombre text-uppercase"><a href="s#fichamodal" data-toggle="modal">{{ producto.nombre }}</h3>
                                 <p class="price">Precio: {{ producto.precio }}</p>
                                 <p class="">
-                                    <a href="s#fichamodal" class="btn btn-default" role="button"data-toggle="modal">Más info</a> 
+                                    <a href="s#fichamodal_{{ producto.id }}" class="btn btn-default" role="button"data-toggle="modal">Más info</a> 
                                     <select class="btn btn-template-main selectpicker" id="{{ producto.id }}">
                                       <option value="none">Añadir a Lista</option>
                                {% for lista in user_listas %}
@@ -221,6 +221,79 @@ populate_form();
                         </div>
                         <!-- /.product -->
                     </div>
+
+
+<!--modal -->
+ <div class="modal" id="fichamodal_{{ producto.id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Mostrando producto:</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <h4>{{ producto.nombre }}</h4>
+                    </div>
+                    <div class="modal-footer"> 
+                     <div class="" id="productMain">
+                            <div class="col-sm-6">
+                                <div id="mainImage">
+                                    <img src="img/Alcachofa1_product_image.jpg" alt="" class="img-responsive">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="">
+                                    <form>
+                                        <p class="price">{{ producto.precio }}&euro;</p>
+                                        <p class="text-center">
+                                    <select class="btn btn-template-main selectpicker" id="{{ producto.id }}">
+                                      <option value="none">Añadir a Lista</option>
+                               {% for lista in user_listas %}
+                                      <option value="{{ lista.id }},{{ producto.id }}">{{ lista.nombre }}</option>
+                               {% endfor %}
+                                    </select>
+
+
+                                        </p>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" id="details">
+                                <dl>
+                                <dt>Descripcion:</dt>
+                                <dd>{{ producto.descripcion }}</dd>
+                                </dl>
+                                
+                                <dl>
+                                <dt>Especificaciones:</dt>
+                                <dd>{{ producto.especificaciones }}</dd>
+                                </dl>
+
+                                <dl>
+                                <dt>CONSERVACION:</dt>
+                                <dd>falta en el modelo</dd>
+                                </dl>
+                                
+                                <dl>
+                                <dt>FORMATO:</dt>
+                                <dd>{{ producto.formato }}</dd>
+                                </dl>
+
+                                <dl>
+                                <dt>TEMPORADA / DISPONIBILIDAD:</dt>
+                                <dd>falta en el modelo</dd>
+                                </dl>      
+                    
+                        </div>
+
+                    <!--intento ficha -->
+                    </div>
+                </div>
+            </div>
+ </div>
+
 {% endfor %}
 <form method='post' id='send_lista_info' action="#">
      <input type="hidden" value="" />
@@ -255,5 +328,5 @@ populate_form();
         </div>
         </div>
 
-{% endblock %}
 
+{% endblock %}
