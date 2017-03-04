@@ -273,7 +273,6 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
             <div class="container">
                 <div class="row">
                     <div class="clearfix" id="customer-order">
-
     {% for lista, elementos in full_listas.iteritems %}
       <button type="" id="lista_header_{{lista.id}}" onclick="show({{ lista.id }});"  class="btn btn-default"> {{ lista.nombre }}</button>
     {% endfor %}
@@ -293,6 +292,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
           	<div id="lista_{{ lista.id }}" style="display:none">
                         <div class="box">
     	                    <div><h3>Lista: <div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div>
+                                lista box_{{lista.id}} nombre
     	                    	<button class="btn btn-xs btn-success active" type="button" onclick="javascript: alert('no se que hace este boton')">Añadir a pedido</button>
     	                    	<button class="tn btn-xs btn-danger pull-right" type="button" onclick="javascript: delform('{{ lista.id }}')">Eliminar lista</button> 
                                 </h3>
@@ -306,10 +306,9 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
        			     {% csrf_token %}
                             </form>
 
-<div class="custom_elem_{{ lista.id }}" id="custom_elem_{{ lista.id }}" >Click Para añaadir un producto a la lista</div>
-    Añadir prducto no en catalogo a esta lista: <a href="#" onclick="javascript: addcustomfom('{{ lista.id }}')" style="font-size:8" class="fa fa-plus">
-</a>
-</div>
+                            <div class="custom_elem_{{ lista.id }}" id="custom_elem_{{ lista.id }}" >Click Para añaadir un producto a la lista</div>
+                                Añadir prducto no en catalogo a esta lista: <a href="#" onclick="javascript: addcustomfom('{{ lista.id }}')" style="font-size:8" class="fa fa-plus">
+                            </a>
                         </div>
 
 
