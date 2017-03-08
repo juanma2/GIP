@@ -4,7 +4,6 @@
 {% block imports %}
 <!-- this is really bad -->
 <script src="{% static "gip_r_html5/js/jquery.jeditable.mini.js" %}" ></script>
-<script src="{% static "gip_r_html5/js/modal.js" %}" ></script>
 <!-- http://www.appelsiini.net/projects/jeditable -->
 {% endblock %}
 
@@ -217,6 +216,8 @@ function delelem(lista_id, elemento_id){
 
 }
 
+
+
 function show(id){
 //learn js... 
 current_status = document.getElementById('lista_'+id).style.display;
@@ -227,6 +228,9 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
 
   if (current_status == 'none')
   {
+    //we can calculate here the total prices
+    
+    
     document.getElementById('lista_'+id).style.display='';
   }else
   {
@@ -284,31 +288,21 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
         <form id="form_custom_ele" action="/cliente/listas/custom/" method="post">
                 {% csrf_token %}
         </form>
-
         <form id="trickform">
                 {% csrf_token %}
         </form>
           {% for lista, elementos in full_listas.iteritems %}
           	<div id="lista_{{ lista.id }}" style="display:none">
                         <div class="box">
-    	                    <div><h3>Lista: <div class="lista_nombre_{{ lista.id }}" id="{{ lista.id }}" >{{ lista.nombre }}</div>
-    	                    	<button class="btn btn-xs btn-success active" type="button" onclick="javascript: alert('no se que hace este boton')">Añadir a pedido</button>
+
+    	                    <div>
+                                <h3>Lista: <div  id="{{ lista.id }}" >{{ lista.nombre }}</div>
     	                    	<button class="tn btn-xs btn-danger pull-right" type="button" onclick="javascript: delform('{{ lista.id }}')">Eliminar lista</button> 
                                 </h3>
-                            </div>
-
-                        <div>
-                            <form action="#" class="navbar-form">  Añadir un producto no en catalogo a esta lista
-
-                                <input type="" class="form-control" placeholder="Nuevo producto" id="input_custom_elem_{{ lista.id }}">
-                            <button onclick="javascript: addcustomform('{{ lista.id }}')"  type="submit" class="btn btn-default">Anadir</button>
-       			     {% csrf_token %}
-                            </form>
-
-                            <div class="custom_elem_{{ lista.id }}" id="custom_elem_{{ lista.id }}" >Click Para añaadir un producto a la lista</div>
-                                Añadir prducto no en catalogo a esta lista: <a href="#" onclick="javascript: addcustomfom('{{ lista.id }}')" style="font-size:8" class="fa fa-plus">
-                            </a>
-                        </div>
+                                 <div class="custom_elem_{{ lista.id }}" id="custom_elem_{{ lista.id }}" >Click Para añadir un producto a la lista
+                                     <a href="#" onclick="javascript: addcustomfom('{{ lista.id }}')" style="font-size:8" class="fa fa-plus"></a>
+                                 </div>
+                           </div>
 
 
     <!-- Hidden lists -->
@@ -330,8 +324,9 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                                          {% for i in elementos %}
                                             <tr id=row_elem_{{lista.id}}_{{ i.id }}>
                                                                         <td>
-                                                                            <a href="s#fichamodal" data-toggle="modal">
-                                                                                no hay requirements de thumbnail<img src="img/Ajos-secos1_product_image.jpg" alt="">
+                                                                            <!-- <a href="s#fichamodal_{{ i.id }}" onclick="get_details({{ i.id }});" data-toggle="modal"> -->
+                                                                            <a href="s#fichamodal_{{ i.id }}"  class="btn btn-default" role="button" data-toggle="modal">
+                                                                                <img src="img/Ajos-secos1_product_image.jpg" alt="">
                                                                             </a>
                                                                         </td>
 
@@ -339,11 +334,74 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                                               <td><div id="stoc_{{lista.id}}_{{ i.id }}" class="stoc_{{lista.id}}_{{ i.id }}">{{ i.stock_optimo }}</div></td>
                                               <td><div id="exis_{{lista.id}}_{{ i.id }}" class="exis_{{lista.id}}_{{ i.id }}">{{ i.existencias }}</div></td>
                                               <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
-                                              <td>{{ i.producto.precio }}</td>
-                                              <td>total?</td>
-                                              <td><a href="#" onclick="javascript: delelem('{{ lista.id }}','{{ i.id }}')" style="font-size:8" class="fa fa-trash-o"></td>
+                                              <td><div id="precio_{{lista.id}}_{{ i.id }}" class="non_{{lista.id}}_{{ i.id }}">{{ i.producto.precio }}</div></td>
+                                              <td><div id="total_{{lista.id}}_{{ i.id }}" class="non_{{lista.id}}_{{ i.id }}">total?</div></td>
+                                              <td><a href="#" onclick="javascript: delelem('{{ lista.id }}','{{ i.id }}')" style="font-size:8" class="fa fa-trash-o">D</a></td>
                                             </tr>
-                                        
+                                       
+<!--modal -->
+ <div class="modal" id="fichamodal_{{ i.id }}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+                        <h4 class="modal-title">Mostrando producto:</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <h4>{{ i.producto.nombre }}</h4>
+                    </div>
+                    <div class="modal-footer"> 
+                     <div class="" id="productMain">
+                            <div class="col-sm-6">
+                                <div id="mainImage">
+                                    <img src="img/Alcachofa1_product_image.jpg" alt="" class="img-responsive">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="">
+                                    <form>
+                                        <p class="price">{{ i.producto.precio }}&euro;</p>
+                                        <p class="text-center">
+                                        </p>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" id="details">
+                                <dl>
+                                <dt>Descripcion:</dt>
+                                <dd>{{ i.producto.descripcion }}</dd>
+                                </dl>
+
+                                <dl>
+                                <dt>Especificaciones:</dt>
+                                <dd>{{ i.producto.especificaciones }}</dd>
+                                </dl>
+
+                                <dl>
+                                <dt>CONSERVACION:</dt>
+                                <dd>falta en el modelo</dd>
+                                </dl>
+
+                                <dl>
+                                <dt>FORMATO:</dt>
+                                <dd>{{ i.producto.formato }}</dd>
+                                </dl>
+
+                                <dl>
+                                <dt>TEMPORADA / DISPONIBILIDAD:</dt>
+                                <dd>falta en el modelo</dd>
+                                </dl>      
+
+                        </div>
+
+                    <!--intento ficha -->
+                    </div>
+                </div>
+            </div>
+ </div>
+<!-- end modal -->
                                          {% endfor %}
                                        </tbody>
                                      </table>
@@ -360,7 +418,6 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
             </div>
         <!-- /.content -->
         </div>
-
 
 {% endblock %}
 
