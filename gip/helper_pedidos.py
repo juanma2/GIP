@@ -4,16 +4,6 @@ from gip.models import Pedidos
 from django.contrib.auth.models import User
 
 
-PEDIDOS_ESTADOS = (
-    ('400', 'Pendiente Proveedor'),
-    ('500', 'Pendiente Cliente'),
-    ('600', 'Aceptado'),
-    ('700', 'Rechazado'),
-    ('800', 'Cancelado'),
-    ('900', 'Enviado'),
-    ('1000', 'Finalizado'),
-)
-
 def send_order(pedido,proveedor): 
   cliente = pedido['cliente']
   print "***************************************************************"
