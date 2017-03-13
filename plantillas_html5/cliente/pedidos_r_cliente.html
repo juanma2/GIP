@@ -60,7 +60,8 @@ function calculate_totals(list_id){
       cantidad = list_items[i].textContent;
       precio = document.getElementById('precio_'+list_id+'_'+item_id).textContent
       total = total + cantidad * precio 
-    }
+      document.getElementById('sub_total_'+list_id+'_'+item_id).textContent = parseFloat(cantidad * precio).toFixed(2)
+    } 
   }
 
   document.getElementById('total_'+list_id).innerHTML ='<div class="text-right"> '+ total +'</div>'
@@ -117,7 +118,7 @@ document.getElementById('totales').innerHTML = '<font size="+1">TOTAL: '+ sum + 
                   <td><a href="s#fichamodal" data-toggle="modal">{{ i.nombre }}</a></td>
                   <td><div id="elem_{{lista.id}}_{{ i.id }}" class="elem_{{lista.id}}_{{ i.id }}">{{ i.cantidad }}</div></td>
                   <td><div id="precio_{{lista.id}}_{{ i.id }}">{{ i.producto.precio }}<div></td>
-                  <td><div id="precio_{{lista.id}}_{{ i.id }}"> to be calculated <div></td>
+                  <td><div id="sub_total_{{lista.id}}_{{ i.id }}"> to be calculated <div></td>
                 </tr>
              {% endfor %}
              </tbody>

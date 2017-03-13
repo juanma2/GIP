@@ -291,7 +291,7 @@ function calculate_totals(table_id)
         row = table.rows[i];
         elem_amount = document.getElementById(row.id.replace('row_','')).textContent
         elem_price = document.getElementById(row.id.replace('row_elem','precio')).textContent
-        document.getElementById(row.id.replace('row_elem','total')).textContent = (elem_amount)*(elem_price) 
+        document.getElementById(row.id.replace('row_elem','total')).textContent = parseFloat(elem_amount*elem_price).toFixed(2)
       }
     }
 
