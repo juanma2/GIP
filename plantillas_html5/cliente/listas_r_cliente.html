@@ -53,7 +53,7 @@
 
 
                  var newCell  = newRow.insertCell(6);
-                 var total = document.createTextNode('total?')
+                 var total = document.createTextNode('')
                  newCell.appendChild(total);
 
                  var newCell  = newRow.insertCell(7);
@@ -69,7 +69,7 @@
           submitdata : { csrfmiddlewaretoken : "{{ csrf_token }}"},
           name : 'lista_to_update',
            callback : function(value, settings) {
-               document.getElementById('lista_header_'+this.id).text=value;
+               document.getElementById('lista_header_'+this.id).innerText=value;
            }
         });
         //this should be a simple jquery regexp with elem_ stock_ and exis_ but it does not work 
@@ -85,6 +85,7 @@
                } else {
                  //here we go!
                  document.getElementById(this.id).textContent=parsed_value['msg'];
+                 calculate_totals(parsed_value['lista_id']);
 	       }
            }
 
@@ -216,7 +217,85 @@ function delelem(lista_id, elemento_id){
 
 }
 
+function send_new_element(lista_id){
+    myform = document.forms["form"];
+    addHidden(myform,'id', 'custom_elem_'+lista_id);
+    addHidden(myform,'custom_to_add', document.getElementById('nuevo_elemento_'+lista_id).value);
+    form = $('#form');
+     url =
+      $.ajax( {
+        type: "POST",
+        url: '/cliente/listas/add_custom/',
+        dataType: 'json' ,
+        data: form.serialize(),
+        error: function (xhr, status) {
+            alert('Ooopps!!! Parece que algo ha ido mal ha habido un error:'+status+'.  Si persiste ponte en contacto con nosotros');
+        },
+        success: function( response ) {
+          if(response['msg'] == '0'){
+                 ele_id = response['id']
+                
+                 // TODO: full fill the divs ids, when is clear the frontend
+                 // Must get the id from the custom added...
+               var tableRef = document.getElementById('table_lista_'+response['table_id']).getElementsByTagName('tbody')[0];
 
+                 // Insert a row in the table at the last row
+               var newRow   = tableRef.insertRow(tableRef.rows.length);
+
+               var newCell  = newRow.insertCell(0); // Product_thunbnail
+                 // Append a text node to the cell
+
+
+                 // Insert a cell in the row at index 1
+               var newCell  = newRow.insertCell(1); // Product_name
+                 // Append a text node to the cell
+                 var nombre = document.createTextNode(response['name'])
+                 newCell.appendChild(nombre);
+                 var newCell  = newRow.insertCell(2);
+                 var stockoptimo = document.createTextNode('0')
+                 newCell.appendChild(stockoptimo);
+                 var newCell  = newRow.insertCell(3);
+                 var existencias = document.createTextNode('0')
+                 newCell.appendChild(existencias);
+                 var newCell  = newRow.insertCell(4);
+                 var pedir = document.createTextNode('0')
+                 newCell.appendChild(pedir);
+
+                 var newCell  = newRow.insertCell(5);
+
+
+                 var newCell  = newRow.insertCell(6);
+                 var total = document.createTextNode('tot')
+                 newCell.appendChild(total);
+
+                 var newCell  = newRow.insertCell(7);
+                 var delete_icon = document.createTextNode('')
+                 newCell.appendChild(delete_icon);
+
+                 document.getElementById('nuevo_elemento_'+lista_id).value = ''
+               } else {
+                 alert('Algo ha ido mal, el elemento no se ha añadido');
+          }
+        }
+
+      } );
+
+}
+
+function calculate_totals(table_id)
+{
+    table = document.getElementById('table_lista_'+table_id)
+    if (table.rows.length > 1){
+      for (i = 1; i < table.rows.length ; i++)
+      {
+        row = table.rows[i];
+        elem_amount = document.getElementById(row.id.replace('row_','')).textContent
+        elem_price = document.getElementById(row.id.replace('row_elem','precio')).textContent
+        document.getElementById(row.id.replace('row_elem','total')).textContent = (elem_amount)*(elem_price) 
+      }
+    }
+
+}
 
 function show(id){
 //learn js... 
@@ -229,8 +308,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
   if (current_status == 'none')
   {
     //we can calculate here the total prices
-    
-    
+    calculate_totals(id) 
     document.getElementById('lista_'+id).style.display='';
   }else
   {
@@ -261,7 +339,7 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                     <form id="form" action="/cliente/listas/add/{{ current_user.id }}" method="post" class="navbar-form navbar-right">
 
                       <input type="" class="form-control" placeholder="Nueva lista" name="lista" id="nueva_lista" >
-                            <button type="submit" onclick="javascript: submitform()" class="btn btn-default">Crear lista</button>
+                            <button type="submit" onclick="javascript: submitform()" class="btn btn-default">A&ntilde;adir</button>
                     {% csrf_token %}
                     </form>
 
@@ -296,12 +374,14 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                         <div class="box">
 
     	                    <div>
-                                <h3>Lista: <div  id="{{ lista.id }}" >{{ lista.nombre }}</div>
-    	                    	<button class="tn btn-xs btn-danger pull-right" type="button" onclick="javascript: delform('{{ lista.id }}')">Eliminar lista</button> 
+                                <h3>Lista: <div  id="{{ lista.id }}" class="lista_nombre_{{ lista.id }}">{{ lista.nombre }}</div>
                                 </h3>
-                                 <div class="custom_elem_{{ lista.id }}" id="custom_elem_{{ lista.id }}" >Click Para añadir un producto a la lista
-                                     <a href="#" onclick="javascript: addcustomfom('{{ lista.id }}')" style="font-size:8" class="fa fa-plus"></a>
-                                 </div>
+<form action="./" class="navbar-form">  Añadir producto no en catalogo a esta lista
+    	                    	<button class="tn btn-xs btn-danger pull-right" type="button" onclick="javascript: delform('{{ lista.id }}')">Eliminar lista</button> 
+                      <input type="" class="form-control" placeholder="Aadir elemento" name="lista" id="nuevo_elemento_{{ lista.id }}" >
+                            <button type="submit" onclick="javascript: send_new_element({{ lista.id }})" class="btn btn-default">A&ntilde;adir</button>
+</form>
+
                            </div>
 
 
@@ -325,9 +405,13 @@ document.getElementById('lista_{{ lista.id }}').style.display='none';
                                             <tr id=row_elem_{{lista.id}}_{{ i.id }}>
                                                                         <td>
                                                                             <!-- <a href="s#fichamodal_{{ i.id }}" onclick="get_details({{ i.id }});" data-toggle="modal"> -->
+                                                                            {% if i.producto.precio %}
                                                                             <a href="s#fichamodal_{{ i.id }}"  class="btn btn-default" role="button" data-toggle="modal">
                                                                                 <img src="img/Ajos-secos1_product_image.jpg" alt="">
                                                                             </a>
+                                                                            {% else %}
+                                                                                
+                                                                            {% endif %}
                                                                         </td>
 
                                               <td>{{ i.nombre }}</td>
