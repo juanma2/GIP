@@ -229,7 +229,8 @@ def lista_add_custom(request):
         'msg':'0',
         '0':'reload',
         'name':search_parameters['custom_to_add'],
-        'id': ele.id
+        'id': ele.id,
+        'table_id': list_id
       }
     else:
       data = {
@@ -339,6 +340,7 @@ def element_update_list(request):
       ele.save()
       data = {
         'msg': search_parameters['elem_to_update'],
+        'lista_id': lista_id ,
         '0':'OK'
       }
     elif search_parameters['id'].split('_')[0] == 'stoc':
