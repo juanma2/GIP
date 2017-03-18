@@ -420,8 +420,11 @@ def make_pedido(request):
     descripcion = {}
     precio = {}
     active = {}
+    #set for customs lists
+    c_pedido, c_nombre, c_cantidad, c_lista, c_stock_optimo, c_existencias = {}, {}, {}, {}, {}, {}
     for lista_i in user_listas:
       current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False)
+      current_custom_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = True)
       for ele in current_list:
         descripcion[ele.producto.product_ref] = ele.producto.nombre
         precio[ele.producto.product_ref] = float(ele.producto.precio)
@@ -430,15 +433,15 @@ def make_pedido(request):
           orden[ele.producto.product_ref] += ele.cantidad
         else:
           orden[ele.producto.product_ref] = ele.cantidad
-        ##yes.. I am accessing by ID to a dict...
-        ##create Pedido like 
-        ## pedido[0] will have the information related with the user
-        ## pedido[0] = {'user_name':'CLIENTE1','date':'pick a standard','tarifa':'proveedor1'}....
-        ## pedido[1] will have amounts and prices (should be enough, because the price belongs to the ref, no to any other thing
-        ## pedido[1] = {'product_ref':'cantidad','CAJUL':'25','MNB':'34'} ....
-        ## pedido[2] If more information is requested could do like:
-        ## pedido[2] = {'product_ref':'whatever you need here, like comments','CAJUL':'comment',
-        ## [3] is the item is active, used by re_order system, desactive = 0 , desactivate = 1
+      #now, rise complexite twice, TODO: look into iterate twice over the same dict
+      #this will save the custom lists
+      for c_ele in current_custom_list:
+        c_nombre[c_ele.id]= c_ele.nombre
+        c_cantidad[c_ele.id]= c_ele.cantidad
+        c_lista[c_ele.id]= c_ele.lista.id
+        c_stock_optimo[c_ele.id]= c_ele.stock_optimo
+
+    c_pedido['c_nombre'], c_pedido['c_cantitdad'], c_pedido['c_lista'], c_pedido['c_stock_optimo'] = c_nombre, c_cantidad, c_lista, c_stock_optimo
     pedido['cliente'] = cliente
     pedido['orden'] = orden
     #we can send the price of the elements right now... not sure if is right
@@ -448,7 +451,6 @@ def make_pedido(request):
     print "Add logic to send order here"
     #really?? again?? TODO: fix cliente
     cliente = Cliente.objects.get(user_id = current_user.id)
-
     send_order(pedido,proveedor)
     print "Update to pending to send or something like that"
     print "now, clean the remaining cantidades..."
