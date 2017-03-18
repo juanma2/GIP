@@ -325,6 +325,13 @@ class Carrito(models.Model):
     def __unicode__(self):
         return u"%s" % (self.nombre)
 
+class HistoricoListas(models.Model):
+    pedido_id = models.ForeignKey(Pedidos)
+    listas_serializado = models.CharField(max_length=5000)
+    def __unicode__(self):
+        return u"%s" % (self.pedido_id)
+
+
 class PedidosProveedorView(models.Model):
     #this one should have a copy of the order done by the client that should be confirmed, modifed or rejected( with reasons)
     pass
