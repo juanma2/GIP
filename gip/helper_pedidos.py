@@ -1,10 +1,10 @@
 import datetime
 
-from gip.models import Pedidos
+from gip.models import Pedidos, HistoricoListas
 from django.contrib.auth.models import User
 
 
-def send_order(pedido,proveedor): 
+def send_order(pedido,proveedor,c_pedido): 
   cliente = pedido['cliente']
   print "***************************************************************"
   print "implement email, or, whatever needed in gip/helper_pedidos.py"
@@ -21,7 +21,15 @@ def send_order(pedido,proveedor):
   #once that your pedido is ready, you should set all the items as "active"
   p = Pedidos(producto_serializado=pedido, proveedor_id = proveedor.id, total = total , fecha_creacion = datetime.datetime.now())
   p.save()
-  print pedido
   p.cliente.add(pedido['cliente']['id'])
+  print "let's try"
+  try:
+    print p.id 
+    history = HistoricoListas(pedido_id = p, listas_serializado = c_pedido) 
+    history.save()
+    history.id
+    print "history saved!!"
+  except:
+    print "something went wrong with order "+pedido.id+" trying to save listas... but we arae not gonna block them"
   print "***************************************************************"
   return True
