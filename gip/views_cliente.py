@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 #import only the needed ones
 from gip.models import *
 from gip.utils import is_cliente
-from gip.helper_pedidos import send_order
+from gip.helper_pedidos import send_order, generate_modales_historico
 
 from django.db.models import Q
 
@@ -480,12 +480,15 @@ def historico(request):
     pedidos = Pedidos.objects.filter(cliente__user=current_user.id)
     pedidos_estados = {}
     #is ugly, but should make jinja easier
+    print pedidos
     for k in Pedidos.STATE_CHOICES:
       pedidos_estados[str(k[0])]=k[1] 
     #sort by lista.. and add the staff there 
+    pedidos_modales = generate_modales_historico(pedidos)
     context = {'username': username,
                'current_page': current_page,
                'pedidos': pedidos,
+               'pedidos_modales': pedidos_modales,
                'pedidos_estados': pedidos_estados,
                }
     return render(request, 'cliente/historico_r_pedidos.html', context)

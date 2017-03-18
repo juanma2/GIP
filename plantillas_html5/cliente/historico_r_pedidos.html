@@ -2,10 +2,6 @@
 {% load staticfiles %}
 
 {% block imports %}
-<!-- this is really bad -->
-<script src="{% static "gip_r_html5/js/jquery.jeditable.mini.js" %}" ></script>
-<script src="{% static "gip_r_html5/js/modal.js" %}" ></script>
-<!-- http://www.appelsiini.net/projects/jeditable -->
 
 {% endblock %}
 
@@ -14,22 +10,14 @@
 {% endblock %}
 
 {% block purejavascript %}
-function showhide(layer_id){
-//learn js...
-current_status = document.getElementById(layer_id).style.display;
-
-{% for pedido in pedidos%}
-document.getElementById('pedido_content_{{pedido.codigo}}').style.display='none';
-{% endfor %}
-
-  if (current_status == 'none')
-  {
-    document.getElementById(layer_id).style.display='';
-  }else
-  {
-    document.getElementById(layer_id).style.display='none';
-  }
+def create_modales(id){
+ //check if id exist, meaning, is already createdd
+ alert('must create modal html') 
 }
+
+  {% for pedido in pedidos %}
+  pedido_{{pedido.codigo}} = {{ pedido.producto_serializado|safe }}
+  {% endfor %}
 
 {% endblock %}
 
@@ -72,8 +60,7 @@ document.getElementById('pedido_content_{{pedido.codigo}}').style.display='none'
    {% endfor %}
               </td>
              <td>
-           <a href="#modaldemostrarpedido2" data-toggle="modal" class="btn btn-template-main btn-sm">Ver</a>
-           <a href="#" onclick="javascript: showhide('pedido_content_{{pedido.codigo}}')" style="font-size:6" class="fa fa-plus"></a>
+           <a href="#modaldemostrarpedido_{{ pedido.codigo }}" onClick="javascript: create_modales(pedido_{{ pedido.codigo }})" data-toggle="modal" class="btn btn-template-main btn-sm">Ver</a>
               </td>
            </tr>
         {% endfor %}
@@ -86,6 +73,7 @@ document.getElementById('pedido_content_{{pedido.codigo}}').style.display='none'
                 </div>
                 <!-- /.products -->
             </div>
+        {{ pedidos_modales|safe }}
     </div>
 
 
