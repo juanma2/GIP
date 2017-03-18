@@ -413,6 +413,8 @@ def make_pedido(request):
     cliente = Cliente.objects.filter(user_id = current_user.id)
     print "we are going to use the cliente"
     print cliente
+    print "with the user id:"
+    print current_user.id
     proveedor = cliente[0].user.groups.exclude(name=CLIENTE_ATTRIBUTE)[0]
     pedido = {}
     cliente = cliente.values()[0]
@@ -451,13 +453,19 @@ def make_pedido(request):
     print "Add logic to send order here"
     #really?? again?? TODO: fix cliente
     cliente = Cliente.objects.get(user_id = current_user.id)
-    send_order(pedido,proveedor)
-    print "Update to pending to send or something like that"
-    print "now, clean the remaining cantidades..."
-    for lista_i in user_listas:
-      current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
+    try: 
+      order_status = send_order(pedido,proveedor,c_pedido)
+      print "the order_status is"
+      print order_status
+      if order_status is True: 
+        for lista_i in user_listas:
+          current_list = Elemento.objects.filter(lista_id = lista_i.id, producto_id__isnull = False).update(cantidad=0)
+      return redirect('/cliente/historico/', request)
     #TODO: handle the exceptions!!
-    return redirect('/cliente/historico/', request)
+    except:
+      #Something went wrong....
+      print "something went wrong with the order"
+      return redirect('/cliente/pedidos/',request)
 
 
 
