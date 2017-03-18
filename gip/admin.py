@@ -11,6 +11,7 @@ from .models import Categoria
 from .models import Lista
 from .models import Elemento
 from .models import Promo
+from .models import HistoricoListas
 
 admin.site.register(Tarifas)
 admin.site.register(Destinos)
@@ -23,4 +24,5 @@ admin.site.register(Categoria)
 admin.site.register(Lista)
 admin.site.register(Elemento)
 admin.site.register(Promo)
+admin.site.register(HistoricoListas)
 
