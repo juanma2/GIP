@@ -65,7 +65,7 @@ def generator_pedidos_tabs(pedidos_list):
     estado = [t[1] for t in pedido.STATE_CHOICES if t[0] == int(pedido.pedidostate)]
     estado +=  str(pedido.pedidostate)
     pedido.pedidostate=int(pedido.pedidostate)
-    acciones = build_botones(pedido,'tab')
+    acciones = build_botones_proveedor(pedido,'tab')
     for current_cliente in pedido.cliente.all():
       clientes += str(current_cliente.nombre)+" "
       #TODO: fix when you have a clear idea where to deliver
@@ -97,7 +97,7 @@ def generator_pedido_content(pedido):
   print pedido.pedidostate
   #TODO: do not use magic numbers
   #pedidos tha should show reformular actions
-  acciones = build_botones(pedido,'modal')
+  acciones = build_botones_proveedor(pedido,'modal')
   if int(pedido.pedidostate) in [10000,12200,12300]:
     html +=' <div class="modal" id="modaldemostrarpedido"> \
               <div class="modal-dialog modal-lg"> \
@@ -226,7 +226,7 @@ def generator_pedido_content(pedido):
 
 
 
-def build_botones(pedido,source):
+def build_botones_proveedor(pedido,source):
   pedido.pedidostate = int(pedido.pedidostate)
   acciones_tab = ''
   acciones_modal = ''

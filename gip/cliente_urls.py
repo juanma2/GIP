@@ -33,4 +33,5 @@ urlpatterns = [
     url(r'^pedidos/$', views_cliente.pedidos , name='pedidos'),
     url(r'^make/pedido/$', views_cliente.make_pedido , name='make_pedido'),
     url(r'^historico/$', views_cliente.historico, name='historico'),
+    url(r'^encurso/$', views_cliente.pedidos_en_curso, name='pedidos_en_curso'),
 ]

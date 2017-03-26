@@ -13,6 +13,7 @@ from django.core.urlresolvers import reverse
 from gip.models import *
 from gip.utils import is_cliente
 from gip.helper_pedidos import send_order, generate_modales_historico
+from gip.helper_cliente import generate_modales_encurso
 
 from django.db.models import Q
 
@@ -476,13 +477,14 @@ def historico(request):
     current_user = request.user
     username = str(current_user.username)
     current_page = "Historico"
-    #you will need to get current cliente
-    pedidos = Pedidos.objects.filter(cliente__user=current_user.id)
+    #check how to improve the filter, this sounds like baaaad, is the flow definition wrong, I know.
+    pedidos = Pedidos.objects.filter(cliente__user=current_user.id).exclude(pedidostate='12100')
     pedidos_estados = {}
     #is ugly, but should make jinja easier
-    print pedidos
+    print current_user.id
     for k in Pedidos.STATE_CHOICES:
       pedidos_estados[str(k[0])]=k[1] 
+      #here we should decide which state will be an actual acction, like "Reformular Pedido":12100
     #sort by lista.. and add the staff there 
     pedidos_modales = generate_modales_historico(pedidos)
     context = {'username': username,
@@ -493,3 +495,29 @@ def historico(request):
                }
     return render(request, 'cliente/historico_r_pedidos.html', context)
 
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def pedidos_en_curso(request):
+    current_user = request.user
+    username = str(current_user.username)
+    current_page = "Historico"
+    #check how to improve the filter, this sounds like baaaad, is the flow definition wrong, I know.
+    pedidos = Pedidos.objects.filter(cliente__user=current_user.id,pedidostate='12100')
+    pedidos_estados = {}
+    #is ugly, but should make jinja easier
+    print current_user.id
+    for k in Pedidos.STATE_CHOICES:
+      pedidos_estados[str(k[0])]=k[1]
+      #here we should decide which state will be an actual acction, like "Reformular Pedido":12100
+    #sort by lista.. and add the staff there 
+    pedidos_modales = ''
+    for pedido in pedidos:
+      pedidos_modales += generate_modales_encurso(pedido)
+      
+    context = {'username': username,
+               'current_page': current_page,
+               'pedidos': pedidos,
+               'pedidos_modales': pedidos_modales,
+               'pedidos_estados': pedidos_estados,
+               }
+    return render(request, 'cliente/encurso_r_pedidos.html',context)
