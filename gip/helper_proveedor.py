@@ -137,7 +137,7 @@ def generator_pedido_content(pedido):
                <td>{5}{3}</td> \
                <td>{5}{4}</td> \
                 <td><a  href="#formularioreformular" class="btn btn-warning btn-sm" >Reformular Item</a></td>  \
-      '.format(pedido.codigo, ele,products[descripcion][ele], products[orden][ele], products[precio][ele],strike)
+      '.format(pedido.codigo, ele,products[descripcion][ele].encode("utf-8"), products[orden][ele], products[precio][ele],strike)
       html += '<tr> \
                     <td colspan="12" class="hiddenRow"> \
                       <div class="accordian-body collapse" id="{0}_{1}"> \
@@ -210,7 +210,7 @@ def generator_pedido_content(pedido):
                <td>{5}{2}</td> \
                <td>{5}{3}</td> \
                <td>{5}{4}</td> \
-      '.format(pedido.codigo, ele,products[descripcion][ele], products[orden][ele], products[precio][ele],strike)
+      '.format(pedido.codigo, ele,products[descripcion][ele].encode("utf-8"), products[orden][ele], products[precio][ele],strike)
     html += '</tbody> \
                   </table>\
                   </form>\
