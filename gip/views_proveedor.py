@@ -599,7 +599,7 @@ def pedidos_proveedor(request):
   #is ugly, but should make jinja easier
   search_parameters = request.POST.copy()
   lista_pedidos , tabs = list_grouper(list_pedidos)
-  print "lista_pedidos"
+  print "lista_pedidos1"
   print lista_pedidos
   #if search_parameters:
   context= { 'username': username,
@@ -715,6 +715,7 @@ def update_pedidostate(request,proveedor_id,pedido_id,transition):
 def get_pedido_content(request,proveedor_id,pedido_id):
   #TODO: this is duplicated inside helpers_proveeedor, unify and add to settings
   #You cannot user characters like "-_" in here, cause you cannot afford ids MTF
+  print "we requested pedido"+pedido_id
   def_tabs = settings.DEF_TABS
   grouped_by = settings.GROUPED_BY
   current_user = request.user
@@ -743,6 +744,7 @@ def retry_pedido(request,proveedor_id,pedido_id):
   print "requested proveedor"
   print proveedor_id
   msg = ''
+  order = ''
   status = 0
   action = 'reload'
   if str(proveedor.id) == proveedor_id:
@@ -785,6 +787,10 @@ def retry_pedido(request,proveedor_id,pedido_id):
             except:
               msg += 'Parece que la refencia: '+new_ref+'  No existe asociada a la tarifa '+str(tarifa)+'\n'
         print "Our new order is ready:"
+        if order == '':
+          msg = 'No has realizado ningun cambio'
+          action = ''
+          print "wmpty order"
         print order
         if msg == '':
           #everything was fine...
