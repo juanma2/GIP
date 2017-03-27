@@ -1,4 +1,5 @@
 import json
+import ast
 from collections import Counter
 
 from django.shortcuts import render
@@ -8,6 +9,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.core.urlresolvers import reverse
+from django.conf import settings
+
 
 #import only the needed ones
 from gip.models import *
@@ -509,11 +512,12 @@ def pedidos_en_curso(request):
     for k in Pedidos.STATE_CHOICES:
       pedidos_estados[str(k[0])]=k[1]
       #here we should decide which state will be an actual acction, like "Reformular Pedido":12100
+    print pedidos_estados
     #sort by lista.. and add the staff there 
     pedidos_modales = ''
     for pedido in pedidos:
       pedidos_modales += generate_modales_encurso(pedido)
-      
+      print pedido.pedidostate
     context = {'username': username,
                'current_page': current_page,
                'pedidos': pedidos,
@@ -521,3 +525,141 @@ def pedidos_en_curso(request):
                'pedidos_estados': pedidos_estados,
                }
     return render(request, 'cliente/encurso_r_pedidos.html',context)
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def update_pedidostate(request,proveedor_id,pedido_ref,transition):
+  print "we have something here"
+  #TODO: this is duplicated inside helpers_proveeedor, unify and add to settings
+  #You cannot user characters like "-_" in here, cause you cannot afford ids MTF
+  grouped_by = settings.GROUPED_BY
+  current_user = request.user
+  username = str(current_user.username)
+  cliente = Cliente.objects.get(user_id=current_user.id)
+  if request.is_ajax():
+    pedido = Pedidos.objects.get(codigo=pedido_ref)
+    if str(pedido.proveedor_id) == proveedor_id:
+      print "we are sure that the proveedor is the one that should be for this pedido"+proveedor_id
+      print "from pedido {0}, from current_user{1} ".format(pedido.cliente.all()[0].id,current_user.id)
+      if pedido.cliente.all()[0].id == cliente.id:
+        print "we are sure the pedido belongs to the client"
+        print "we want to move the pedido "+str(pedido_ref)+ "using:"+str(transition)
+        #that is stupid, but works with, int, no with the str.. for reasons
+        pedido.pedidostate = int(pedido.pedidostate)
+        #till someone thinks in something better... this is like pedido.transition
+        result = getattr(pedido,transition)()
+        pedido.save()
+        print "and the winner is:"
+        print result
+        #restul = getattr(pedido, 'bar')()
+        data = {
+            'msg': result,
+            'text': 'Tu peticion ha sido procesada',
+            '1':'reset'
+          }
+        pay_load = json.dumps(data)
+        return HttpResponse(pay_load, content_type="application/json")
+      else:
+        print "looks like this pedido do not belong to this user..."
+        return HttpResponseRedirect(reverse('pedidos_en_curso'))
+
+    else:
+      print "Someone is playing bad.. proabbly"+str(proveedor_id)
+      return redirect('/proveedor/404/', request)
+  else:
+    return HttpResponseRedirect(reverse('pedidos_en_curso'))
+
+@login_required(login_url='/mylogin/')
+@user_passes_test(is_cliente)
+def retry_pedido_cliente(request,proveedor_id,pedido_ref,transition):
+  print "we have an offer"
+  current_user = request.user
+  username = str(current_user.username)
+  proveedor = current_user.groups.all().exclude(name=PROVEEDOR_ATTRIBUTE)[0]
+  print "requested proveedor"
+  print proveedor_id
+  msg = ''
+  order = ''
+  status = 0
+  action = 'reload'
+  pedido = Pedidos.objects.get(codigo=pedido_ref)
+  cliente = Cliente.objects.get(user_id=current_user.id)
+  if str(pedido.proveedor_id) == proveedor_id:
+    if pedido.cliente.all()[0].id == cliente.id:
+      if request.is_ajax():
+        update_parameters = request.POST.copy()
+        print update_parameters
+        if update_parameters:
+          print "pedido to update"
+          print pedido.id
+          #this works only because order is not multiprovider
+          cliente = pedido.cliente.all()[0]
+          print "cliente  to update"
+          print cliente.id
+          #here, should be enough a get.. if there is only one tarifa per pair cliente-proveedor
+          tarifa = cliente.tarifa.filter(elproveedor = proveedor_id)[0]
+          #the information comes like:
+          # {u'DIS112_': [u''], u'DIS200_r1': [u'c1'], u'AJTH_': [u''], u'DIS171_r4': [u'c4']}
+          #{OLDREF_NEWREF:[amount],}
+          for i in update_parameters:
+            print "one by one:"+str(i)
+            if i.split('_')[1]:
+              new_ref = i.split('_')[1]
+              old_ref = i.split('_')[0]
+              print pedido.producto_serializado
+              order = ast.literal_eval(pedido.producto_serializado)
+              #disable the product
+              print "diable old product from "+str(order['active'][old_ref])
+              order['active'][old_ref] = 0
+              #we shuld look for the product
+              try:
+                print "try1"
+                producto = Producto.objects.get(product_ref = new_ref, tarifa__id = tarifa.id)
+                order['descripcion'][new_ref]= producto.descripcion
+                order['precio'][new_ref] = float(producto.precio)
+                try:
+                  print "try2"
+                  order['orden'][new_ref] = float(update_parameters[i])
+                except:
+                  order['orden'][new_ref] = 1
+                order['active'][new_ref] = 1
+              except:
+                msg += 'Parece que la refencia: '+new_ref+'  No existe asociada a la tarifa '+str(tarifa)+'\n'
+          print "Our new order is ready:"
+          if order == '':
+            msg = 'No has realizado ningun cambio'
+            action = ''
+            print "wmpty order"
+          if msg == '':
+            #everything was fine...
+            pedido.producto_serializado = order
+            pedido.pedidostate= int(pedido.pedidostate)
+            total = 0.0
+            for i in order['orden']:
+              if order['active'][i] == 1:
+                total += order['orden'][i]*order['precio'][i]
+            pedido.total = total
+            #we want to move to 12100, reformular pedido, we need to know the good transisition for this task
+            for t in Pedidos.get_available_pedidostate_transitions(pedido):
+              print "to: "+str(pedido.pedidostate)
+              print "something tells me there is an extra state here.."
+              if t.target == 12200:
+                result = getattr(pedido,t.name)()
+            pedido.save()
+            msg = 'Su propuesta ha sido tramitada'
+            action = 'close'
+
+      data = {
+            'msg': msg,
+            'action':action
+      }
+      print "Job done!!"
+      pay_load = json.dumps(data)
+      return HttpResponse(pay_load, content_type="application/json")
+    else:
+      print "Someone is hacking around... "
+      return HttpResponse('', content_type="application/json")
+  else:
+    print "Someone is hacking around... "
+    return HttpResponse('', content_type="application/json")
+

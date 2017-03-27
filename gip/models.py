@@ -229,19 +229,31 @@ class Pedidos(models.Model):
       """
       return True
 
+    @transition(field=pedidostate, source=STATE.REFORMULAR_PEDIDO, target=STATE.NO_ACEPTADO)
+    def re_re_acept(self):
+      """
+      """
+      return True
+
     @transition(field=pedidostate, source=STATE.ACEPTADO_CLIENTE, target=STATE.REFORMULAR_PEDIDO)
     def re_re_order(self):
       """
       """
       return True
 
+    @transition(field=pedidostate, source=STATE.ACEPTADO_CLIENTE, target=STATE.RECHAZADO)
+    def re_provider_reject(self):
+      """
+      check this one with Luis, the cliente, keep saying that want something that cannot be delivered. 
+      Proveedor has right to "RECHAZADO
+      """
+      return True
 
     @transition(field=pedidostate, source=STATE.ACEPTADO_CLIENTE, target=STATE.CURSAR_PEDIDO)
     def re_checking(self):
       """
       """
       return True
-
 
     @transition(field=pedidostate, source=STATE.NO_ACEPTADO, target=STATE.REFORMULAR_PEDIDO)
     def re_reorder(self):

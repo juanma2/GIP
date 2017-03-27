@@ -34,4 +34,7 @@ urlpatterns = [
     url(r'^make/pedido/$', views_cliente.make_pedido , name='make_pedido'),
     url(r'^historico/$', views_cliente.historico, name='historico'),
     url(r'^encurso/$', views_cliente.pedidos_en_curso, name='pedidos_en_curso'),
+    url(r'^(?P<proveedor_id>[0-9]+)/estado/(?P<pedido_ref>\w+)/(?P<transition>\w+)/$', views_cliente.update_pedidostate, name='updte_pedidostate'),
+    url(r'^(?P<proveedor_id>[0-9]+)/retry_pedido/(?P<pedido_ref>\w+)/(?P<transition>\w+)/$', views_cliente.retry_pedido_cliente, name='retry_pedido_cliente'),
+
 ]
