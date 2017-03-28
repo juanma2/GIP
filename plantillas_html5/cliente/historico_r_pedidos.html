@@ -10,14 +10,6 @@
 {% endblock %}
 
 {% block purejavascript %}
-def create_modales(id){
- //check if id exist, meaning, is already createdd
- alert('must create modal html') 
-}
-
-  {% for pedido in pedidos %}
-  pedido_{{pedido.codigo}} = {{ pedido.producto_serializado|safe }}
-  {% endfor %}
 
 {% endblock %}
 
@@ -60,7 +52,7 @@ def create_modales(id){
    {% endfor %}
               </td>
              <td>
-           <a href="#modaldemostrarpedido_{{ pedido.codigo }}" onClick="javascript: create_modales(pedido_{{ pedido.codigo }})" data-toggle="modal" class="btn btn-template-main btn-sm">Ver</a>
+           <a href="#modaldemostrarpedido_{{ pedido.codigo }}" data-toggle="modal" class="btn btn-template-main btn-sm">Ver</a>
               </td>
            </tr>
         {% endfor %}
