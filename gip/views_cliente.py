@@ -84,7 +84,7 @@ def productos_cliente(request):
       full_search = Q( proveedor_id = proveedor.id)
       if 'search' in search_parameters:
         #Miss split words and do it smart
-        search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search'])# ' %(search_parameters['search'],search_parameters['search'])
+        search_string=Q(nombre__icontains=search_parameters['search']) |  Q(descripcion__icontains=search_parameters['search']) | Q(product_ref__icontains=search_parameters['search']) # ' %(search_parameters['search'],search_parameters['search'])
         full_search = full_search & search_string
       if 'categoria' in search_parameters:
         cat_id = int(search_parameters['categoria'].split('_')[1])
@@ -481,7 +481,8 @@ def historico(request):
     username = str(current_user.username)
     current_page = "Historico"
     #check how to improve the filter, this sounds like baaaad, is the flow definition wrong, I know.
-    pedidos = Pedidos.objects.filter(cliente__user=current_user.id).exclude(pedidostate='12100')
+    mis_estados = Q(pedidostate = '100') | Q (pedidostate = '12100')
+    pedidos = Pedidos.objects.filter(cliente__user=current_user.id).exclude(mis_estados)
     pedidos_estados = {}
     #is ugly, but should make jinja easier
     print current_user.id
@@ -503,9 +504,11 @@ def historico(request):
 def pedidos_en_curso(request):
     current_user = request.user
     username = str(current_user.username)
-    current_page = "Historico"
+    current_page = "Curso"
     #check how to improve the filter, this sounds like baaaad, is the flow definition wrong, I know.
-    pedidos = Pedidos.objects.filter(cliente__user=current_user.id,pedidostate='12100')
+    mis_estados = Q(pedidostate = '100') | Q (pedidostate = '12100')
+    search_estados = mis_estados & Q ( cliente__user= current_user.id)
+    pedidos = Pedidos.objects.filter(search_estados)
     pedidos_estados = {}
     #is ugly, but should make jinja easier
     print current_user.id
@@ -515,6 +518,7 @@ def pedidos_en_curso(request):
     print pedidos_estados
     #sort by lista.. and add the staff there 
     pedidos_modales = ''
+    print pedidos
     for pedido in pedidos:
       pedidos_modales += generate_modales_encurso(pedido)
       print pedido.pedidostate
