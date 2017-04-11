@@ -10,3 +10,5 @@ static3==0.6.1
 wsgiref==0.1.2
 yolk==0.4.3
 django-fsm==2.3.0
+sorl-thumbnail==12.3
+Pillow==4.0.0

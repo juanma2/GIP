@@ -23,6 +23,7 @@ from gip import proveedor_urls
 from django.contrib.auth.views import login, logout
 
 
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name='index'),
@@ -33,3 +34,8 @@ urlpatterns = [
     url(r'^mylogout/$', logout),
 #url('^accounts/', include('django.contrib.auth.urls')),
 ]
+#this should be a folder in nginx
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,7 +3,11 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import Group, User
 from django.utils.timezone import now
+from django.conf import settings
+
 from django_fsm import FSMField, transition
+from sorl.thumbnail import ImageField
+
 
 
 #I wish to place it out of here, but... is not working in helpers :(
@@ -72,6 +76,7 @@ class Tarifas(models.Model):
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
     #Producto ref cannot contain '_'
+    image = ImageField(upload_to=settings.STATIC_UPLOAD)
     product_ref = models.CharField(max_length=200)
     descripcion = models.CharField(max_length=200)
     cantidad_minima = models.IntegerField(default=0)

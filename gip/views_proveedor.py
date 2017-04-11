@@ -140,50 +140,65 @@ def edit_producto_proveedor(request, proveedor_id, producto_id):
     tarifas_availables = Tarifas.objects.filter(elproveedor=proveedor.id)
     ##We have something to save ....
     edit_parameters = request.POST.copy()
+    print edit_parameters
     if edit_parameters:
       edit_parameters.pop('csrfmiddlewaretoken')
-      p = Producto.objects.get(id=producto_id)
       print edit_parameters
-      p.cantidad_minima = edit_parameters['cantidad_minima']
-      p.categoria_id = edit_parameters['categoria']
-      p.product_ref = edit_parameters['product_ref']
-      p.formato = edit_parameters['formato']
-      p.descripcion = edit_parameters['texcontenido']
-      p.nombre = edit_parameters['nombre']
-      current_tarifa = 'tarifa_'+str(p.tarifa_id)
-      if edit_parameters[current_tarifa] and edit_parameters[current_tarifa] != [u'']:
-        p.precio = edit_parameters[current_tarifa]
-        edit_parameters.pop(current_tarifa)
-      p.fecha_actualizacion = datetime.datetime.now()
-      p.save()
-      for i in tarifas_availables:
-        current_tarifa = 'tarifa_'+str(i.id)
-        if current_tarifa in edit_parameters:
-          print "we want to update a tarifa"
-          if edit_parameters[current_tarifa] != [u'']:
-            print "and there is a value for "+ current_tarifa
-            #we need to look and update this product, but we don't know which one is.. so.. load them all
-            #Maybe the product does not exist
-            #TODO: rethink this aprproach, looks weird
-            try:
-              producto_to_update = Producto.objects.get(product_ref=p.product_ref,tarifa_id=i.id)
-              producto_to_update.precio = edit_parameters[current_tarifa]
-              producto_to_update.save()
-            except:
-              #looks like the product does not exist
-              new_product = Producto()
-              new_product.cantidad_minima = edit_parameters['cantidad_minima']
-              new_product.categoria_id = edit_parameters['categoria']
-              new_product.product_ref = edit_parameters['product_ref']
-              new_product.formato = edit_parameters['formato']
-              new_product.descripcion = edit_parameters['texcontenido']
-              new_product.nombre = edit_parameters['nombre']
-              new_product.precio = edit_parameters[current_tarifa]
-              new_product.tarifa_id = int(current_tarifa.split('_')[1])
-              new_product.proveedor_id = p.proveedor_id
-              new_product.save()
-      #  redirect('/proveedor/404/', request)
-      producto = p
+      print "Maybe... we are wrong"
+      if edit_parameters['onlyimg'] == 'True': 
+        p = Producto.objects.get(id=producto_id)
+        print "request"
+        if request.POST:
+          p.image = request.FILES['file']
+          p.save()
+          print "yep, looks like there is a file"
+      else:
+        p = Producto.objects.get(id=producto_id)
+        print edit_parameters
+        p.cantidad_minima = edit_parameters['cantidad_minima']
+        p.categoria_id = edit_parameters['categoria']
+        p.product_ref = edit_parameters['product_ref']
+        p.formato = edit_parameters['formato']
+        p.descripcion = edit_parameters['texcontenido']
+        p.nombre = edit_parameters['nombre']
+        current_tarifa = 'tarifa_'+str(p.tarifa_id)
+        if edit_parameters[current_tarifa] and edit_parameters[current_tarifa] != [u'']:
+          p.precio = edit_parameters[current_tarifa]
+          edit_parameters.pop(current_tarifa)
+        p.fecha_actualizacion = datetime.datetime.now()
+        try:
+          p.image = request.FILES['file']
+        except:
+          pass
+        p.save()
+        for i in tarifas_availables:
+          current_tarifa = 'tarifa_'+str(i.id)
+          if current_tarifa in edit_parameters:
+            print "we want to update a tarifa"
+            if edit_parameters[current_tarifa] != [u'']:
+              print "and there is a value for "+ current_tarifa
+              #we need to look and update this product, but we don't know which one is.. so.. load them all
+              #Maybe the product does not exist
+              #TODO: rethink this aprproach, looks weird
+              try:
+                producto_to_update = Producto.objects.get(product_ref=p.product_ref,tarifa_id=i.id)
+                producto_to_update.precio = edit_parameters[current_tarifa]
+                producto_to_update.save()
+              except:
+                #looks like the product does not exist
+                new_product = Producto()
+                new_product.cantidad_minima = edit_parameters['cantidad_minima']
+                new_product.categoria_id = edit_parameters['categoria']
+                new_product.product_ref = edit_parameters['product_ref']
+                new_product.formato = edit_parameters['formato']
+                new_product.descripcion = edit_parameters['texcontenido']
+                new_product.nombre = edit_parameters['nombre']
+                new_product.precio = edit_parameters[current_tarifa]
+                new_product.tarifa_id = int(current_tarifa.split('_')[1])
+                new_product.proveedor_id = p.proveedor_id
+                new_product.save()
+        #  redirect('/proveedor/404/', request)
+        producto = p
   else:
     return redirect('/proveedor/404/', request)
   context= {'username': username,

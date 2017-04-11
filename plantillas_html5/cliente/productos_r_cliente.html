@@ -1,4 +1,5 @@
 {% extends "cliente/base_r_cliente.html" %}
+{% load thumbnail %}
 
 {% load staticfiles %}
 {% block purejavascript %}
@@ -199,13 +200,19 @@ populate_form();
                     <div class="col-md-3 col-sm-4">
                         <div class="product">
                             <div class="image">
-                                <a href="s#fichamodal" data-toggle="modal">
-                                                <img src="{{ producto.image_url }}" alt="" class="img-responsive image1">
-                                </a>
+                                <a href="s#fichamodal_{{ producto.id }}" data-toggle="modal">
+
+{% thumbnail producto.image "250x250" crop="center" as im %}
+    <img src="/{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+{% empty %}
+    <img src="http://pingendo.github.io/pingendo-bootstrap/assets/placeholder.png" width="250" height="250" >
+{% endthumbnail %}
+
+					</a>
                             </div>
                             <!-- /.image -->
                             <div class="text">
-                                <h3 class="cortandotextonombre text-uppercase"><a href="s#fichamodal" data-toggle="modal">{{ producto.nombre }}</h3>
+                                <h3 class="cortandotextonombre text-uppercase"><a href="s#fichamodal_{{ producto.id }}" data-toggle="modal">{{ producto.nombre }}</h3>
                                 <p class="price">Precio: {{ producto.precio }}</p>
                                 <p class="">
                                     <a href="s#fichamodal_{{ producto.id }}" class="btn btn-default" role="button"data-toggle="modal">Más info</a> 
@@ -239,7 +246,9 @@ populate_form();
                      <div class="" id="productMain">
                             <div class="col-sm-6">
                                 <div id="mainImage">
-                                    <img src="img/Alcachofa1_product_image.jpg" alt="" class="img-responsive">
+{% thumbnail producto.image "350x350" crop="center" as im %}
+    <img src="/{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+{% endthumbnail %}
                                 </div>
                             </div>
                             <div class="col-sm-6">
