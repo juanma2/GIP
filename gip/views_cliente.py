@@ -481,7 +481,7 @@ def historico(request):
     username = str(current_user.username)
     current_page = "Historico"
     #check how to improve the filter, this sounds like baaaad, is the flow definition wrong, I know.
-    mis_estados = Q(pedidostate = '100') | Q (pedidostate = '12100')
+    mis_estados = Q(pedidostate = '100') | Q (pedidostate = '12100') | Q(pedidostate = '10000')
     pedidos = Pedidos.objects.filter(cliente__user=current_user.id).exclude(mis_estados)
     pedidos_estados = {}
     #is ugly, but should make jinja easier
@@ -506,7 +506,7 @@ def pedidos_en_curso(request):
     username = str(current_user.username)
     current_page = "Curso"
     #check how to improve the filter, this sounds like baaaad, is the flow definition wrong, I know.
-    mis_estados = Q(pedidostate = '100') | Q (pedidostate = '12100')
+    mis_estados = Q(pedidostate = '100') | Q (pedidostate = '12100') | Q(pedidostate = '10000' )
     search_estados = mis_estados & Q ( cliente__user= current_user.id)
     pedidos = Pedidos.objects.filter(search_estados)
     pedidos_estados = {}
