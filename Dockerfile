@@ -13,22 +13,22 @@ MAINTAINER bvcelari@gmail.com
 RUN echo "deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe" >> /etc/apt/sources.list
 
 # Update the sources list
-RUN apt-get dist-upgrade -y
+#RUN apt-get dist-upgrade -y
 
 # RUN apt-get -qq update
 
 # Install basic applications
-RUN apt-get install -y git curl wget net-tools vim
+RUN apt-get -qq install -y git curl wget net-tools vim
 
 # Install Python and Basic Python Tools
-RUN apt-get install -y python python-dev python-distribute python-pip
+RUN apt-get -qq install -y python python-dev python-distribute python-pip
 #shuold be done using pip but do not work :/, is requirement for development, no live
-RUN apt-get install Graphviz
+RUN apt-get -qq install Graphviz
 
 # Install GIP system requirements
-RUN apt-get install -y libmysqlclient-dev
-RUN apt-get install -y libpq-dev python-dev
-RUN apt-get install -y mysql-server
+RUN apt-get -qq install -y libmysqlclient-dev
+RUN apt-get -qq install -y libpq-dev python-dev
+RUN apt-get -qq install -y mysql-server
 
 # Clone app
 RUN git clone https://github.com/bvcelari/GIP
