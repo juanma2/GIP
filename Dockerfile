@@ -18,6 +18,8 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe
 # RUN apt-get -qq update
 
 # Install basic applications
+RUN apt-get -y update && apt-get install -y fortunes
+
 RUN apt-get -qq install -y git curl wget net-tools vim
 
 # Install Python and Basic Python Tools
