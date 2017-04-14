@@ -18,6 +18,7 @@ MAINTAINER bvcelari@gmail.com
 # RUN apt-get -qq update
 
 # Install basic applications
+
 RUN apt-get -y update && apt-get install -y fortunes
 
 RUN apt-get -qq install -y git curl wget net-tools vim
@@ -30,6 +31,11 @@ RUN apt-get -qq install -y python python-dev python-distribute python-pip
 # Install GIP system requirements
 RUN apt-get -qq install -y libmysqlclient-dev
 RUN apt-get -qq install -y libpq-dev python-dev
+
+RUN apt-get -qq install -y debconf-utils
+RUN echo "mysql-server-5.5 mysql-server/root_password_again password root" | debconf-set-selections
+RUN echo "mysql-server-5.5 mysql-server/root_password password root" | debconf-set-selections
+
 RUN apt-get -qq install -y mysql-server
 
 # Clone app
