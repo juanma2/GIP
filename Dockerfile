@@ -25,7 +25,7 @@ RUN apt-get -qq install -y git curl wget net-tools vim
 # Install Python and Basic Python Tools
 RUN apt-get -qq install -y python python-dev python-distribute python-pip
 #shuold be done using pip but do not work :/, is requirement for development, no live
-RUN apt-get -qq install Graphviz
+# RUN apt-get -qq install Graphviz
 
 # Install GIP system requirements
 RUN apt-get -qq install -y libmysqlclient-dev
