@@ -15,10 +15,10 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe
 # Update the sources list
 RUN apt-get dist-upgrade -y
 
-RUN apt-get -qq update
+# RUN apt-get -qq update
 
 # Install basic applications
-# RUN apt-get install -y git curl wget net-tools vim
+RUN apt-get install -y git curl wget net-tools vim
 
 # Install Python and Basic Python Tools
 RUN apt-get install -y python python-dev python-distribute python-pip
