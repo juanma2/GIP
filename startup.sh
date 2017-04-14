@@ -10,7 +10,7 @@ Q3="GRANT ALL PRIVILEGES ON gip.* TO root@localhost;"
 Q4="FLUSH PRIVILEGES;"
 SQL="${Q1}${Q2}${Q3}${Q4}"
 
-$MYSQL --user=root --password=root  -e "$SQL"
+$MYSQL --user=root -e "$SQL"
 
 export DJANGO_SETTINGS_MODULE=gip.settings
 
