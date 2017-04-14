@@ -12,10 +12,11 @@ SQL="${Q1}${Q2}${Q3}${Q4}"
 
 $MYSQL -uroot  -e "$SQL"
 
-python manage.py syncdb
-#some shit breaks here, do it twice... :(
-python manage.py syncdb
-
 export DJANGO_SETTINGS_MODULE=gip.settings
+
+python manage.py syncdb
+python manage.py syncdb
+python manage.py makemigrations
+python manage.py migrate
 
 python carga_bd.py
