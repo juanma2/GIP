@@ -19,7 +19,7 @@ MAINTAINER bvcelari@gmail.com
 
 # Install basic applications
 
-RUN apt-get -y update && apt-get install -y fortunes
+RUN apt-get -y update && apt-get install -y apt-utils
 
 RUN apt-get -qq install -y git curl wget net-tools vim
 
