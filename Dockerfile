@@ -15,6 +15,8 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe
 # Update the sources list
 RUN apt-get dist-upgrade -y
 
+RUN apt-get -qq update
+
 # Install basic applications
 # RUN apt-get install -y git curl wget net-tools vim
 
