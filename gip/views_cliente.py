@@ -469,7 +469,7 @@ def make_pedido(request):
     except:
       #Something went wrong....
       print "something went wrong with the order"
-      return redirect('/cliente/pedidos/',request)
+      return redirect('/cliente/encurso/',request)
 
 
 
