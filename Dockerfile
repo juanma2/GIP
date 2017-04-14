@@ -33,8 +33,8 @@ RUN apt-get -qq install -y libmysqlclient-dev
 RUN apt-get -qq install -y libpq-dev python-dev
 
 RUN apt-get -qq install -y debconf-utils
-RUN echo "mysql-server-5.5 mysql-server/root_password_again password " | debconf-set-selections
-RUN echo "mysql-server-5.5 mysql-server/root_password password " | debconf-set-selections
+RUN echo "mysql-server-5.5 mysql-server/root_password_again password root" | debconf-set-selections
+RUN echo "mysql-server-5.5 mysql-server/root_password password root" | debconf-set-selections
 
 RUN apt-get -qq install -y mysql-server
 
