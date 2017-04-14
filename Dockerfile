@@ -11,11 +11,9 @@ MAINTAINER bvcelari@gmail.com
 
 # Add the application resources URL
 RUN echo "deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -sc) main universe" >> /etc/apt/sources.list
-RUN echo "nameserver 8.8.8.8" >> /etc/resolv.conf
-RUN /etc/init.d/resolvconf restart
 
 # Update the sources list
-RUN apt-get update -y
+RUN apt-get dist-upgrade -y
 
 # Install basic applications
 RUN apt-get install -y git curl wget net-tools vim
