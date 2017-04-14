@@ -56,4 +56,4 @@ WORKDIR /GIP
 # Set the default command to execute
 # when creating a new container
 # CMD python manage.py runserver 0.0.0.0:8000
-CMD /bin/bash
+RUN bash -x /GIP/startup.sh
