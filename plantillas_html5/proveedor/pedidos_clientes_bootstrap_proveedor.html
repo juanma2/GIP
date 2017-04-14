@@ -511,18 +511,7 @@ populate_form();
                         <div class="row">
             <div class="col-md-12">
 
-                            <ul class="pagination pagination-sm">
-              {% if client_list.has_previous %}
-                                <li>
-                                    <a href="#" onclick="submitform({{ client_list.previous_page_number }});return false;" >«</a>
-                                </li>
-              {% endif %}
-                                <li>
-                                    Pag. <a href="#">{{ client_list.number }}</a> de {{ client_list.paginator.num_pages }}
-                               </li>
-              {% if client_list.has_next %}
-                  <a href="#" onclick="submitform({{ client_list.next_page_number }});return false;">»</a>
-              {% endif %}
+              <pb><br>
            </div>
                          </div>
 
